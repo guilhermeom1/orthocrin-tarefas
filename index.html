@@ -5,6 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orthocrin — Controle de Tarefas</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",
+    authDomain: "orthocrin-3cbae.firebaseapp.com",
+    projectId: "orthocrin-3cbae",
+    storageBucket: "orthocrin-3cbae.firebasestorage.app",
+    messagingSenderId: "592799072147",
+    appId: "1:592799072147:web:27d84faf3116fc7e4c3266",
+    measurementId: "G-1CGVJZ9LZN"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.db = db;
+  window.fsLib = { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot };
+  window.firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -100,21 +122,30 @@ select.status-sel{font-size:13px;padding:5px 8px;border:1px solid var(--border);
 .rank-pct{font-size:13px;font-weight:500;color:var(--text);min-width:36px;text-align:right}
 .prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:1.5rem}
 .prod-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.loading{text-align:center;padding:3rem;color:var(--text2);font-size:14px}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:640px){
   .metrics,.metrics-4{grid-template-columns:1fr 1fr}
   .form-2col,.dash-row2{grid-template-columns:1fr}
 }
 @media print{
   body{background:#fff}
-  .topbar .btn,.tab-bar,.btn-print{display:none!important}
+  .topbar .btn,.tab-bar{display:none!important}
   .app{padding:0}
-  .card,.eq-card,.prod-card{break-inside:avoid}
 }
 </style>
 </head>
 <body>
 
-<div id="screen-login" class="login-page">
+<div id="screen-loading" class="login-page">
+  <div style="text-align:center">
+    <div class="spinner"></div>
+    <div style="font-size:14px;color:var(--text2)">Conectando ao banco de dados...</div>
+  </div>
+</div>
+
+<div id="screen-login" class="login-page hidden">
   <div class="login-box">
     <div class="login-logo">Orthocrin</div>
     <div class="login-sub">Controle de tarefas da equipe</div>
@@ -158,13 +189,8 @@ select.status-sel{font-size:13px;padding:5px 8px;border:1px solid var(--border);
         <div class="table-wrap">
           <table>
             <thead><tr>
-              <th style="width:22%">Tarefa</th>
-              <th style="width:14%">Responsável</th>
-              <th style="width:13%">Prazo</th>
-              <th style="width:11%">Dias</th>
-              <th style="width:14%">Status</th>
-              <th style="width:18%">Observação</th>
-              <th style="width:8%"></th>
+              <th style="width:22%">Tarefa</th><th style="width:14%">Responsável</th><th style="width:13%">Prazo</th>
+              <th style="width:11%">Dias</th><th style="width:14%">Status</th><th style="width:18%">Observação</th><th style="width:8%"></th>
             </tr></thead>
             <tbody id="adm-tbody"></tbody>
           </table>
@@ -209,7 +235,7 @@ select.status-sel{font-size:13px;padding:5px 8px;border:1px solid var(--border);
         <div class="card">
           <div class="card-title" style="margin-bottom:12px">Distribuição por status</div>
           <div class="legend" id="donut-legend"></div>
-          <div style="position:relative;width:100%;height:220px"><canvas id="chartDonut" role="img" aria-label="Gráfico de distribuição de tarefas por status"></canvas></div>
+          <div style="position:relative;width:100%;height:220px"><canvas id="chartDonut"></canvas></div>
         </div>
         <div class="card">
           <div class="card-title" style="margin-bottom:12px">Ranking de conclusão</div>
@@ -244,11 +270,7 @@ select.status-sel{font-size:13px;padding:5px 8px;border:1px solid var(--border);
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th style="width:28%">Tarefa</th>
-            <th style="width:14%">Prazo</th>
-            <th style="width:12%">Dias</th>
-            <th style="width:16%">Status</th>
-            <th style="width:30%">Observação</th>
+            <th style="width:28%">Tarefa</th><th style="width:14%">Prazo</th><th style="width:12%">Dias</th><th style="width:16%">Status</th><th style="width:30%">Observação</th>
           </tr></thead>
           <tbody id="func-tbody"></tbody>
         </table>
@@ -273,6 +295,7 @@ function dias(s){const p=new Date(s+'T00:00:00');return Math.round((p-hoje)/8640
 function fmtDias(d,st){if(st==='concluida')return'—';if(d<0)return Math.abs(d)+' d. atraso';if(d===0)return'hoje';return d+' dias'}
 function fmtData(s){return new Date(s+'T00:00:00').toLocaleDateString('pt-BR')}
 function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+function barColor(p){return p>=80?'#16a34a':p>=50?'#2563eb':'#d97706'}
 
 function statusBadge(st,d){
   if(st==='concluida')return'<span class="badge badge-concluida">Concluída</span>';
@@ -282,24 +305,27 @@ function statusBadge(st,d){
   return'<span class="badge badge-pendente">Pendente</span>';
 }
 
-function saveData(){localStorage.setItem('oc_t',JSON.stringify(tarefas));localStorage.setItem('oc_id',nextId)}
-function loadData(){
-  try{const t=localStorage.getItem('oc_t'),n=localStorage.getItem('oc_id');
-  if(t)tarefas=JSON.parse(t);if(n)nextId=parseInt(n);}catch(e){}
-}
+let tarefas=[];
+let currentUser=null;
+let donutChart=null;
+let unsubscribe=null;
 
-let tarefas=[
-  {id:1,nome:'Fechar DRE de maio',resp:'maurilio',prazo:new Date(hoje.getTime()+1*86400000).toISOString().split('T')[0],status:'andamento',obs:''},
-  {id:2,nome:'Conciliar contas a pagar',resp:'samares',prazo:new Date(hoje.getTime()-1*86400000).toISOString().split('T')[0],status:'pendente',obs:''},
-  {id:3,nome:'Enviar SPED Fiscal',resp:'camila',prazo:new Date(hoje.getTime()+8*86400000).toISOString().split('T')[0],status:'concluida',obs:''},
-  {id:4,nome:'Balanço patrimonial',resp:'luciano',prazo:new Date(hoje.getTime()+5*86400000).toISOString().split('T')[0],status:'concluida',obs:'Enviado em 15/05'},
-  {id:5,nome:'Fechar folha de pagamento',resp:'maurilio',prazo:new Date(hoje.getTime()+2*86400000).toISOString().split('T')[0],status:'pendente',obs:''},
-  {id:6,nome:'Conferir notas fiscais',resp:'samares',prazo:new Date(hoje.getTime()+10*86400000).toISOString().split('T')[0],status:'andamento',obs:'Em conferência'},
-];
-let nextId=10,currentUser=null,donutChart=null;
-loadData();
+function show(id){['screen-loading','screen-login','screen-admin','screen-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
 
-function show(id){['screen-login','screen-admin','screen-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+// Aguarda Firebase estar pronto
+document.addEventListener('firebaseReady', function() {
+  const {collection,onSnapshot}=window.fsLib;
+  const db=window.db;
+  // Escuta mudanças em tempo real
+  unsubscribe = onSnapshot(collection(db,'tarefas'), (snapshot) => {
+    tarefas = snapshot.docs.map(d=>({id:d.id,...d.data()}));
+    if(currentUser){
+      if(currentUser.role==='admin'){renderAdmTabela();renderEquipe();}
+      else{renderFunc();}
+    }
+  });
+  show('screen-login');
+});
 
 function doLogin(){
   const u=document.getElementById('login-user').value.trim().toLowerCase();
@@ -353,18 +379,18 @@ function renderAdmAlertas(){
   const admins=USERS.filter(u=>u.role==='admin');
   let html='';
   if(atras.length){
-    const links=atras.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" está atrasada desde '+fmtData(t.prazo)+'.\nOrthocrin');const cc=admins.map(a=>a.email).join(',');return`<a class="mail-link" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');
+    const links=atras.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" está atrasada desde '+fmtData(t.prazo)+'.\n\nOrthocrin');const cc=admins.map(a=>a.email).join(',');return`<a class="mail-link" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');
     html+=`<div class="alert alert-danger"><div><strong>${atras.length} tarefa(s) atrasada(s):</strong> ${atras.map(t=>{const u=USERS.find(x=>x.id===t.resp);return t.nome+' ('+u.name+')'}).join(', ')}<br>${links}</div></div>`;
   }
   if(venc.length){
-    const links=venc.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" vence em '+fmtData(t.prazo)+'.\nOrthocrin');const cc=admins.map(a=>a.email).join(',');return`<a class="mail-link" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');
+    const links=venc.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" vence em '+fmtData(t.prazo)+'.\n\nOrthocrin');const cc=admins.map(a=>a.email).join(',');return`<a class="mail-link" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');
     html+=`<div class="alert alert-warn"><div><strong>${venc.length} tarefa(s) vencendo em até 2 dias:</strong> ${venc.map(t=>{const u=USERS.find(x=>x.id===t.resp);return t.nome+' ('+u.name+')'}).join(', ')}<br>${links}</div></div>`;
   }
   document.getElementById('adm-alertas').innerHTML=html;
 }
 
 function renderAdmTabela(){
-  const filtro=document.getElementById('filtro-func').value;
+  const filtro=document.getElementById('filtro-func')?document.getElementById('filtro-func').value:'';
   const lista=filtro?tarefas.filter(t=>t.resp===filtro):tarefas;
   const tbody=document.getElementById('adm-tbody');
   tbody.innerHTML='';
@@ -373,7 +399,7 @@ function renderAdmTabela(){
     const d=dias(t.prazo),u=USERS.find(x=>x.id===t.resp);
     const tr=document.createElement('tr');
     if(t.status!=='concluida'){if(d<0)tr.className='atrasada';else if(d<=2)tr.className='vencendo';}
-    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${u?u.name:t.resp}</td><td>${fmtData(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fmtDias(d,t.status)}</td><td>${statusBadge(t.status,d)}</td><td style="font-size:13px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td><td><button class="btn btn-sm btn-danger" onclick="removeTarefa(${t.id})">🗑</button></td>`;
+    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${u?u.name:t.resp}</td><td>${fmtData(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fmtDias(d,t.status)}</td><td>${statusBadge(t.status,d)}</td><td style="font-size:13px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td><td><button class="btn btn-sm btn-danger" onclick="removeTarefa('${t.id}')">🗑</button></td>`;
     tbody.appendChild(tr);
   });
   renderAdmMetrics();renderAdmAlertas();
@@ -387,27 +413,28 @@ function renderEquipe(){
     const atras=mine.filter(t=>t.status!=='concluida'&&dias(t.prazo)<0).length;
     const pct=mine.length?Math.round(ok/mine.length*100):0;
     const div=document.createElement('div');div.className='eq-card';
-    div.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="avatar">${initials(u.name)}</div><div><div style="font-weight:500">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.email}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${mine.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${atras}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${pct}% concluído</div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${pct>=80?'#16a34a':pct>=50?'#2563eb':'#d97706'}"></div></div>`;
+    div.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="avatar">${initials(u.name)}</div><div><div style="font-weight:500">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.email}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${mine.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${atras}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${pct}% concluído</div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${barColor(pct)}"></div></div>`;
     wrap.appendChild(div);
   });
 }
 
-function addTarefa(){
+async function addTarefa(){
   const nome=document.getElementById('nt-nome').value.trim();
   const resp=document.getElementById('nt-resp').value;
   const prazo=document.getElementById('nt-prazo').value;
   const status=document.getElementById('nt-status').value;
   if(!nome||!resp||!prazo){document.getElementById('nt-err').classList.remove('hidden');return}
   document.getElementById('nt-err').classList.add('hidden');
-  tarefas.push({id:nextId++,nome,resp,prazo,status,obs:''});
-  saveData();document.getElementById('nt-nome').value='';
-  renderAdmTabela();renderEquipe();
+  const {collection,addDoc}=window.fsLib;
+  await addDoc(collection(window.db,'tarefas'),{nome,resp,prazo,status,obs:''});
+  document.getElementById('nt-nome').value='';
   admTab('tarefas',document.querySelectorAll('.tab-bar .tab')[0]);
 }
 
-function removeTarefa(id){
+async function removeTarefa(id){
   if(!confirm('Remover esta tarefa?'))return;
-  tarefas=tarefas.filter(t=>t.id!==id);saveData();renderAdmTabela();renderEquipe();
+  const {doc,deleteDoc}=window.fsLib;
+  await deleteDoc(doc(window.db,'tarefas',id));
 }
 
 function renderDash(){
@@ -433,7 +460,7 @@ function renderDash(){
   donutChart=new Chart(document.getElementById('chartDonut'),{
     type:'doughnut',
     data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'#ffffff',hoverOffset:4}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed+' ('+Math.round(ctx.parsed/total*100)+'%)'}}}},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed+' ('+Math.round(ctx.parsed/(total||1)*100)+'%)'}}}}
   });
 
   const ud=USERS.filter(u=>u.role==='func').map(u=>{
@@ -441,19 +468,19 @@ function renderDash(){
     const ok=mine.filter(t=>t.status==='concluida').length;
     const atr=mine.filter(t=>t.status!=='concluida'&&dias(t.prazo)<0).length;
     const pct=mine.length?Math.round(ok/mine.length*100):0;
-    return{...u,total:mine.length,ok,atr,pct,and:mine.filter(t=>t.status==='andamento').length};
+    return{...u,total:mine.length,ok,atr,pct};
   }).sort((a,b)=>b.pct-a.pct);
 
   document.getElementById('ranking').innerHTML=ud.map((u,i)=>`
     <div class="rank-row">
       <div class="rank-num">${i+1}</div>
       <div class="avatar" style="width:28px;height:28px;font-size:11px">${initials(u.name)}</div>
-      <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;margin-bottom:4px">${u.name}</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:${u.pct}%;background:${u.pct>=80?'#16a34a':u.pct>=50?'#2563eb':'#d97706'}"></div></div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;margin-bottom:4px">${u.name}</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:${u.pct}%;background:${barColor(u.pct)}"></div></div></div>
       <div class="rank-pct">${u.pct}%</div>
     </div>`).join('');
 
   document.getElementById('prod-grid').innerHTML=ud.map(u=>{
-    const bc=u.pct>=80?'#16a34a':u.pct>=50?'#2563eb':'#d97706';
+    const bc=barColor(u.pct);
     const bclass=u.atr>0?'badge-atrasada':u.pct>=80?'badge-ok':'badge-warn';
     const btxt=u.atr>0?u.atr+' atrasada(s)':u.pct>=80?'Em dia':'Atenção';
     return`<div class="prod-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="avatar">${initials(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${btxt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.atr}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.pct}% concluído</span><span>${u.ok}/${u.total}</span></div><div class="prog-wrap"><div class="prog-bar" style="width:${u.pct}%;background:${bc}"></div></div></div>`;
@@ -488,13 +515,20 @@ function renderFunc(){
   mine.forEach(t=>{
     const d=dias(t.prazo);const tr=document.createElement('tr');
     if(t.status!=='concluida'){if(d<0)tr.className='atrasada';else if(d<=2)tr.className='vencendo';}
-    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${fmtData(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fmtDias(d,t.status)}</td><td><select class="status-sel" onchange="updateStatus(${t.id},this.value)"><option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option><option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option><option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option></select></td><td><textarea class="obs-input" rows="1" placeholder="Observação..." onchange="updateObs(${t.id},this.value)">${t.obs||''}</textarea></td>`;
+    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${fmtData(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fmtDias(d,t.status)}</td><td><select class="status-sel" onchange="updateStatus('${t.id}',this.value)"><option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option><option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option><option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option></select></td><td><textarea class="obs-input" rows="1" placeholder="Observação..." onchange="updateObs('${t.id}',this.value)">${t.obs||''}</textarea></td>`;
     tbody.appendChild(tr);
   });
 }
 
-function updateStatus(id,val){const t=tarefas.find(x=>x.id===id);if(t){t.status=val;saveData();renderFunc()}}
-function updateObs(id,val){const t=tarefas.find(x=>x.id===id);if(t){t.obs=val;saveData()}}
+async function updateStatus(id,val){
+  const {doc,updateDoc}=window.fsLib;
+  await updateDoc(doc(window.db,'tarefas',id),{status:val});
+}
+
+async function updateObs(id,val){
+  const {doc,updateDoc}=window.fsLib;
+  await updateDoc(doc(window.db,'tarefas',id),{obs:val});
+}
 </script>
 </body>
 </html>
