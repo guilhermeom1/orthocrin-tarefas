@@ -5,33 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orthocrin — Controle de Tarefas</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",
-    authDomain: "orthocrin-3cbae.firebaseapp.com",
-    projectId: "orthocrin-3cbae",
-    storageBucket: "orthocrin-3cbae.firebasestorage.app",
-    messagingSenderId: "592799072147",
-    appId: "1:592799072147:web:27d84faf3116fc7e4c3266",
-    measurementId: "G-1CGVJZ9LZN"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  window.db = db;
-  window.fsLib = { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot };
-  window.firebaseReady = true;
-  document.dispatchEvent(new Event('firebaseReady'));
-</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f5f4f1;--surface:#ffffff;--border:#e2e0da;--border2:#d0cec6;
+  --bg:#f5f4f1;--surface:#fff;--border:#e2e0da;--border2:#d0cec6;
   --text:#1a1917;--text2:#6b6860;--text3:#9c9a94;
   --blue:#2563eb;--blue-bg:#eff6ff;--blue-text:#1d4ed8;
   --green:#16a34a;--green-bg:#f0fdf4;--green-text:#15803d;
@@ -45,242 +23,217 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 .login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:380px}
 .login-logo{font-size:22px;font-weight:500;margin-bottom:4px}
 .login-sub{font-size:13px;color:var(--text2);margin-bottom:2rem}
-.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
-.form-group label{font-size:12px;color:var(--text2);font-weight:500}
-input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border 0.15s}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-size:12px;color:var(--text2);font-weight:500}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border .15s}
 input:focus,select:focus,textarea:focus{border-color:var(--blue)}
-textarea{resize:vertical;min-height:60px}
-.btn{padding:9px 16px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);font-family:inherit;font-size:14px;color:var(--text);cursor:pointer;transition:background 0.15s}
+textarea{resize:vertical;min-height:56px}
+.btn{padding:9px 16px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);font-family:inherit;font-size:14px;color:var(--text);cursor:pointer;transition:background .15s}
 .btn:hover{background:var(--gray-bg)}
-.btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
-.btn-primary:hover{background:#333}
+.btn-p{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-p:hover{background:#333}
 .btn-sm{padding:5px 12px;font-size:13px}
-.btn-danger{color:var(--red);border-color:#fca5a5}
-.btn-danger:hover{background:var(--red-bg)}
+.btn-d{color:var(--red);border-color:#fca5a5}
+.btn-d:hover{background:var(--red-bg)}
 .err{font-size:13px;color:var(--red);margin-top:8px}
 .hint{font-size:12px;color:var(--text3);margin-top:12px}
 .app{max-width:960px;margin:0 auto;padding:1.5rem 1rem}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
-.topbar-left{display:flex;align-items:center;gap:12px}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
-.user-name{font-size:15px;font-weight:500}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
-.badge-admin{background:var(--blue-bg);color:var(--blue-text)}
-.badge-pendente{background:var(--gray-bg);color:var(--text2)}
-.badge-andamento{background:var(--blue-bg);color:var(--blue-text)}
-.badge-concluida{background:var(--green-bg);color:var(--green-text)}
-.badge-atrasada{background:var(--red-bg);color:var(--red-text)}
-.badge-vencendo{background:var(--amber-bg);color:var(--amber-text)}
-.badge-ok{background:var(--green-bg);color:var(--green-text)}
-.badge-warn{background:var(--amber-bg);color:var(--amber-text)}
-.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.5rem}
-.metrics-4{grid-template-columns:repeat(4,1fr)}
+.tl{display:flex;align-items:center;gap:12px}
+.av{width:36px;height:36px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.un{font-size:15px;font-weight:500}
+.badge{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+.b-adm{background:var(--blue-bg);color:var(--blue-text)}
+.b-pend{background:var(--gray-bg);color:var(--text2)}
+.b-and{background:var(--blue-bg);color:var(--blue-text)}
+.b-conc{background:var(--green-bg);color:var(--green-text)}
+.b-atras{background:var(--red-bg);color:var(--red-text)}
+.b-venc{background:var(--amber-bg);color:var(--amber-text)}
+.b-ok{background:var(--green-bg);color:var(--green-text)}
+.b-warn{background:var(--amber-bg);color:var(--amber-text)}
+.metrics{display:grid;gap:10px;margin-bottom:1.5rem}
+.m5{grid-template-columns:repeat(5,1fr)}
+.m4{grid-template-columns:repeat(4,1fr)}
 .metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
-.metric-label{font-size:12px;color:var(--text2);margin-bottom:4px}
-.metric-value{font-size:24px;font-weight:500}
-.metric-value.success{color:var(--green)}
-.metric-value.warning{color:var(--amber)}
-.metric-value.danger{color:var(--red)}
-.metric-value.info{color:var(--blue)}
-.metric-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.ml{font-size:12px;color:var(--text2);margin-bottom:4px}
+.mv{font-size:24px;font-weight:500}
+.mv.s{color:var(--green)}.mv.w{color:var(--amber)}.mv.d{color:var(--red)}.mv.i{color:var(--blue)}
+.ms{font-size:11px;color:var(--text3);margin-top:3px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.card-title{font-size:15px;font-weight:500}
-.tab-bar{display:flex;gap:4px;margin-bottom:1rem}
-.tab{padding:7px 16px;border-radius:var(--radius);font-size:13px;cursor:pointer;border:1px solid transparent;color:var(--text2);background:transparent;font-family:inherit;transition:all 0.15s}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.ct{font-size:15px;font-weight:500}
+.tab-bar{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap}
+.tab{padding:7px 16px;border-radius:var(--radius);font-size:13px;cursor:pointer;border:1px solid transparent;color:var(--text2);background:transparent;font-family:inherit}
 .tab:hover{background:var(--surface);border-color:var(--border)}
 .tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500}
-.table-wrap{overflow-x:auto}
+.tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
 th{text-align:left;font-size:12px;font-weight:500;color:var(--text2);padding:8px 10px;border-bottom:1px solid var(--border)}
-td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 tr:last-child td{border-bottom:none}
-tr.vencendo{background:var(--amber-bg)}
-tr.atrasada{background:var(--red-bg)}
+tr.rv{background:var(--amber-bg)}
+tr.ra{background:var(--red-bg)}
 .empty{text-align:center;padding:2.5rem;color:var(--text3);font-size:14px}
-.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:1rem;font-size:13px;display:flex;align-items:flex-start;gap:10px}
-.alert-warn{background:var(--amber-bg);border:1px solid #fde68a;color:var(--amber-text)}
-.alert-danger{background:var(--red-bg);border:1px solid #fca5a5;color:var(--red-text)}
-.mail-link{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-right:6px;font-size:12px;padding:4px 10px;border:1px solid currentColor;border-radius:20px;color:inherit;text-decoration:none;opacity:0.8}
-.mail-link:hover{opacity:1}
-.equipe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:1rem;font-size:13px}
+.aw{background:var(--amber-bg);border:1px solid #fde68a;color:var(--amber-text)}
+.ad{background:var(--red-bg);border:1px solid #fca5a5;color:var(--red-text)}
+.mlink{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-right:6px;font-size:12px;padding:4px 10px;border:1px solid currentColor;border-radius:20px;color:inherit;text-decoration:none;opacity:.8}
+.mlink:hover{opacity:1}
+.eq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .eq-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
-.prog-wrap{height:5px;background:var(--gray-bg);border-radius:3px;overflow:hidden;margin-top:6px}
-.prog-bar{height:5px;border-radius:3px;transition:width 0.4s}
-.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-select.status-sel{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit}
-.obs-input{width:100%;font-size:13px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;resize:none}
-.dash-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
+.pw{height:5px;background:var(--gray-bg);border-radius:3px;overflow:hidden;margin-top:6px}
+.pb{height:5px;border-radius:3px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.ss{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit}
+.oi{width:100%;font-size:13px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;resize:none}
+.dr2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
 .legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
-.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-.rank-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
-.rank-row:last-child{border-bottom:none}
-.rank-num{font-size:13px;font-weight:500;color:var(--text3);width:18px;text-align:center}
-.rank-bar-wrap{flex:1;height:6px;background:var(--gray-bg);border-radius:3px;overflow:hidden}
-.rank-bar{height:6px;border-radius:3px}
-.rank-pct{font-size:13px;font-weight:500;color:var(--text);min-width:36px;text-align:right}
-.prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:1.5rem}
-.prod-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
-.loading{text-align:center;padding:3rem;color:var(--text2);font-size:14px}
-.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:640px){
-  .metrics,.metrics-4{grid-template-columns:1fr 1fr}
-  .form-2col,.dash-row2{grid-template-columns:1fr}
-}
-@media print{
-  body{background:#fff}
-  .topbar .btn,.tab-bar{display:none!important}
-  .app{padding:0}
-}
+.li{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.rr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.rr:last-child{border-bottom:none}
+.rn{font-size:13px;font-weight:500;color:var(--text3);width:18px;text-align:center}
+.rbw{flex:1;height:6px;background:var(--gray-bg);border-radius:3px;overflow:hidden}
+.rb{height:6px;border-radius:3px}
+.rp{font-size:13px;font-weight:500;min-width:36px;text-align:right}
+.pg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.pg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.spin{display:inline-block;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:640px){.m5,.m4{grid-template-columns:1fr 1fr}.f2,.dr2{grid-template-columns:1fr}}
+@media print{body{background:#fff}.topbar .btn,.tab-bar{display:none!important}.app{padding:0}}
 </style>
 </head>
 <body>
 
-<div id="screen-loading" class="login-page">
+<!-- LOADING -->
+<div id="sc-load" class="login-page">
   <div style="text-align:center">
-    <div class="spinner"></div>
+    <div class="spin"></div>
     <div style="font-size:14px;color:var(--text2)">Conectando ao banco de dados...</div>
   </div>
 </div>
 
-<div id="screen-login" class="login-page hidden">
+<!-- LOGIN -->
+<div id="sc-login" class="login-page hidden">
   <div class="login-box">
     <div class="login-logo">Orthocrin</div>
     <div class="login-sub">Controle de tarefas da equipe</div>
-    <div class="form-group"><label>Usuário</label><input type="text" id="login-user" placeholder="seu nome" autocomplete="username"></div>
-    <div class="form-group"><label>Senha</label><input type="password" id="login-pass" placeholder="senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Entrar</button>
-    <div class="err hidden" id="login-err">Usuário ou senha incorretos.</div>
+    <div class="fg"><label>Usuário</label><input type="text" id="lu" placeholder="seu nome" autocomplete="username"></div>
+    <div class="fg"><label>Senha</label><input type="password" id="lp" placeholder="senha" onkeydown="if(event.key==='Enter')dL()"></div>
+    <button class="btn btn-p" style="width:100%" onclick="dL()">Entrar</button>
+    <div class="err hidden" id="le">Usuário ou senha incorretos.</div>
     <div class="hint">Senha padrão inicial: <strong>123456</strong></div>
   </div>
 </div>
 
-<div id="screen-admin" class="hidden">
+<!-- ADMIN -->
+<div id="sc-adm" class="hidden">
   <div class="app">
     <div class="topbar">
-      <div class="topbar-left">
-        <div class="avatar" id="adm-avatar"></div>
-        <div>
-          <div class="user-name" id="adm-name"></div>
-          <span class="badge badge-admin">Administrador</span>
-        </div>
+      <div class="tl">
+        <div class="av" id="adm-av"></div>
+        <div><div class="un" id="adm-nm"></div><span class="badge b-adm">Administrador</span></div>
       </div>
       <button class="btn btn-sm" onclick="logout()">Sair</button>
     </div>
-    <div id="adm-alertas"></div>
+    <div id="adm-al"></div>
     <div class="tab-bar">
-      <button class="tab active" onclick="admTab('tarefas',this)">Tarefas</button>
-      <button class="tab" onclick="admTab('equipe',this)">Equipe</button>
-      <button class="tab" onclick="admTab('nova',this)">Nova tarefa</button>
-      <button class="tab" onclick="admTab('dash',this)">📊 Dashboard</button>
+      <button class="tab active" onclick="aTab('t',this)">Tarefas</button>
+      <button class="tab" onclick="aTab('e',this)">Equipe</button>
+      <button class="tab" onclick="aTab('n',this)">Nova tarefa</button>
+      <button class="tab" onclick="aTab('d',this)">📊 Dashboard</button>
     </div>
-
-    <div id="adm-tab-tarefas">
-      <div class="metrics metrics-4" id="adm-metrics"></div>
+    <div id="at-t">
+      <div class="metrics m4" id="adm-met"></div>
       <div class="card">
-        <div class="card-header">
-          <span class="card-title">Todas as tarefas</span>
-          <select id="filtro-func" onchange="renderAdmTabela()" style="font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit">
+        <div class="ch">
+          <span class="ct">Todas as tarefas</span>
+          <select id="ff" onchange="rAT()" class="ss" style="width:auto">
             <option value="">Todos os funcionários</option>
           </select>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th style="width:22%">Tarefa</th><th style="width:14%">Responsável</th><th style="width:13%">Prazo</th>
-              <th style="width:11%">Dias</th><th style="width:14%">Status</th><th style="width:18%">Observação</th><th style="width:8%"></th>
-            </tr></thead>
-            <tbody id="adm-tbody"></tbody>
-          </table>
-          <div id="adm-empty" class="empty hidden">Nenhuma tarefa encontrada.</div>
-        </div>
+        <div class="tw"><table>
+          <thead><tr>
+            <th style="width:22%">Tarefa</th><th style="width:14%">Responsável</th><th style="width:12%">Prazo</th>
+            <th style="width:10%">Dias</th><th style="width:14%">Status</th><th style="width:20%">Observação</th><th style="width:8%"></th>
+          </tr></thead>
+          <tbody id="adm-tb"></tbody>
+        </table></div>
+        <div id="adm-em" class="empty hidden">Nenhuma tarefa encontrada.</div>
       </div>
     </div>
-
-    <div id="adm-tab-equipe" class="hidden">
-      <div class="equipe-grid" id="equipe-cards"></div>
-    </div>
-
-    <div id="adm-tab-nova" class="hidden">
+    <div id="at-e" class="hidden"><div class="eq-grid" id="eq-cards"></div></div>
+    <div id="at-n" class="hidden">
       <div class="card">
-        <div class="card-header"><span class="card-title">Cadastrar nova tarefa</span></div>
-        <div class="form-2col">
-          <div class="form-group"><label>Nome da tarefa</label><input type="text" id="nt-nome" placeholder="ex: Fechar DRE de junho"></div>
-          <div class="form-group"><label>Responsável</label><select id="nt-resp"></select></div>
-          <div class="form-group"><label>Prazo</label><input type="date" id="nt-prazo"></div>
-          <div class="form-group"><label>Status inicial</label>
-            <select id="nt-status">
-              <option value="pendente">Pendente</option>
-              <option value="andamento">Em andamento</option>
-            </select>
-          </div>
+        <div class="ch"><span class="ct">Cadastrar nova tarefa</span></div>
+        <div class="f2">
+          <div class="fg"><label>Nome da tarefa</label><input type="text" id="nt-nm" placeholder="ex: Fechar DRE de junho"></div>
+          <div class="fg"><label>Responsável</label><select id="nt-rp"></select></div>
+          <div class="fg"><label>Prazo</label><input type="date" id="nt-pr"></div>
+          <div class="fg"><label>Status inicial</label><select id="nt-st"><option value="pendente">Pendente</option><option value="andamento">Em andamento</option></select></div>
         </div>
-        <button class="btn btn-primary" onclick="addTarefa()">+ Cadastrar tarefa</button>
-        <div class="err hidden" id="nt-err">Preencha todos os campos.</div>
+        <button class="btn btn-p" onclick="addT()">+ Cadastrar tarefa</button>
+        <div class="err hidden" id="nt-er">Preencha todos os campos.</div>
       </div>
     </div>
-
-    <div id="adm-tab-dash" class="hidden">
+    <div id="at-d" class="hidden">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
-        <div>
-          <div style="font-size:18px;font-weight:500">Dashboard de produtividade</div>
-          <div style="font-size:13px;color:var(--text2)" id="dash-mes"></div>
-        </div>
+        <div><div style="font-size:18px;font-weight:500">Dashboard de produtividade</div><div style="font-size:13px;color:var(--text2)" id="d-mes"></div></div>
         <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
       </div>
-      <div class="metrics" id="dash-kpis"></div>
-      <div class="dash-row2">
-        <div class="card">
-          <div class="card-title" style="margin-bottom:12px">Distribuição por status</div>
-          <div class="legend" id="donut-legend"></div>
-          <div style="position:relative;width:100%;height:220px"><canvas id="chartDonut"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-title" style="margin-bottom:12px">Ranking de conclusão</div>
-          <div id="ranking"></div>
-        </div>
+      <div class="metrics m5" id="d-kpi"></div>
+      <div class="dr2">
+        <div class="card"><div class="ct" style="margin-bottom:10px">Distribuição por status</div><div class="legend" id="d-leg"></div><div style="position:relative;width:100%;height:210px"><canvas id="d-chart"></canvas></div></div>
+        <div class="card"><div class="ct" style="margin-bottom:10px">Ranking de conclusão</div><div id="d-rank"></div></div>
       </div>
       <div style="font-size:15px;font-weight:500;margin-bottom:12px">Produtividade individual</div>
-      <div class="prod-grid" id="prod-grid"></div>
+      <div class="pg-grid" id="d-prod"></div>
     </div>
   </div>
 </div>
 
-<div id="screen-func" class="hidden">
+<!-- FUNCIONÁRIO -->
+<div id="sc-func" class="hidden">
   <div class="app">
     <div class="topbar">
-      <div class="topbar-left">
-        <div class="avatar" id="func-avatar"></div>
-        <div>
-          <div class="user-name" id="func-name"></div>
-          <div style="font-size:13px;color:var(--text2)">Minhas tarefas</div>
-        </div>
+      <div class="tl">
+        <div class="av" id="func-av"></div>
+        <div><div class="un" id="func-nm"></div><div style="font-size:13px;color:var(--text2)">Minhas tarefas</div></div>
       </div>
       <button class="btn btn-sm" onclick="logout()">Sair</button>
     </div>
-    <div id="func-alertas"></div>
-    <div class="metrics metrics-4" id="func-metrics"></div>
+    <div id="func-al"></div>
+    <div class="metrics m4" id="func-met"></div>
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Minhas tarefas do mês</span>
-        <span style="font-size:13px;color:var(--text2)" id="func-mes"></span>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th style="width:28%">Tarefa</th><th style="width:14%">Prazo</th><th style="width:12%">Dias</th><th style="width:16%">Status</th><th style="width:30%">Observação</th>
-          </tr></thead>
-          <tbody id="func-tbody"></tbody>
-        </table>
-        <div id="func-empty" class="empty hidden">Nenhuma tarefa atribuída a você.</div>
-      </div>
+      <div class="ch"><span class="ct">Minhas tarefas do mês</span><span style="font-size:13px;color:var(--text2)" id="func-mes"></span></div>
+      <div class="tw"><table>
+        <thead><tr>
+          <th style="width:28%">Tarefa</th><th style="width:14%">Prazo</th><th style="width:11%">Dias</th><th style="width:17%">Status</th><th style="width:30%">Observação</th>
+        </tr></thead>
+        <tbody id="func-tb"></tbody>
+      </table></div>
+      <div id="func-em" class="empty hidden">Nenhuma tarefa atribuída a você.</div>
     </div>
   </div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const cfg = {
+  apiKey:"AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",
+  authDomain:"orthocrin-3cbae.firebaseapp.com",
+  projectId:"orthocrin-3cbae",
+  storageBucket:"orthocrin-3cbae.firebasestorage.app",
+  messagingSenderId:"592799072147",
+  appId:"1:592799072147:web:27d84faf3116fc7e4c3266"
+};
+
+const app = initializeApp(cfg);
+const db = getFirestore(app);
+
 const USERS=[
   {id:'guilherme',name:'Guilherme',email:'fiscal3@orthocrin.com.br',role:'admin',pass:'123456'},
   {id:'vanusa',name:'Vanusa',email:'vanusa@orthocrin.com.br',role:'admin',pass:'123456'},
@@ -290,245 +243,199 @@ const USERS=[
   {id:'luciano',name:'Luciano',email:'recebimento@orthocrin.com.br',role:'func',pass:'123456'},
 ];
 
-const hoje=new Date();hoje.setHours(0,0,0,0);
-function dias(s){const p=new Date(s+'T00:00:00');return Math.round((p-hoje)/86400000)}
-function fmtDias(d,st){if(st==='concluida')return'—';if(d<0)return Math.abs(d)+' d. atraso';if(d===0)return'hoje';return d+' dias'}
-function fmtData(s){return new Date(s+'T00:00:00').toLocaleDateString('pt-BR')}
-function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
-function barColor(p){return p>=80?'#16a34a':p>=50?'#2563eb':'#d97706'}
+const hj=new Date();hj.setHours(0,0,0,0);
+const fD=s=>new Date(s+'T00:00:00').toLocaleDateString('pt-BR');
+const dR=s=>Math.round((new Date(s+'T00:00:00')-hj)/86400000);
+const fDias=(d,st)=>st==='concluida'?'—':d<0?Math.abs(d)+' d. atraso':d===0?'hoje':d+' dias';
+const ini=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+const bC=p=>p>=80?'#16a34a':p>=50?'#2563eb':'#d97706';
 
-function statusBadge(st,d){
-  if(st==='concluida')return'<span class="badge badge-concluida">Concluída</span>';
-  if(d<0)return'<span class="badge badge-atrasada">Atrasada</span>';
-  if(d<=2)return'<span class="badge badge-vencendo">Vencendo</span>';
-  if(st==='andamento')return'<span class="badge badge-andamento">Em andamento</span>';
-  return'<span class="badge badge-pendente">Pendente</span>';
+function sBadge(st,d){
+  if(st==='concluida')return'<span class="badge b-conc">Concluída</span>';
+  if(d<0)return'<span class="badge b-atras">Atrasada</span>';
+  if(d<=2)return'<span class="badge b-venc">Vencendo</span>';
+  if(st==='andamento')return'<span class="badge b-and">Em andamento</span>';
+  return'<span class="badge b-pend">Pendente</span>';
 }
 
-let tarefas=[];
-let currentUser=null;
-let donutChart=null;
-let unsubscribe=null;
+let tarefas=[], CU=null, DC=null;
 
-function show(id){['screen-loading','screen-login','screen-admin','screen-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
 
-// Aguarda Firebase estar pronto
-document.addEventListener('firebaseReady', function() {
-  const {collection,onSnapshot}=window.fsLib;
-  const db=window.db;
-  // Escuta mudanças em tempo real
-  unsubscribe = onSnapshot(collection(db,'tarefas'), (snapshot) => {
-    tarefas = snapshot.docs.map(d=>({id:d.id,...d.data()}));
-    if(currentUser){
-      if(currentUser.role==='admin'){renderAdmTabela();renderEquipe();}
-      else{renderFunc();}
-    }
-  });
-  show('screen-login');
+// Listener tempo real
+onSnapshot(collection(db,'tarefas'), snap=>{
+  tarefas=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(CU){CU.role==='admin'?rAT():rFunc();}
+  show(CU?( CU.role==='admin'?'sc-adm':'sc-func' ):'sc-login');
 });
 
-function doLogin(){
-  const u=document.getElementById('login-user').value.trim().toLowerCase();
-  const p=document.getElementById('login-pass').value;
-  const user=USERS.find(x=>x.id===u||x.name.toLowerCase()===u);
-  if(!user||user.pass!==p){document.getElementById('login-err').classList.remove('hidden');return}
-  document.getElementById('login-err').classList.add('hidden');
-  currentUser=user;
-  user.role==='admin'?initAdmin():initFunc();
+window.dL=function(){
+  const u=document.getElementById('lu').value.trim().toLowerCase();
+  const p=document.getElementById('lp').value;
+  const usr=USERS.find(x=>x.id===u||x.name.toLowerCase()===u);
+  if(!usr||usr.pass!==p){document.getElementById('le').classList.remove('hidden');return}
+  document.getElementById('le').classList.add('hidden');
+  CU=usr; usr.role==='admin'?iA():iF();
 }
 
-function logout(){currentUser=null;document.getElementById('login-user').value='';document.getElementById('login-pass').value='';show('screen-login')}
+window.logout=function(){CU=null;document.getElementById('lu').value='';document.getElementById('lp').value='';show('sc-login')}
 
-function initAdmin(){
-  document.getElementById('adm-name').textContent=currentUser.name;
-  document.getElementById('adm-avatar').textContent=initials(currentUser.name);
-  const ff=document.getElementById('filtro-func');
-  ff.innerHTML='<option value="">Todos os funcionários</option>';
+function iA(){
+  document.getElementById('adm-nm').textContent=CU.name;
+  document.getElementById('adm-av').textContent=ini(CU.name);
+  const ff=document.getElementById('ff');ff.innerHTML='<option value="">Todos os funcionários</option>';
   USERS.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;ff.appendChild(o)});
-  const rs=document.getElementById('nt-resp');rs.innerHTML='';
-  USERS.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;rs.appendChild(o)});
-  const pd=new Date(hoje);pd.setDate(pd.getDate()+7);
-  document.getElementById('nt-prazo').value=pd.toISOString().split('T')[0];
-  renderAdmMetrics();renderAdmTabela();renderEquipe();renderAdmAlertas();
-  show('screen-admin');
+  const rp=document.getElementById('nt-rp');rp.innerHTML='';
+  USERS.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;rp.appendChild(o)});
+  const pd=new Date(hj);pd.setDate(pd.getDate()+7);
+  document.getElementById('nt-pr').value=pd.toISOString().split('T')[0];
+  rAM();rAT();rAL();show('sc-adm');
 }
 
-function admTab(tab,el){
-  ['tarefas','equipe','nova','dash'].forEach(t=>document.getElementById('adm-tab-'+t).classList.add('hidden'));
-  document.querySelectorAll('.tab-bar .tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('adm-tab-'+tab).classList.remove('hidden');
+window.aTab=function(t,el){
+  ['t','e','n','d'].forEach(x=>document.getElementById('at-'+x).classList.add('hidden'));
+  document.querySelectorAll('.tab-bar .tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('at-'+t).classList.remove('hidden');
   el.classList.add('active');
-  if(tab==='equipe')renderEquipe();
-  if(tab==='dash')renderDash();
+  if(t==='e')rEq();
+  if(t==='d')rDash();
 }
 
-function renderAdmMetrics(){
-  const total=tarefas.length,ok=tarefas.filter(t=>t.status==='concluida').length;
-  const atras=tarefas.filter(t=>t.status!=='concluida'&&dias(t.prazo)<0).length;
-  const venc=tarefas.filter(t=>t.status!=='concluida'&&dias(t.prazo)>=0&&dias(t.prazo)<=2).length;
-  document.getElementById('adm-metrics').innerHTML=`
-    <div class="metric"><div class="metric-label">Total</div><div class="metric-value">${total}</div></div>
-    <div class="metric"><div class="metric-label">Concluídas</div><div class="metric-value success">${ok}</div></div>
-    <div class="metric"><div class="metric-label">Vencendo</div><div class="metric-value warning">${venc}</div></div>
-    <div class="metric"><div class="metric-label">Atrasadas</div><div class="metric-value danger">${atras}</div></div>`;
+function rAM(){
+  const tot=tarefas.length,ok=tarefas.filter(t=>t.status==='concluida').length;
+  const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+  const vc=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=2).length;
+  document.getElementById('adm-met').innerHTML=`
+    <div class="metric"><div class="ml">Total</div><div class="mv">${tot}</div></div>
+    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div></div>
+    <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
+    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
 }
 
-function renderAdmAlertas(){
-  const atras=tarefas.filter(t=>t.status!=='concluida'&&dias(t.prazo)<0);
-  const venc=tarefas.filter(t=>t.status!=='concluida'&&dias(t.prazo)>=0&&dias(t.prazo)<=2);
-  const admins=USERS.filter(u=>u.role==='admin');
-  let html='';
-  if(atras.length){
-    const links=atras.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" está atrasada desde '+fmtData(t.prazo)+'.\n\nOrthocrin');const cc=admins.map(a=>a.email).join(',');return`<a class="mail-link" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');
-    html+=`<div class="alert alert-danger"><div><strong>${atras.length} tarefa(s) atrasada(s):</strong> ${atras.map(t=>{const u=USERS.find(x=>x.id===t.resp);return t.nome+' ('+u.name+')'}).join(', ')}<br>${links}</div></div>`;
-  }
-  if(venc.length){
-    const links=venc.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" vence em '+fmtData(t.prazo)+'.\n\nOrthocrin');const cc=admins.map(a=>a.email).join(',');return`<a class="mail-link" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');
-    html+=`<div class="alert alert-warn"><div><strong>${venc.length} tarefa(s) vencendo em até 2 dias:</strong> ${venc.map(t=>{const u=USERS.find(x=>x.id===t.resp);return t.nome+' ('+u.name+')'}).join(', ')}<br>${links}</div></div>`;
-  }
-  document.getElementById('adm-alertas').innerHTML=html;
+function rAL(){
+  const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0);
+  const vc=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=2);
+  const adm=USERS.filter(u=>u.role==='admin');
+  let h='';
+  if(at.length){const lk=at.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" está atrasada.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');return`<a class="mlink" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong> ${at.map(t=>{const u=USERS.find(x=>x.id===t.resp);return t.nome+' ('+u.name+')'}).join(', ')}<br>${lk}</div>`;}
+  if(vc.length){const lk=vc.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" vence em breve.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');return`<a class="mlink" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em até 2 dias:</strong> ${vc.map(t=>{const u=USERS.find(x=>x.id===t.resp);return t.nome+' ('+u.name+')'}).join(', ')}<br>${lk}</div>`;}
+  document.getElementById('adm-al').innerHTML=h;
 }
 
-function renderAdmTabela(){
-  const filtro=document.getElementById('filtro-func')?document.getElementById('filtro-func').value:'';
-  const lista=filtro?tarefas.filter(t=>t.resp===filtro):tarefas;
-  const tbody=document.getElementById('adm-tbody');
-  tbody.innerHTML='';
-  document.getElementById('adm-empty').classList.toggle('hidden',lista.length>0);
-  lista.forEach(t=>{
-    const d=dias(t.prazo),u=USERS.find(x=>x.id===t.resp);
+window.rAT=function(){
+  const fi=document.getElementById('ff')?document.getElementById('ff').value:'';
+  const ls=fi?tarefas.filter(t=>t.resp===fi):tarefas;
+  const tb=document.getElementById('adm-tb');tb.innerHTML='';
+  document.getElementById('adm-em').classList.toggle('hidden',ls.length>0);
+  ls.forEach(t=>{
+    const d=dR(t.prazo),u=USERS.find(x=>x.id===t.resp);
     const tr=document.createElement('tr');
-    if(t.status!=='concluida'){if(d<0)tr.className='atrasada';else if(d<=2)tr.className='vencendo';}
-    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${u?u.name:t.resp}</td><td>${fmtData(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fmtDias(d,t.status)}</td><td>${statusBadge(t.status,d)}</td><td style="font-size:13px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td><td><button class="btn btn-sm btn-danger" onclick="removeTarefa('${t.id}')">🗑</button></td>`;
-    tbody.appendChild(tr);
+    if(t.status!=='concluida'){if(d<0)tr.className='ra';else if(d<=2)tr.className='rv';}
+    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${u?u.name:t.resp}</td><td>${fD(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fDias(d,t.status)}</td><td>${sBadge(t.status,d)}</td><td style="font-size:13px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td><td><button class="btn btn-sm btn-d" onclick="rmT('${t.id}')">🗑</button></td>`;
+    tb.appendChild(tr);
   });
-  renderAdmMetrics();renderAdmAlertas();
+  rAM();rAL();
 }
 
-function renderEquipe(){
-  const wrap=document.getElementById('equipe-cards');wrap.innerHTML='';
+function rEq(){
+  const w=document.getElementById('eq-cards');w.innerHTML='';
   USERS.filter(u=>u.role==='func').forEach(u=>{
-    const mine=tarefas.filter(t=>t.resp===u.id);
-    const ok=mine.filter(t=>t.status==='concluida').length;
-    const atras=mine.filter(t=>t.status!=='concluida'&&dias(t.prazo)<0).length;
-    const pct=mine.length?Math.round(ok/mine.length*100):0;
-    const div=document.createElement('div');div.className='eq-card';
-    div.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="avatar">${initials(u.name)}</div><div><div style="font-weight:500">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.email}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${mine.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${atras}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${pct}% concluído</div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${barColor(pct)}"></div></div>`;
-    wrap.appendChild(div);
+    const m=tarefas.filter(t=>t.resp===u.id);
+    const ok=m.filter(t=>t.status==='concluida').length;
+    const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+    const p=m.length?Math.round(ok/m.length*100):0;
+    const d=document.createElement('div');d.className='eq-card';
+    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.email}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${p}% concluído</div><div class="pw"><div class="pb" style="width:${p}%;background:${bC(p)}"></div></div>`;
+    w.appendChild(d);
   });
 }
 
-async function addTarefa(){
-  const nome=document.getElementById('nt-nome').value.trim();
-  const resp=document.getElementById('nt-resp').value;
-  const prazo=document.getElementById('nt-prazo').value;
-  const status=document.getElementById('nt-status').value;
-  if(!nome||!resp||!prazo){document.getElementById('nt-err').classList.remove('hidden');return}
-  document.getElementById('nt-err').classList.add('hidden');
-  const {collection,addDoc}=window.fsLib;
-  await addDoc(collection(window.db,'tarefas'),{nome,resp,prazo,status,obs:''});
-  document.getElementById('nt-nome').value='';
-  admTab('tarefas',document.querySelectorAll('.tab-bar .tab')[0]);
+window.addT=async function(){
+  const nm=document.getElementById('nt-nm').value.trim();
+  const rp=document.getElementById('nt-rp').value;
+  const pr=document.getElementById('nt-pr').value;
+  const st=document.getElementById('nt-st').value;
+  if(!nm||!rp||!pr){document.getElementById('nt-er').classList.remove('hidden');return}
+  document.getElementById('nt-er').classList.add('hidden');
+  try{
+    await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,status:st,obs:''});
+    document.getElementById('nt-nm').value='';
+    window.aTab('t',document.querySelectorAll('.tab-bar .tab')[0]);
+  }catch(e){alert('Erro ao salvar tarefa: '+e.message);}
 }
 
-async function removeTarefa(id){
+window.rmT=async function(id){
   if(!confirm('Remover esta tarefa?'))return;
-  const {doc,deleteDoc}=window.fsLib;
-  await deleteDoc(doc(window.db,'tarefas',id));
+  try{await deleteDoc(doc(db,'tarefas',id));}catch(e){alert('Erro: '+e.message);}
 }
 
-function renderDash(){
-  const total=tarefas.length;
-  const ok=tarefas.filter(t=>t.status==='concluida').length;
-  const and=tarefas.filter(t=>t.status==='andamento').length;
-  const pend=tarefas.filter(t=>t.status==='pendente').length;
-  const atras=tarefas.filter(t=>t.status!=='concluida'&&dias(t.prazo)<0).length;
-  const pct=total?Math.round(ok/total*100):0;
-  document.getElementById('dash-mes').textContent='Orthocrin — '+hoje.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-  document.getElementById('dash-kpis').innerHTML=`
-    <div class="metric"><div class="metric-label">Total de tarefas</div><div class="metric-value">${total}</div><div class="metric-sub">no mês</div></div>
-    <div class="metric"><div class="metric-label">Concluídas</div><div class="metric-value success">${ok}</div><div class="metric-sub">${pct}% do total</div></div>
-    <div class="metric"><div class="metric-label">Em andamento</div><div class="metric-value info">${and}</div><div class="metric-sub">em execução</div></div>
-    <div class="metric"><div class="metric-label">Pendentes</div><div class="metric-value warning">${pend}</div><div class="metric-sub">não iniciadas</div></div>
-    <div class="metric"><div class="metric-label">Atrasadas</div><div class="metric-value danger">${atras}</div><div class="metric-sub">prazo vencido</div></div>`;
-
-  const colors=['#16a34a','#2563eb','#d97706','#dc2626'];
-  const labels=['Concluídas','Em andamento','Pendentes','Atrasadas'];
-  const data=[ok,and,pend,atras];
-  document.getElementById('donut-legend').innerHTML=labels.map((l,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div>${l}: ${data[i]}</div>`).join('');
-  if(donutChart)donutChart.destroy();
-  donutChart=new Chart(document.getElementById('chartDonut'),{
-    type:'doughnut',
-    data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'#ffffff',hoverOffset:4}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed+' ('+Math.round(ctx.parsed/(total||1)*100)+'%)'}}}}
-  });
-
+function rDash(){
+  const tot=tarefas.length,ok=tarefas.filter(t=>t.status==='concluida').length;
+  const an=tarefas.filter(t=>t.status==='andamento').length,pe=tarefas.filter(t=>t.status==='pendente').length;
+  const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+  const p=tot?Math.round(ok/tot*100):0;
+  document.getElementById('d-mes').textContent='Orthocrin — '+hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  document.getElementById('d-kpi').innerHTML=`
+    <div class="metric"><div class="ml">Total</div><div class="mv">${tot}</div><div class="ms">no mês</div></div>
+    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div><div class="ms">${p}% do total</div></div>
+    <div class="metric"><div class="ml">Em andamento</div><div class="mv i">${an}</div><div class="ms">em execução</div></div>
+    <div class="metric"><div class="ml">Pendentes</div><div class="mv w">${pe}</div><div class="ms">não iniciadas</div></div>
+    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div><div class="ms">prazo vencido</div></div>`;
+  const clr=['#16a34a','#2563eb','#d97706','#dc2626'];
+  const lbs=['Concluídas','Em andamento','Pendentes','Atrasadas'];
+  const dat=[ok,an,pe,at];
+  document.getElementById('d-leg').innerHTML=lbs.map((l,i)=>`<div class="li"><div class="ld" style="background:${clr[i]}"></div>${l}: ${dat[i]}</div>`).join('');
+  if(DC)DC.destroy();
+  DC=new Chart(document.getElementById('d-chart'),{type:'doughnut',data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed+' ('+Math.round(c.parsed/(tot||1)*100)+'%)'}}}}});
   const ud=USERS.filter(u=>u.role==='func').map(u=>{
-    const mine=tarefas.filter(t=>t.resp===u.id);
-    const ok=mine.filter(t=>t.status==='concluida').length;
-    const atr=mine.filter(t=>t.status!=='concluida'&&dias(t.prazo)<0).length;
-    const pct=mine.length?Math.round(ok/mine.length*100):0;
-    return{...u,total:mine.length,ok,atr,pct};
-  }).sort((a,b)=>b.pct-a.pct);
-
-  document.getElementById('ranking').innerHTML=ud.map((u,i)=>`
-    <div class="rank-row">
-      <div class="rank-num">${i+1}</div>
-      <div class="avatar" style="width:28px;height:28px;font-size:11px">${initials(u.name)}</div>
-      <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;margin-bottom:4px">${u.name}</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:${u.pct}%;background:${barColor(u.pct)}"></div></div></div>
-      <div class="rank-pct">${u.pct}%</div>
-    </div>`).join('');
-
-  document.getElementById('prod-grid').innerHTML=ud.map(u=>{
-    const bc=barColor(u.pct);
-    const bclass=u.atr>0?'badge-atrasada':u.pct>=80?'badge-ok':'badge-warn';
-    const btxt=u.atr>0?u.atr+' atrasada(s)':u.pct>=80?'Em dia':'Atenção';
-    return`<div class="prod-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="avatar">${initials(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${btxt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.atr}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.pct}% concluído</span><span>${u.ok}/${u.total}</span></div><div class="prog-wrap"><div class="prog-bar" style="width:${u.pct}%;background:${bc}"></div></div></div>`;
-  }).join('');
+    const m=tarefas.filter(t=>t.resp===u.id);
+    const ok=m.filter(t=>t.status==='concluida').length;
+    const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+    const p=m.length?Math.round(ok/m.length*100):0;
+    return{...u,tot:m.length,ok,at,p};
+  }).sort((a,b)=>b.p-a.p);
+  document.getElementById('d-rank').innerHTML=ud.map((u,i)=>`<div class="rr"><div class="rn">${i+1}</div><div class="av" style="width:28px;height:28px;font-size:11px">${ini(u.name)}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;margin-bottom:3px">${u.name}</div><div class="rbw"><div class="rb" style="width:${u.p}%;background:${bC(u.p)}"></div></div></div><div class="rp">${u.p}%</div></div>`).join('');
+  document.getElementById('d-prod').innerHTML=ud.map(u=>{const bc=bC(u.p);const bclass=u.at>0?'b-atras':u.p>=80?'b-ok':'b-warn';const bt=u.at>0?u.at+' atrasada(s)':u.p>=80?'Em dia':'Atenção';return`<div class="pg-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${bt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.p}% concluído</span><span>${u.ok}/${u.tot}</span></div><div class="pw"><div class="pb" style="width:${u.p}%;background:${bc}"></div></div></div>`;}).join('');
 }
 
-function initFunc(){
-  document.getElementById('func-name').textContent=currentUser.name;
-  document.getElementById('func-avatar').textContent=initials(currentUser.name);
-  document.getElementById('func-mes').textContent=hoje.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-  renderFunc();show('screen-func');
+function iF(){
+  document.getElementById('func-nm').textContent=CU.name;
+  document.getElementById('func-av').textContent=ini(CU.name);
+  document.getElementById('func-mes').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  rFunc();show('sc-func');
 }
 
-function renderFunc(){
-  const u=currentUser;
-  const mine=tarefas.filter(t=>t.resp===u.id);
-  const ok=mine.filter(t=>t.status==='concluida').length;
-  const atras=mine.filter(t=>t.status!=='concluida'&&dias(t.prazo)<0).length;
-  const venc=mine.filter(t=>t.status!=='concluida'&&dias(t.prazo)>=0&&dias(t.prazo)<=2).length;
-  document.getElementById('func-metrics').innerHTML=`
-    <div class="metric"><div class="metric-label">Minhas tarefas</div><div class="metric-value">${mine.length}</div></div>
-    <div class="metric"><div class="metric-label">Concluídas</div><div class="metric-value success">${ok}</div></div>
-    <div class="metric"><div class="metric-label">Vencendo</div><div class="metric-value warning">${venc}</div></div>
-    <div class="metric"><div class="metric-label">Atrasadas</div><div class="metric-value danger">${atras}</div></div>`;
-  const admins=USERS.filter(x=>x.role==='admin');
-  let ah='';
-  if(atras){const s=encodeURIComponent('Tarefa atrasada');const b=encodeURIComponent('Olá,\nTenho tarefas atrasadas.\n'+u.name);const cc=admins.map(a=>a.email).join(',');ah+=`<div class="alert alert-danger"><div>Você tem <strong>${atras} tarefa(s) atrasada(s)</strong>.<br><a class="mail-link" href="mailto:${admins[0].email}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div></div>`;}
-  if(venc){const s=encodeURIComponent('Tarefa vencendo em breve');const b=encodeURIComponent('Olá,\nTenho tarefas próximas do vencimento.\n'+u.name);const cc=admins.map(a=>a.email).join(',');ah+=`<div class="alert alert-warn"><div>Você tem <strong>${venc} tarefa(s)</strong> vencendo em até 2 dias.<br><a class="mail-link" href="mailto:${admins[0].email}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div></div>`;}
-  document.getElementById('func-alertas').innerHTML=ah;
-  const tbody=document.getElementById('func-tbody');tbody.innerHTML='';
-  document.getElementById('func-empty').classList.toggle('hidden',mine.length>0);
-  mine.forEach(t=>{
-    const d=dias(t.prazo);const tr=document.createElement('tr');
-    if(t.status!=='concluida'){if(d<0)tr.className='atrasada';else if(d<=2)tr.className='vencendo';}
-    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${fmtData(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fmtDias(d,t.status)}</td><td><select class="status-sel" onchange="updateStatus('${t.id}',this.value)"><option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option><option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option><option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option></select></td><td><textarea class="obs-input" rows="1" placeholder="Observação..." onchange="updateObs('${t.id}',this.value)">${t.obs||''}</textarea></td>`;
-    tbody.appendChild(tr);
+function rFunc(){
+  const u=CU;const m=tarefas.filter(t=>t.resp===u.id);
+  const ok=m.filter(t=>t.status==='concluida').length;
+  const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+  const vc=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=2).length;
+  document.getElementById('func-met').innerHTML=`
+    <div class="metric"><div class="ml">Minhas tarefas</div><div class="mv">${m.length}</div></div>
+    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div></div>
+    <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
+    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
+  const adm=USERS.filter(x=>x.role==='admin');let ah='';
+  if(at){const s=encodeURIComponent('Tarefa atrasada');const b=encodeURIComponent('Olá,\nTenho tarefas atrasadas.\n'+u.name);const cc=adm.map(a=>a.email).join(',');ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.<br><a class="mlink" href="mailto:${adm[0].email}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div>`;}
+  if(vc){const s=encodeURIComponent('Tarefa vencendo em breve');const b=encodeURIComponent('Olá,\nTenho tarefas próximas do vencimento.\n'+u.name);const cc=adm.map(a=>a.email).join(',');ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em até 2 dias.<br><a class="mlink" href="mailto:${adm[0].email}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div>`;}
+  document.getElementById('func-al').innerHTML=ah;
+  const tb=document.getElementById('func-tb');tb.innerHTML='';
+  document.getElementById('func-em').classList.toggle('hidden',m.length>0);
+  m.forEach(t=>{
+    const d=dR(t.prazo);const tr=document.createElement('tr');
+    if(t.status!=='concluida'){if(d<0)tr.className='ra';else if(d<=2)tr.className='rv';}
+    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${fD(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fDias(d,t.status)}</td><td><select class="ss" onchange="uSt('${t.id}',this.value)"><option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option><option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option><option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option></select></td><td><textarea class="oi" rows="1" placeholder="Observação..." onblur="uOb('${t.id}',this.value)">${t.obs||''}</textarea></td>`;
+    tb.appendChild(tr);
   });
 }
 
-async function updateStatus(id,val){
-  const {doc,updateDoc}=window.fsLib;
-  await updateDoc(doc(window.db,'tarefas',id),{status:val});
+window.uSt=async function(id,v){
+  try{await updateDoc(doc(db,'tarefas',id),{status:v});}catch(e){alert('Erro: '+e.message);}
 }
-
-async function updateObs(id,val){
-  const {doc,updateDoc}=window.fsLib;
-  await updateDoc(doc(window.db,'tarefas',id),{obs:val});
+window.uOb=async function(id,v){
+  try{await updateDoc(doc(db,'tarefas',id),{obs:v});}catch(e){alert('Erro: '+e.message);}
 }
+window.iF=iF;
 </script>
 </body>
 </html>
