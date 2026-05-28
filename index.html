@@ -35,9 +35,12 @@ textarea{resize:vertical;min-height:56px}
 .btn-sm{padding:5px 12px;font-size:13px}
 .btn-d{color:var(--red);border-color:#fca5a5}
 .btn-d:hover{background:var(--red-bg)}
+.btn-warn{color:var(--amber);border-color:#fde68a}
+.btn-warn:hover{background:var(--amber-bg)}
 .err{font-size:13px;color:var(--red);margin-top:8px}
+.suc{font-size:13px;color:var(--green);margin-top:8px}
 .hint{font-size:12px;color:var(--text3);margin-top:12px}
-.app{max-width:960px;margin:0 auto;padding:1.5rem 1rem}
+.app{max-width:980px;margin:0 auto;padding:1.5rem 1rem}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
 .tl{display:flex;align-items:center;gap:12px}
 .av{width:36px;height:36px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
@@ -51,6 +54,9 @@ textarea{resize:vertical;min-height:56px}
 .b-venc{background:var(--amber-bg);color:var(--amber-text)}
 .b-ok{background:var(--green-bg);color:var(--green-text)}
 .b-warn{background:var(--amber-bg);color:var(--amber-text)}
+.b-mensal{background:#f3e8ff;color:#7c3aed}
+.b-anual{background:#fce7f3;color:#be185d}
+.b-esporadica{background:var(--gray-bg);color:var(--text2)}
 .metrics{display:grid;gap:10px;margin-bottom:1.5rem}
 .m5{grid-template-columns:repeat(5,1fr)}
 .m4{grid-template-columns:repeat(4,1fr)}
@@ -60,16 +66,16 @@ textarea{resize:vertical;min-height:56px}
 .mv.s{color:var(--green)}.mv.w{color:var(--amber)}.mv.d{color:var(--red)}.mv.i{color:var(--blue)}
 .ms{font-size:11px;color:var(--text3);margin-top:3px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem}
-.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
 .ct{font-size:15px;font-weight:500}
 .tab-bar{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap}
 .tab{padding:7px 16px;border-radius:var(--radius);font-size:13px;cursor:pointer;border:1px solid transparent;color:var(--text2);background:transparent;font-family:inherit}
 .tab:hover{background:var(--surface);border-color:var(--border)}
 .tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500}
 .tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
-th{text-align:left;font-size:12px;font-weight:500;color:var(--text2);padding:8px 10px;border-bottom:1px solid var(--border)}
-td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+th{text-align:left;font-size:11px;font-weight:500;color:var(--text2);padding:7px 9px;border-bottom:1px solid var(--border)}
+td{padding:9px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 tr:last-child td{border-bottom:none}
 tr.rv{background:var(--amber-bg)}
 tr.ra{background:var(--red-bg)}
@@ -84,6 +90,7 @@ tr.ra{background:var(--red-bg)}
 .pw{height:5px;background:var(--gray-bg);border-radius:3px;overflow:hidden;margin-top:6px}
 .pb{height:5px;border-radius:3px}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
 .ss{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit}
 .oi{width:100%;font-size:13px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;resize:none}
 .dr2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
@@ -100,13 +107,18 @@ tr.ra{background:var(--red-bg)}
 .pg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
 .spin{display:inline-block;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:12px}
 @keyframes sp{to{transform:rotate(360deg)}}
-@media(max-width:640px){.m5,.m4{grid-template-columns:1fr 1fr}.f2,.dr2{grid-template-columns:1fr}}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal{background:var(--surface);border-radius:var(--radius-lg);padding:1.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:500;margin-bottom:1.25rem}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.user-row:last-child{border-bottom:none}
+.divider{height:1px;background:var(--border);margin:1rem 0}
+@media(max-width:640px){.m5,.m4{grid-template-columns:1fr 1fr}.f2,.f3,.dr2{grid-template-columns:1fr}}
 @media print{body{background:#fff}.topbar .btn,.tab-bar{display:none!important}.app{padding:0}}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="sc-load" class="login-page">
   <div style="text-align:center">
     <div class="spin"></div>
@@ -114,7 +126,6 @@ tr.ra{background:var(--red-bg)}
   </div>
 </div>
 
-<!-- LOGIN -->
 <div id="sc-login" class="login-page hidden">
   <div class="login-box">
     <div class="login-logo">Orthocrin</div>
@@ -135,7 +146,10 @@ tr.ra{background:var(--red-bg)}
         <div class="av" id="adm-av"></div>
         <div><div class="un" id="adm-nm"></div><span class="badge b-adm">Administrador</span></div>
       </div>
-      <button class="btn btn-sm" onclick="logout()">Sair</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" onclick="openUsuarios()">👥 Usuários</button>
+        <button class="btn btn-sm" onclick="logout()">Sair</button>
+      </div>
     </div>
     <div id="adm-al"></div>
     <div class="tab-bar">
@@ -144,41 +158,78 @@ tr.ra{background:var(--red-bg)}
       <button class="tab" onclick="aTab('n',this)">Nova tarefa</button>
       <button class="tab" onclick="aTab('d',this)">📊 Dashboard</button>
     </div>
+
+    <!-- TAREFAS -->
     <div id="at-t">
       <div class="metrics m4" id="adm-met"></div>
       <div class="card">
         <div class="ch">
           <span class="ct">Todas as tarefas</span>
-          <select id="ff" onchange="rAT()" class="ss" style="width:auto">
-            <option value="">Todos os funcionários</option>
-          </select>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="ff" onchange="rAT()" class="ss" style="width:auto">
+              <option value="">Todos os funcionários</option>
+            </select>
+            <select id="fr" onchange="rAT()" class="ss" style="width:auto">
+              <option value="">Todas as recorrências</option>
+              <option value="mensal">Mensal</option>
+              <option value="anual">Anual</option>
+              <option value="esporadica">Esporádica</option>
+            </select>
+          </div>
         </div>
         <div class="tw"><table>
           <thead><tr>
-            <th style="width:22%">Tarefa</th><th style="width:14%">Responsável</th><th style="width:12%">Prazo</th>
-            <th style="width:10%">Dias</th><th style="width:14%">Status</th><th style="width:20%">Observação</th><th style="width:8%"></th>
+            <th style="width:20%">Tarefa</th>
+            <th style="width:10%">Responsável</th>
+            <th style="width:9%">Prazo</th>
+            <th style="width:8%">Dias</th>
+            <th style="width:9%">Recorrência</th>
+            <th style="width:11%">Status</th>
+            <th style="width:10%">Conclusão</th>
+            <th style="width:15%">Observação</th>
+            <th style="width:8%"></th>
           </tr></thead>
           <tbody id="adm-tb"></tbody>
         </table></div>
         <div id="adm-em" class="empty hidden">Nenhuma tarefa encontrada.</div>
       </div>
     </div>
+
+    <!-- EQUIPE -->
     <div id="at-e" class="hidden"><div class="eq-grid" id="eq-cards"></div></div>
+
+    <!-- NOVA TAREFA -->
     <div id="at-n" class="hidden">
       <div class="card">
         <div class="ch"><span class="ct">Cadastrar nova tarefa</span></div>
         <div class="f2">
-          <div class="fg"><label>Nome da tarefa</label><input type="text" id="nt-nm" placeholder="ex: Fechar DRE de junho"></div>
+          <div class="fg"><label>Nome da tarefa</label><input type="text" id="nt-nm" placeholder="ex: Fechar DRE"></div>
           <div class="fg"><label>Responsável</label><select id="nt-rp"></select></div>
           <div class="fg"><label>Prazo</label><input type="date" id="nt-pr"></div>
-          <div class="fg"><label>Status inicial</label><select id="nt-st"><option value="pendente">Pendente</option><option value="andamento">Em andamento</option></select></div>
+          <div class="fg"><label>Recorrência</label>
+            <select id="nt-rec">
+              <option value="esporadica">Esporádica (não repete)</option>
+              <option value="mensal">Mensal (repete todo mês)</option>
+              <option value="anual">Anual (repete todo ano)</option>
+            </select>
+          </div>
+          <div class="fg"><label>Mês de referência (para mensais)</label><input type="month" id="nt-mes"></div>
+          <div class="fg"><label>Status inicial</label>
+            <select id="nt-st">
+              <option value="pendente">Pendente</option>
+              <option value="andamento">Em andamento</option>
+            </select>
+          </div>
         </div>
         <button class="btn btn-p" onclick="addT()">+ Cadastrar tarefa</button>
         <div class="err hidden" id="nt-er">Preencha todos os campos.</div>
+        <div class="suc hidden" id="nt-ok">✓ Tarefa cadastrada com sucesso!</div>
       </div>
     </div>
+
+    <!-- DASHBOARD -->
     <div id="at-d" class="hidden">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px">
         <div><div style="font-size:18px;font-weight:500">Dashboard de produtividade</div><div style="font-size:13px;color:var(--text2)" id="d-mes"></div></div>
         <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
       </div>
@@ -209,7 +260,13 @@ tr.ra{background:var(--red-bg)}
       <div class="ch"><span class="ct">Minhas tarefas do mês</span><span style="font-size:13px;color:var(--text2)" id="func-mes"></span></div>
       <div class="tw"><table>
         <thead><tr>
-          <th style="width:28%">Tarefa</th><th style="width:14%">Prazo</th><th style="width:11%">Dias</th><th style="width:17%">Status</th><th style="width:30%">Observação</th>
+          <th style="width:22%">Tarefa</th>
+          <th style="width:10%">Recorrência</th>
+          <th style="width:11%">Prazo</th>
+          <th style="width:9%">Dias</th>
+          <th style="width:13%">Status</th>
+          <th style="width:11%">Conclusão</th>
+          <th style="width:24%">Observação</th>
         </tr></thead>
         <tbody id="func-tb"></tbody>
       </table></div>
@@ -218,37 +275,81 @@ tr.ra{background:var(--red-bg)}
   </div>
 </div>
 
+<!-- MODAL USUÁRIOS -->
+<div id="modal-users" class="modal-bg hidden">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div class="modal-title" style="margin-bottom:0">Gerenciar usuários</div>
+      <button class="btn btn-sm" onclick="closeUsuarios()">✕ Fechar</button>
+    </div>
+    <div id="users-list"></div>
+    <div class="divider"></div>
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px">Adicionar novo usuário</div>
+    <div class="f2">
+      <div class="fg"><label>Nome</label><input type="text" id="nu-nm" placeholder="Nome completo"></div>
+      <div class="fg"><label>E-mail</label><input type="email" id="nu-em" placeholder="email@orthocrin.com.br"></div>
+      <div class="fg"><label>Perfil</label>
+        <select id="nu-role">
+          <option value="func">Funcionário</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+      <div class="fg"><label>Senha inicial</label><input type="text" id="nu-pass" placeholder="123456" value="123456"></div>
+    </div>
+    <button class="btn btn-p" onclick="addUsuario()">+ Adicionar usuário</button>
+    <div class="err hidden" id="nu-er">Preencha nome e e-mail.</div>
+    <div class="suc hidden" id="nu-ok">✓ Usuário adicionado!</div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR USUÁRIO -->
+<div id="modal-edit-user" class="modal-bg hidden">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div class="modal-title" style="margin-bottom:0">Editar usuário</div>
+      <button class="btn btn-sm" onclick="closeEditUser()">✕ Fechar</button>
+    </div>
+    <input type="hidden" id="eu-id">
+    <div class="f2">
+      <div class="fg"><label>Nome</label><input type="text" id="eu-nm" placeholder="Nome"></div>
+      <div class="fg"><label>E-mail</label><input type="email" id="eu-em" placeholder="E-mail"></div>
+      <div class="fg"><label>Perfil</label>
+        <select id="eu-role">
+          <option value="func">Funcionário</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+      <div class="fg"><label>Nova senha</label><input type="text" id="eu-pass" placeholder="Nova senha (deixe em branco para manter)"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="saveEditUser()">Salvar alterações</button>
+      <button class="btn btn-d" onclick="deleteUser()">Remover usuário</button>
+    </div>
+    <div class="err hidden" id="eu-er">Preencha nome e e-mail.</div>
+    <div class="suc hidden" id="eu-ok">✓ Salvo com sucesso!</div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const cfg = {
-  apiKey:"AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",
-  authDomain:"orthocrin-3cbae.firebaseapp.com",
-  projectId:"orthocrin-3cbae",
-  storageBucket:"orthocrin-3cbae.firebasestorage.app",
-  messagingSenderId:"592799072147",
-  appId:"1:592799072147:web:27d84faf3116fc7e4c3266"
-};
+const cfg={apiKey:"AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",authDomain:"orthocrin-3cbae.firebaseapp.com",projectId:"orthocrin-3cbae",storageBucket:"orthocrin-3cbae.firebasestorage.app",messagingSenderId:"592799072147",appId:"1:592799072147:web:27d84faf3116fc7e4c3266"};
+const app=initializeApp(cfg);
+const db=getFirestore(app);
 
-const app = initializeApp(cfg);
-const db = getFirestore(app);
+// Estado
+let tarefas=[],usuarios=[],CU=null,DC=null;
 
-const USERS=[
-  {id:'guilherme',name:'Guilherme',email:'fiscal3@orthocrin.com.br',role:'admin',pass:'123456'},
-  {id:'vanusa',name:'Vanusa',email:'vanusa@orthocrin.com.br',role:'admin',pass:'123456'},
-  {id:'maurilio',name:'Maurílio',email:'fiscal@orthocrin.com.br',role:'func',pass:'123456'},
-  {id:'samares',name:'Samares',email:'fiscal2@orthocrin.com.br',role:'func',pass:'123456'},
-  {id:'camila',name:'Camila',email:'fiscal1@orthocrin.com.br',role:'func',pass:'123456'},
-  {id:'luciano',name:'Luciano',email:'recebimento@orthocrin.com.br',role:'func',pass:'123456'},
-];
-
+// Helpers
 const hj=new Date();hj.setHours(0,0,0,0);
 const fD=s=>new Date(s+'T00:00:00').toLocaleDateString('pt-BR');
 const dR=s=>Math.round((new Date(s+'T00:00:00')-hj)/86400000);
 const fDias=(d,st)=>st==='concluida'?'—':d<0?Math.abs(d)+' d. atraso':d===0?'hoje':d+' dias';
 const ini=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 const bC=p=>p>=80?'#16a34a':p>=50?'#2563eb':'#d97706';
+
+function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
 
 function sBadge(st,d){
   if(st==='concluida')return'<span class="badge b-conc">Concluída</span>';
@@ -258,38 +359,60 @@ function sBadge(st,d){
   return'<span class="badge b-pend">Pendente</span>';
 }
 
-let tarefas=[], CU=null, DC=null;
+function rBadge(rec){
+  if(rec==='mensal')return'<span class="badge b-mensal">Mensal</span>';
+  if(rec==='anual')return'<span class="badge b-anual">Anual</span>';
+  return'<span class="badge b-esporadica">Esporádica</span>';
+}
 
-function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
-
-// Listener tempo real
-onSnapshot(collection(db,'tarefas'), snap=>{
+// Listeners Firestore em tempo real
+onSnapshot(collection(db,'tarefas'),snap=>{
   tarefas=snap.docs.map(d=>({id:d.id,...d.data()}));
   if(CU){CU.role==='admin'?rAT():rFunc();}
-  show(CU?( CU.role==='admin'?'sc-adm':'sc-func' ):'sc-login');
+  if(document.getElementById('sc-load')&&!CU){show('sc-login');}
 });
 
+onSnapshot(collection(db,'usuarios'),snap=>{
+  usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(CU&&CU.role==='admin'){
+    // atualiza selects de responsável
+    const ff=document.getElementById('ff');
+    const cur=ff?ff.value:'';
+    if(ff){ff.innerHTML='<option value="">Todos os funcionários</option>';usuarios.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;if(u.id===cur)o.selected=true;ff.appendChild(o)});}
+    const rp=document.getElementById('nt-rp');
+    if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
+  }
+  if(!CU){show('sc-login');}
+});
+
+// LOGIN
 window.dL=function(){
   const u=document.getElementById('lu').value.trim().toLowerCase();
   const p=document.getElementById('lp').value;
-  const usr=USERS.find(x=>x.id===u||x.name.toLowerCase()===u);
+  const usr=usuarios.find(x=>x.id===u||x.name.toLowerCase()===u||x.name.toLowerCase().split(' ')[0]===u);
   if(!usr||usr.pass!==p){document.getElementById('le').classList.remove('hidden');return}
   document.getElementById('le').classList.add('hidden');
-  CU=usr; usr.role==='admin'?iA():iF();
+  CU=usr;usr.role==='admin'?iA():iF();
 }
 
 window.logout=function(){CU=null;document.getElementById('lu').value='';document.getElementById('lp').value='';show('sc-login')}
 
+// ADMIN INIT
 function iA(){
   document.getElementById('adm-nm').textContent=CU.name;
   document.getElementById('adm-av').textContent=ini(CU.name);
-  const ff=document.getElementById('ff');ff.innerHTML='<option value="">Todos os funcionários</option>';
-  USERS.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;ff.appendChild(o)});
-  const rp=document.getElementById('nt-rp');rp.innerHTML='';
-  USERS.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;rp.appendChild(o)});
+  populateSelects();
   const pd=new Date(hj);pd.setDate(pd.getDate()+7);
   document.getElementById('nt-pr').value=pd.toISOString().split('T')[0];
+  document.getElementById('nt-mes').value=new Date().toISOString().slice(0,7);
   rAM();rAT();rAL();show('sc-adm');
+}
+
+function populateSelects(){
+  const ff=document.getElementById('ff');
+  if(ff){ff.innerHTML='<option value="">Todos os funcionários</option>';usuarios.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;ff.appendChild(o)});}
+  const rp=document.getElementById('nt-rp');
+  if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
 }
 
 window.aTab=function(t,el){
@@ -315,23 +438,34 @@ function rAM(){
 function rAL(){
   const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0);
   const vc=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=2);
-  const adm=USERS.filter(u=>u.role==='admin');
+  const adm=usuarios.filter(u=>u.role==='admin');
   let h='';
-  if(at.length){const lk=at.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" está atrasada.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');return`<a class="mlink" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong> ${at.map(t=>{const u=USERS.find(x=>x.id===t.resp);return t.nome+' ('+u.name+')'}).join(', ')}<br>${lk}</div>`;}
-  if(vc.length){const lk=vc.map(t=>{const u=USERS.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+u.name+',\n\nA tarefa "'+t.nome+'" vence em breve.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');return`<a class="mlink" href="mailto:${u.email}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u.name}</a>`;}).join('');h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em até 2 dias:</strong> ${vc.map(t=>{const u=USERS.find(x=>x.id===t.resp);return t.nome+' ('+u.name+')'}).join(', ')}<br>${lk}</div>`;}
+  if(at.length){const lk=at.map(t=>{const u=usuarios.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+(u?u.name:t.resp)+',\n\nA tarefa "'+t.nome+'" está atrasada.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');const em=u?u.email:'';return`<a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u?u.name:t.resp}</a>`;}).join('');h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong> ${at.map(t=>{const u=usuarios.find(x=>x.id===t.resp);return t.nome+' ('+(u?u.name:t.resp)+')'}).join(', ')}<br>${lk}</div>`;}
+  if(vc.length){const lk=vc.map(t=>{const u=usuarios.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+(u?u.name:t.resp)+',\n\nA tarefa "'+t.nome+'" vence em breve.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');const em=u?u.email:'';return`<a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u?u.name:t.resp}</a>`;}).join('');h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em até 2 dias:</strong> ${vc.map(t=>{const u=usuarios.find(x=>x.id===t.resp);return t.nome+' ('+(u?u.name:t.resp)+')'}).join(', ')}<br>${lk}</div>`;}
   document.getElementById('adm-al').innerHTML=h;
 }
 
 window.rAT=function(){
   const fi=document.getElementById('ff')?document.getElementById('ff').value:'';
-  const ls=fi?tarefas.filter(t=>t.resp===fi):tarefas;
+  const fr=document.getElementById('fr')?document.getElementById('fr').value:'';
+  let ls=fi?tarefas.filter(t=>t.resp===fi):tarefas;
+  if(fr)ls=ls.filter(t=>t.recorrencia===fr);
   const tb=document.getElementById('adm-tb');tb.innerHTML='';
   document.getElementById('adm-em').classList.toggle('hidden',ls.length>0);
   ls.forEach(t=>{
-    const d=dR(t.prazo),u=USERS.find(x=>x.id===t.resp);
+    const d=dR(t.prazo),u=usuarios.find(x=>x.id===t.resp);
     const tr=document.createElement('tr');
     if(t.status!=='concluida'){if(d<0)tr.className='ra';else if(d<=2)tr.className='rv';}
-    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${u?u.name:t.resp}</td><td>${fD(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fDias(d,t.status)}</td><td>${sBadge(t.status,d)}</td><td style="font-size:13px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td><td><button class="btn btn-sm btn-d" onclick="rmT('${t.id}')">🗑</button></td>`;
+    tr.innerHTML=`
+      <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
+      <td>${u?u.name:t.resp}</td>
+      <td>${fD(t.prazo)}</td>
+      <td style="font-size:12px;color:var(--text2)">${fDias(d,t.status)}</td>
+      <td>${rBadge(t.recorrencia||'esporadica')}</td>
+      <td>${sBadge(t.status,d)}</td>
+      <td style="font-size:12px;color:var(--text2)">${t.dataConclusao?fD(t.dataConclusao):'—'}</td>
+      <td style="font-size:12px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td>
+      <td><button class="btn btn-sm btn-d" onclick="rmT('${t.id}')">🗑</button></td>`;
     tb.appendChild(tr);
   });
   rAM();rAL();
@@ -339,7 +473,7 @@ window.rAT=function(){
 
 function rEq(){
   const w=document.getElementById('eq-cards');w.innerHTML='';
-  USERS.filter(u=>u.role==='func').forEach(u=>{
+  usuarios.filter(u=>u.role==='func').forEach(u=>{
     const m=tarefas.filter(t=>t.resp===u.id);
     const ok=m.filter(t=>t.status==='concluida').length;
     const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
@@ -354,14 +488,18 @@ window.addT=async function(){
   const nm=document.getElementById('nt-nm').value.trim();
   const rp=document.getElementById('nt-rp').value;
   const pr=document.getElementById('nt-pr').value;
+  const rec=document.getElementById('nt-rec').value;
+  const mes=document.getElementById('nt-mes').value;
   const st=document.getElementById('nt-st').value;
   if(!nm||!rp||!pr){document.getElementById('nt-er').classList.remove('hidden');return}
   document.getElementById('nt-er').classList.add('hidden');
   try{
-    await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,status:st,obs:''});
+    await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:mes||'',status:st,obs:'',dataConclusao:''});
     document.getElementById('nt-nm').value='';
+    document.getElementById('nt-ok').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('nt-ok').classList.add('hidden'),3000);
     window.aTab('t',document.querySelectorAll('.tab-bar .tab')[0]);
-  }catch(e){alert('Erro ao salvar tarefa: '+e.message);}
+  }catch(e){alert('Erro ao salvar: '+e.message);}
 }
 
 window.rmT=async function(id){
@@ -369,6 +507,7 @@ window.rmT=async function(id){
   try{await deleteDoc(doc(db,'tarefas',id));}catch(e){alert('Erro: '+e.message);}
 }
 
+// DASHBOARD
 function rDash(){
   const tot=tarefas.length,ok=tarefas.filter(t=>t.status==='concluida').length;
   const an=tarefas.filter(t=>t.status==='andamento').length,pe=tarefas.filter(t=>t.status==='pendente').length;
@@ -387,7 +526,7 @@ function rDash(){
   document.getElementById('d-leg').innerHTML=lbs.map((l,i)=>`<div class="li"><div class="ld" style="background:${clr[i]}"></div>${l}: ${dat[i]}</div>`).join('');
   if(DC)DC.destroy();
   DC=new Chart(document.getElementById('d-chart'),{type:'doughnut',data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed+' ('+Math.round(c.parsed/(tot||1)*100)+'%)'}}}}});
-  const ud=USERS.filter(u=>u.role==='func').map(u=>{
+  const ud=usuarios.filter(u=>u.role==='func').map(u=>{
     const m=tarefas.filter(t=>t.resp===u.id);
     const ok=m.filter(t=>t.status==='concluida').length;
     const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
@@ -398,6 +537,7 @@ function rDash(){
   document.getElementById('d-prod').innerHTML=ud.map(u=>{const bc=bC(u.p);const bclass=u.at>0?'b-atras':u.p>=80?'b-ok':'b-warn';const bt=u.at>0?u.at+' atrasada(s)':u.p>=80?'Em dia':'Atenção';return`<div class="pg-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${bt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.p}% concluído</span><span>${u.ok}/${u.tot}</span></div><div class="pw"><div class="pb" style="width:${u.p}%;background:${bc}"></div></div></div>`;}).join('');
 }
 
+// FUNC INIT
 function iF(){
   document.getElementById('func-nm').textContent=CU.name;
   document.getElementById('func-av').textContent=ini(CU.name);
@@ -415,27 +555,133 @@ function rFunc(){
     <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div></div>
     <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
     <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
-  const adm=USERS.filter(x=>x.role==='admin');let ah='';
-  if(at){const s=encodeURIComponent('Tarefa atrasada');const b=encodeURIComponent('Olá,\nTenho tarefas atrasadas.\n'+u.name);const cc=adm.map(a=>a.email).join(',');ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.<br><a class="mlink" href="mailto:${adm[0].email}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div>`;}
-  if(vc){const s=encodeURIComponent('Tarefa vencendo em breve');const b=encodeURIComponent('Olá,\nTenho tarefas próximas do vencimento.\n'+u.name);const cc=adm.map(a=>a.email).join(',');ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em até 2 dias.<br><a class="mlink" href="mailto:${adm[0].email}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div>`;}
+  const adm=usuarios.filter(x=>x.role==='admin');let ah='';
+  if(at){const s=encodeURIComponent('Tarefa atrasada');const b=encodeURIComponent('Olá,\nTenho tarefas atrasadas.\n'+u.name);const cc=adm.map(a=>a.email).join(',');const em=adm[0]?adm[0].email:'';ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.<br><a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div>`;}
+  if(vc){const s=encodeURIComponent('Tarefa vencendo em breve');const b=encodeURIComponent('Olá,\nTenho tarefas próximas do vencimento.\n'+u.name);const cc=adm.map(a=>a.email).join(',');const em=adm[0]?adm[0].email:'';ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em até 2 dias.<br><a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div>`;}
   document.getElementById('func-al').innerHTML=ah;
   const tb=document.getElementById('func-tb');tb.innerHTML='';
   document.getElementById('func-em').classList.toggle('hidden',m.length>0);
   m.forEach(t=>{
     const d=dR(t.prazo);const tr=document.createElement('tr');
     if(t.status!=='concluida'){if(d<0)tr.className='ra';else if(d<=2)tr.className='rv';}
-    tr.innerHTML=`<td style="font-weight:500" title="${t.nome}">${t.nome}</td><td>${fD(t.prazo)}</td><td style="font-size:13px;color:var(--text2)">${fDias(d,t.status)}</td><td><select class="ss" onchange="uSt('${t.id}',this.value)"><option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option><option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option><option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option></select></td><td><textarea class="oi" rows="1" placeholder="Observação..." onblur="uOb('${t.id}',this.value)">${t.obs||''}</textarea></td>`;
+    tr.innerHTML=`
+      <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
+      <td>${rBadge(t.recorrencia||'esporadica')}</td>
+      <td>${fD(t.prazo)}</td>
+      <td style="font-size:12px;color:var(--text2)">${fDias(d,t.status)}</td>
+      <td><select class="ss" onchange="uSt('${t.id}',this.value)">
+        <option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option>
+        <option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option>
+        <option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option>
+      </select></td>
+      <td style="font-size:12px;color:var(--text2)">${t.dataConclusao?fD(t.dataConclusao):'—'}</td>
+      <td><textarea class="oi" rows="1" placeholder="Observação..." onblur="uOb('${t.id}',this.value)">${t.obs||''}</textarea></td>`;
     tb.appendChild(tr);
   });
 }
 
 window.uSt=async function(id,v){
-  try{await updateDoc(doc(db,'tarefas',id),{status:v});}catch(e){alert('Erro: '+e.message);}
+  const data={status:v};
+  if(v==='concluida')data.dataConclusao=new Date().toISOString().split('T')[0];
+  else data.dataConclusao='';
+  try{await updateDoc(doc(db,'tarefas',id),data);}catch(e){alert('Erro: '+e.message);}
 }
 window.uOb=async function(id,v){
   try{await updateDoc(doc(db,'tarefas',id),{obs:v});}catch(e){alert('Erro: '+e.message);}
 }
-window.iF=iF;
+
+// GERENCIAR USUÁRIOS
+window.openUsuarios=function(){
+  renderUsersList();
+  document.getElementById('modal-users').classList.remove('hidden');
+}
+window.closeUsuarios=function(){document.getElementById('modal-users').classList.add('hidden')}
+
+function renderUsersList(){
+  const el=document.getElementById('users-list');
+  el.innerHTML=usuarios.map(u=>`
+    <div class="user-row">
+      <div class="av" style="flex-shrink:0">${ini(u.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:500;font-size:14px">${u.name}</div>
+        <div style="font-size:12px;color:var(--text2)">${u.email} · ${u.role==='admin'?'Admin':'Funcionário'}</div>
+      </div>
+      <button class="btn btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>
+    </div>`).join('');
+}
+
+window.addUsuario=async function(){
+  const nm=document.getElementById('nu-nm').value.trim();
+  const em=document.getElementById('nu-em').value.trim();
+  const role=document.getElementById('nu-role').value;
+  const pass=document.getElementById('nu-pass').value.trim()||'123456';
+  if(!nm||!em){document.getElementById('nu-er').classList.remove('hidden');return}
+  document.getElementById('nu-er').classList.add('hidden');
+  try{
+    await addDoc(collection(db,'usuarios'),{name:nm,email:em,role,pass});
+    document.getElementById('nu-nm').value='';
+    document.getElementById('nu-em').value='';
+    document.getElementById('nu-pass').value='123456';
+    document.getElementById('nu-ok').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('nu-ok').classList.add('hidden'),3000);
+    renderUsersList();
+  }catch(e){alert('Erro: '+e.message);}
+}
+
+window.openEditUser=function(id){
+  const u=usuarios.find(x=>x.id===id);if(!u)return;
+  document.getElementById('eu-id').value=id;
+  document.getElementById('eu-nm').value=u.name;
+  document.getElementById('eu-em').value=u.email;
+  document.getElementById('eu-role').value=u.role;
+  document.getElementById('eu-pass').value='';
+  document.getElementById('eu-er').classList.add('hidden');
+  document.getElementById('eu-ok').classList.add('hidden');
+  document.getElementById('modal-edit-user').classList.remove('hidden');
+}
+window.closeEditUser=function(){document.getElementById('modal-edit-user').classList.add('hidden')}
+
+window.saveEditUser=async function(){
+  const id=document.getElementById('eu-id').value;
+  const nm=document.getElementById('eu-nm').value.trim();
+  const em=document.getElementById('eu-em').value.trim();
+  const role=document.getElementById('eu-role').value;
+  const pass=document.getElementById('eu-pass').value.trim();
+  if(!nm||!em){document.getElementById('eu-er').classList.remove('hidden');return}
+  document.getElementById('eu-er').classList.add('hidden');
+  const data={name:nm,email:em,role};
+  if(pass)data.pass=pass;
+  try{
+    await updateDoc(doc(db,'usuarios',id),data);
+    document.getElementById('eu-ok').classList.remove('hidden');
+    setTimeout(()=>{document.getElementById('eu-ok').classList.add('hidden');closeEditUser();renderUsersList();},2000);
+  }catch(e){alert('Erro: '+e.message);}
+}
+
+window.deleteUser=async function(){
+  const id=document.getElementById('eu-id').value;
+  if(!confirm('Remover este usuário?'))return;
+  try{await deleteDoc(doc(db,'usuarios',id));closeEditUser();renderUsersList();}catch(e){alert('Erro: '+e.message);}
+}
+
+// Inicializa usuários padrão no Firestore se vazio
+async function initUsuariosPadrao(){
+  const {getDocs}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+  const snap=await getDocs(collection(db,'usuarios'));
+  if(snap.empty){
+    const padrao=[
+      {name:'Guilherme',email:'fiscal3@orthocrin.com.br',role:'admin',pass:'123456'},
+      {name:'Vanusa',email:'vanusa@orthocrin.com.br',role:'admin',pass:'123456'},
+      {name:'Maurílio',email:'fiscal@orthocrin.com.br',role:'func',pass:'123456'},
+      {name:'Samares',email:'fiscal2@orthocrin.com.br',role:'func',pass:'123456'},
+      {name:'Camila',email:'fiscal1@orthocrin.com.br',role:'func',pass:'123456'},
+      {name:'Luciano',email:'recebimento@orthocrin.com.br',role:'func',pass:'123456'},
+    ];
+    for(const u of padrao)await addDoc(collection(db,'usuarios'),u);
+  }
+}
+
+initUsuariosPadrao();
 </script>
 </body>
 </html>
