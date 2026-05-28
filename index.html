@@ -35,12 +35,10 @@ textarea{resize:vertical;min-height:56px}
 .btn-sm{padding:5px 12px;font-size:13px}
 .btn-d{color:var(--red);border-color:#fca5a5}
 .btn-d:hover{background:var(--red-bg)}
-.btn-warn{color:var(--amber);border-color:#fde68a}
-.btn-warn:hover{background:var(--amber-bg)}
 .err{font-size:13px;color:var(--red);margin-top:8px}
 .suc{font-size:13px;color:var(--green);margin-top:8px}
 .hint{font-size:12px;color:var(--text3);margin-top:12px}
-.app{max-width:980px;margin:0 auto;padding:1.5rem 1rem}
+.app{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
 .tl{display:flex;align-items:center;gap:12px}
 .av{width:36px;height:36px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
@@ -56,7 +54,7 @@ textarea{resize:vertical;min-height:56px}
 .b-warn{background:var(--amber-bg);color:var(--amber-text)}
 .b-mensal{background:#f3e8ff;color:#7c3aed}
 .b-anual{background:#fce7f3;color:#be185d}
-.b-esporadica{background:var(--gray-bg);color:var(--text2)}
+.b-esp{background:var(--gray-bg);color:var(--text2)}
 .metrics{display:grid;gap:10px;margin-bottom:1.5rem}
 .m5{grid-template-columns:repeat(5,1fr)}
 .m4{grid-template-columns:repeat(4,1fr)}
@@ -73,9 +71,9 @@ textarea{resize:vertical;min-height:56px}
 .tab:hover{background:var(--surface);border-color:var(--border)}
 .tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500}
 .tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
-th{text-align:left;font-size:11px;font-weight:500;color:var(--text2);padding:7px 9px;border-bottom:1px solid var(--border)}
-td{padding:9px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+th{text-align:left;font-size:11px;font-weight:500;color:var(--text2);padding:7px 8px;border-bottom:1px solid var(--border)}
+td{padding:8px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 tr:last-child td{border-bottom:none}
 tr.rv{background:var(--amber-bg)}
 tr.ra{background:var(--red-bg)}
@@ -92,7 +90,7 @@ tr.ra{background:var(--red-bg)}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
 .ss{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit}
-.oi{width:100%;font-size:13px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;resize:none}
+.oi{width:100%;font-size:12px;padding:5px 7px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;resize:none}
 .dr2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
 .legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
 .li{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
@@ -108,11 +106,12 @@ tr.ra{background:var(--red-bg)}
 .spin{display:inline-block;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:12px}
 @keyframes sp{to{transform:rotate(360deg)}}
 .modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
-.modal{background:var(--surface);border-radius:var(--radius-lg);padding:1.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal{background:var(--surface);border-radius:var(--radius-lg);padding:1.5rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
 .modal-title{font-size:16px;font-weight:500;margin-bottom:1.25rem}
 .user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .user-row:last-child{border-bottom:none}
 .divider{height:1px;background:var(--border);margin:1rem 0}
+.info-box{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--blue-text);margin-bottom:14px}
 @media(max-width:640px){.m5,.m4{grid-template-columns:1fr 1fr}.f2,.f3,.dr2{grid-template-columns:1fr}}
 @media print{body{background:#fff}.topbar .btn,.tab-bar{display:none!important}.app{padding:0}}
 </style>
@@ -120,10 +119,7 @@ tr.ra{background:var(--red-bg)}
 <body>
 
 <div id="sc-load" class="login-page">
-  <div style="text-align:center">
-    <div class="spin"></div>
-    <div style="font-size:14px;color:var(--text2)">Conectando ao banco de dados...</div>
-  </div>
+  <div style="text-align:center"><div class="spin"></div><div style="font-size:14px;color:var(--text2)">Conectando...</div></div>
 </div>
 
 <div id="sc-login" class="login-page hidden">
@@ -134,7 +130,7 @@ tr.ra{background:var(--red-bg)}
     <div class="fg"><label>Senha</label><input type="password" id="lp" placeholder="senha" onkeydown="if(event.key==='Enter')dL()"></div>
     <button class="btn btn-p" style="width:100%" onclick="dL()">Entrar</button>
     <div class="err hidden" id="le">Usuário ou senha incorretos.</div>
-    <div class="hint">Senha padrão inicial: <strong>123456</strong></div>
+    <div class="hint">Senha padrão: <strong>123456</strong></div>
   </div>
 </div>
 
@@ -153,18 +149,19 @@ tr.ra{background:var(--red-bg)}
     </div>
     <div id="adm-al"></div>
     <div class="tab-bar">
-      <button class="tab active" onclick="aTab('t',this)">Tarefas</button>
+      <button class="tab active" onclick="aTab('t',this)">Tarefas da equipe</button>
+      <button class="tab" onclick="aTab('m',this)">Minhas tarefas</button>
       <button class="tab" onclick="aTab('e',this)">Equipe</button>
       <button class="tab" onclick="aTab('n',this)">Nova tarefa</button>
       <button class="tab" onclick="aTab('d',this)">📊 Dashboard</button>
     </div>
 
-    <!-- TAREFAS -->
+    <!-- ABA: TODAS AS TAREFAS -->
     <div id="at-t">
       <div class="metrics m4" id="adm-met"></div>
       <div class="card">
         <div class="ch">
-          <span class="ct">Todas as tarefas</span>
+          <span class="ct">Todas as tarefas da equipe</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <select id="ff" onchange="rAT()" class="ss" style="width:auto">
               <option value="">Todos os funcionários</option>
@@ -175,17 +172,21 @@ tr.ra{background:var(--red-bg)}
               <option value="anual">Anual</option>
               <option value="esporadica">Esporádica</option>
             </select>
+            <select id="fmes" onchange="rAT()" class="ss" style="width:auto">
+              <option value="">Todos os meses</option>
+            </select>
           </div>
         </div>
         <div class="tw"><table>
           <thead><tr>
-            <th style="width:20%">Tarefa</th>
-            <th style="width:10%">Responsável</th>
-            <th style="width:9%">Prazo</th>
-            <th style="width:8%">Dias</th>
-            <th style="width:9%">Recorrência</th>
-            <th style="width:11%">Status</th>
-            <th style="width:10%">Conclusão</th>
+            <th style="width:18%">Tarefa</th>
+            <th style="width:9%">Responsável</th>
+            <th style="width:8%">Recorrência</th>
+            <th style="width:8%">Mês ref.</th>
+            <th style="width:8%">Prazo</th>
+            <th style="width:7%">Dias</th>
+            <th style="width:10%">Status</th>
+            <th style="width:9%">Conclusão</th>
             <th style="width:15%">Observação</th>
             <th style="width:8%"></th>
           </tr></thead>
@@ -195,25 +196,67 @@ tr.ra{background:var(--red-bg)}
       </div>
     </div>
 
-    <!-- EQUIPE -->
+    <!-- ABA: MINHAS TAREFAS ADM -->
+    <div id="at-m" class="hidden">
+      <div class="metrics m4" id="adm-my-met"></div>
+      <div class="card">
+        <div class="ch"><span class="ct">Minhas tarefas</span><span style="font-size:13px;color:var(--text2)" id="adm-my-mes"></span></div>
+        <div class="tw"><table>
+          <thead><tr>
+            <th style="width:20%">Tarefa</th>
+            <th style="width:10%">Recorrência</th>
+            <th style="width:9%">Mês ref.</th>
+            <th style="width:9%">Prazo</th>
+            <th style="width:8%">Dias</th>
+            <th style="width:13%">Status</th>
+            <th style="width:12%">Data conclusão</th>
+            <th style="width:19%">Observação</th>
+          </tr></thead>
+          <tbody id="adm-my-tb"></tbody>
+        </table></div>
+        <div id="adm-my-em" class="empty hidden">Nenhuma tarefa atribuída a você.</div>
+      </div>
+    </div>
+
+    <!-- ABA: EQUIPE -->
     <div id="at-e" class="hidden"><div class="eq-grid" id="eq-cards"></div></div>
 
-    <!-- NOVA TAREFA -->
+    <!-- ABA: NOVA TAREFA -->
     <div id="at-n" class="hidden">
       <div class="card">
         <div class="ch"><span class="ct">Cadastrar nova tarefa</span></div>
         <div class="f2">
           <div class="fg"><label>Nome da tarefa</label><input type="text" id="nt-nm" placeholder="ex: Fechar DRE"></div>
           <div class="fg"><label>Responsável</label><select id="nt-rp"></select></div>
-          <div class="fg"><label>Prazo</label><input type="date" id="nt-pr"></div>
-          <div class="fg"><label>Recorrência</label>
-            <select id="nt-rec">
+        </div>
+        <div class="f3">
+          <div class="fg">
+            <label>Periodicidade</label>
+            <select id="nt-rec" onchange="toggleRecFields()">
               <option value="esporadica">Esporádica (não repete)</option>
               <option value="mensal">Mensal (repete todo mês)</option>
               <option value="anual">Anual (repete todo ano)</option>
             </select>
           </div>
-          <div class="fg"><label>Mês de referência (para mensais)</label><input type="month" id="nt-mes"></div>
+          <div class="fg" id="fg-meses" style="display:none">
+            <label>Meses de execução</label>
+            <div id="meses-check" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)"></div>
+          </div>
+          <div class="fg" id="fg-mes-ref">
+            <label>Mês de referência</label>
+            <select id="nt-mes-ref" class="ss">
+              <option value="">Selecione o mês</option>
+              <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+              <option value="03">Março</option><option value="04">Abril</option>
+              <option value="05">Maio</option><option value="06">Junho</option>
+              <option value="07">Julho</option><option value="08">Agosto</option>
+              <option value="09">Setembro</option><option value="10">Outubro</option>
+              <option value="11">Novembro</option><option value="12">Dezembro</option>
+            </select>
+          </div>
+        </div>
+        <div class="f2">
+          <div class="fg"><label>Prazo</label><input type="date" id="nt-pr"></div>
           <div class="fg"><label>Status inicial</label>
             <select id="nt-st">
               <option value="pendente">Pendente</option>
@@ -221,13 +264,14 @@ tr.ra{background:var(--red-bg)}
             </select>
           </div>
         </div>
+        <div id="info-mensal" class="info-box hidden">💡 Esta tarefa será criada para cada mês selecionado e terá o status resetado para <strong>Pendente</strong> automaticamente todo mês.</div>
         <button class="btn btn-p" onclick="addT()">+ Cadastrar tarefa</button>
-        <div class="err hidden" id="nt-er">Preencha todos os campos.</div>
-        <div class="suc hidden" id="nt-ok">✓ Tarefa cadastrada com sucesso!</div>
+        <div class="err hidden" id="nt-er">Preencha todos os campos obrigatórios.</div>
+        <div class="suc hidden" id="nt-ok">✓ Tarefa(s) cadastrada(s) com sucesso!</div>
       </div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- ABA: DASHBOARD -->
     <div id="at-d" class="hidden">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px">
         <div><div style="font-size:18px;font-weight:500">Dashboard de produtividade</div><div style="font-size:13px;color:var(--text2)" id="d-mes"></div></div>
@@ -257,16 +301,17 @@ tr.ra{background:var(--red-bg)}
     <div id="func-al"></div>
     <div class="metrics m4" id="func-met"></div>
     <div class="card">
-      <div class="ch"><span class="ct">Minhas tarefas do mês</span><span style="font-size:13px;color:var(--text2)" id="func-mes"></span></div>
+      <div class="ch"><span class="ct">Minhas tarefas</span><span style="font-size:13px;color:var(--text2)" id="func-mes"></span></div>
       <div class="tw"><table>
         <thead><tr>
-          <th style="width:22%">Tarefa</th>
+          <th style="width:20%">Tarefa</th>
           <th style="width:10%">Recorrência</th>
-          <th style="width:11%">Prazo</th>
-          <th style="width:9%">Dias</th>
+          <th style="width:9%">Mês ref.</th>
+          <th style="width:9%">Prazo</th>
+          <th style="width:8%">Dias</th>
           <th style="width:13%">Status</th>
-          <th style="width:11%">Conclusão</th>
-          <th style="width:24%">Observação</th>
+          <th style="width:12%">Data conclusão</th>
+          <th style="width:19%">Observação</th>
         </tr></thead>
         <tbody id="func-tb"></tbody>
       </table></div>
@@ -280,7 +325,7 @@ tr.ra{background:var(--red-bg)}
   <div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
       <div class="modal-title" style="margin-bottom:0">Gerenciar usuários</div>
-      <button class="btn btn-sm" onclick="closeUsuarios()">✕ Fechar</button>
+      <button class="btn btn-sm" onclick="closeUsuarios()">✕</button>
     </div>
     <div id="users-list"></div>
     <div class="divider"></div>
@@ -288,15 +333,10 @@ tr.ra{background:var(--red-bg)}
     <div class="f2">
       <div class="fg"><label>Nome</label><input type="text" id="nu-nm" placeholder="Nome completo"></div>
       <div class="fg"><label>E-mail</label><input type="email" id="nu-em" placeholder="email@orthocrin.com.br"></div>
-      <div class="fg"><label>Perfil</label>
-        <select id="nu-role">
-          <option value="func">Funcionário</option>
-          <option value="admin">Administrador</option>
-        </select>
-      </div>
-      <div class="fg"><label>Senha inicial</label><input type="text" id="nu-pass" placeholder="123456" value="123456"></div>
+      <div class="fg"><label>Perfil</label><select id="nu-role"><option value="func">Funcionário</option><option value="admin">Administrador</option></select></div>
+      <div class="fg"><label>Senha inicial</label><input type="text" id="nu-pass" value="123456"></div>
     </div>
-    <button class="btn btn-p" onclick="addUsuario()">+ Adicionar usuário</button>
+    <button class="btn btn-p" onclick="addUsuario()">+ Adicionar</button>
     <div class="err hidden" id="nu-er">Preencha nome e e-mail.</div>
     <div class="suc hidden" id="nu-ok">✓ Usuário adicionado!</div>
   </div>
@@ -307,47 +347,45 @@ tr.ra{background:var(--red-bg)}
   <div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
       <div class="modal-title" style="margin-bottom:0">Editar usuário</div>
-      <button class="btn btn-sm" onclick="closeEditUser()">✕ Fechar</button>
+      <button class="btn btn-sm" onclick="closeEditUser()">✕</button>
     </div>
     <input type="hidden" id="eu-id">
     <div class="f2">
-      <div class="fg"><label>Nome</label><input type="text" id="eu-nm" placeholder="Nome"></div>
-      <div class="fg"><label>E-mail</label><input type="email" id="eu-em" placeholder="E-mail"></div>
-      <div class="fg"><label>Perfil</label>
-        <select id="eu-role">
-          <option value="func">Funcionário</option>
-          <option value="admin">Administrador</option>
-        </select>
-      </div>
-      <div class="fg"><label>Nova senha</label><input type="text" id="eu-pass" placeholder="Nova senha (deixe em branco para manter)"></div>
+      <div class="fg"><label>Nome</label><input type="text" id="eu-nm"></div>
+      <div class="fg"><label>E-mail</label><input type="email" id="eu-em"></div>
+      <div class="fg"><label>Perfil</label><select id="eu-role"><option value="func">Funcionário</option><option value="admin">Administrador</option></select></div>
+      <div class="fg"><label>Nova senha</label><input type="text" id="eu-pass" placeholder="Deixe em branco para manter"></div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-p" onclick="saveEditUser()">Salvar alterações</button>
+      <button class="btn btn-p" onclick="saveEditUser()">Salvar</button>
       <button class="btn btn-d" onclick="deleteUser()">Remover usuário</button>
     </div>
     <div class="err hidden" id="eu-er">Preencha nome e e-mail.</div>
-    <div class="suc hidden" id="eu-ok">✓ Salvo com sucesso!</div>
+    <div class="suc hidden" id="eu-ok">✓ Salvo!</div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const cfg={apiKey:"AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",authDomain:"orthocrin-3cbae.firebaseapp.com",projectId:"orthocrin-3cbae",storageBucket:"orthocrin-3cbae.firebasestorage.app",messagingSenderId:"592799072147",appId:"1:592799072147:web:27d84faf3116fc7e4c3266"};
 const app=initializeApp(cfg);
 const db=getFirestore(app);
 
-// Estado
-let tarefas=[],usuarios=[],CU=null,DC=null;
+let tarefas=[],usuarios=[],CU=null,DC=null,iniciado=false;
 
-// Helpers
 const hj=new Date();hj.setHours(0,0,0,0);
-const fD=s=>new Date(s+'T00:00:00').toLocaleDateString('pt-BR');
+const anoAtual=hj.getFullYear();
+const mesAtual=String(hj.getMonth()+1).padStart(2,'0');
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+const fD=s=>s?new Date(s+'T00:00:00').toLocaleDateString('pt-BR'):'—';
 const dR=s=>Math.round((new Date(s+'T00:00:00')-hj)/86400000);
 const fDias=(d,st)=>st==='concluida'?'—':d<0?Math.abs(d)+' d. atraso':d===0?'hoje':d+' dias';
 const ini=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 const bC=p=>p>=80?'#16a34a':p>=50?'#2563eb':'#d97706';
+const fMes=m=>m?MESES[parseInt(m)-1]||m:'—';
 
 function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
 
@@ -358,32 +396,78 @@ function sBadge(st,d){
   if(st==='andamento')return'<span class="badge b-and">Em andamento</span>';
   return'<span class="badge b-pend">Pendente</span>';
 }
-
 function rBadge(rec){
   if(rec==='mensal')return'<span class="badge b-mensal">Mensal</span>';
   if(rec==='anual')return'<span class="badge b-anual">Anual</span>';
-  return'<span class="badge b-esporadica">Esporádica</span>';
+  return'<span class="badge b-esp">Esporádica</span>';
 }
 
-// Listeners Firestore em tempo real
+// Resetar tarefas mensais no início do mês
+async function resetarMensais(){
+  const chave='reset_'+anoAtual+'_'+mesAtual;
+  const resetados=JSON.parse(localStorage.getItem('oc_reset')||'[]');
+  if(resetados.includes(chave))return;
+  for(const t of tarefas){
+    if(t.recorrencia==='mensal'&&t.status==='concluida'){
+      const tMes=t.mesReferencia||'';
+      if(!tMes||tMes===mesAtual){
+        await updateDoc(doc(db,'tarefas',t.id),{status:'pendente',dataConclusao:''});
+      }
+    }
+  }
+  resetados.push(chave);
+  localStorage.setItem('oc_reset',JSON.stringify(resetados));
+}
+
+// Preencher select de meses nos filtros
+function populateMesFiltro(){
+  const sel=document.getElementById('fmes');
+  if(!sel)return;
+  sel.innerHTML='<option value="">Todos os meses</option>';
+  MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;sel.appendChild(o);});
+}
+
+// Preencher checkboxes de meses
+function populateMesesCheck(){
+  const wrap=document.getElementById('meses-check');
+  if(!wrap)return;
+  wrap.innerHTML=MESES.map((m,i)=>{
+    const v=String(i+1).padStart(2,'0');
+    return`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" value="${v}" style="width:auto;padding:0"> ${m}</label>`;
+  }).join('');
+}
+
+// Toggle campos de recorrência
+window.toggleRecFields=function(){
+  const rec=document.getElementById('nt-rec').value;
+  document.getElementById('fg-meses').style.display=rec==='mensal'?'block':'none';
+  document.getElementById('fg-mes-ref').style.display=rec!=='mensal'?'block':'none';
+  document.getElementById('info-mensal').classList.toggle('hidden',rec!=='mensal');
+}
+
+// Listeners Firestore
 onSnapshot(collection(db,'tarefas'),snap=>{
   tarefas=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(CU){CU.role==='admin'?rAT():rFunc();}
-  if(document.getElementById('sc-load')&&!CU){show('sc-login');}
+  if(!iniciado)return;
+  if(CU){CU.role==='admin'?[rAT(),rMyTasks()]:rFunc();}
 });
 
 onSnapshot(collection(db,'usuarios'),snap=>{
   usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(CU&&CU.role==='admin'){
-    // atualiza selects de responsável
-    const ff=document.getElementById('ff');
-    const cur=ff?ff.value:'';
-    if(ff){ff.innerHTML='<option value="">Todos os funcionários</option>';usuarios.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;if(u.id===cur)o.selected=true;ff.appendChild(o)});}
-    const rp=document.getElementById('nt-rp');
-    if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
+  if(!iniciado){
+    iniciado=true;
+    show('sc-login');
   }
-  if(!CU){show('sc-login');}
+  if(CU&&CU.role==='admin'){populateRespSelect();}
 });
+
+function populateRespSelect(){
+  const ff=document.getElementById('ff');
+  const cur=ff?ff.value:'';
+  if(ff){ff.innerHTML='<option value="">Todos os funcionários</option>';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;if(u.id===cur)o.selected=true;ff.appendChild(o)});}
+  const rp=document.getElementById('nt-rp');
+  if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
+}
 
 // LOGIN
 window.dL=function(){
@@ -394,34 +478,32 @@ window.dL=function(){
   document.getElementById('le').classList.add('hidden');
   CU=usr;usr.role==='admin'?iA():iF();
 }
-
 window.logout=function(){CU=null;document.getElementById('lu').value='';document.getElementById('lp').value='';show('sc-login')}
 
 // ADMIN INIT
 function iA(){
   document.getElementById('adm-nm').textContent=CU.name;
   document.getElementById('adm-av').textContent=ini(CU.name);
-  populateSelects();
+  document.getElementById('adm-my-mes').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  populateRespSelect();
+  populateMesFiltro();
+  populateMesesCheck();
+  toggleRecFields();
   const pd=new Date(hj);pd.setDate(pd.getDate()+7);
   document.getElementById('nt-pr').value=pd.toISOString().split('T')[0];
-  document.getElementById('nt-mes').value=new Date().toISOString().slice(0,7);
-  rAM();rAT();rAL();show('sc-adm');
-}
-
-function populateSelects(){
-  const ff=document.getElementById('ff');
-  if(ff){ff.innerHTML='<option value="">Todos os funcionários</option>';usuarios.filter(u=>u.role==='func').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;ff.appendChild(o)});}
-  const rp=document.getElementById('nt-rp');
-  if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
+  rAM();rAT();rAL();rMyTasks();
+  resetarMensais();
+  show('sc-adm');
 }
 
 window.aTab=function(t,el){
-  ['t','e','n','d'].forEach(x=>document.getElementById('at-'+x).classList.add('hidden'));
+  ['t','m','e','n','d'].forEach(x=>document.getElementById('at-'+x).classList.add('hidden'));
   document.querySelectorAll('.tab-bar .tab').forEach(x=>x.classList.remove('active'));
   document.getElementById('at-'+t).classList.remove('hidden');
   el.classList.add('active');
   if(t==='e')rEq();
   if(t==='d')rDash();
+  if(t==='m')rMyTasks();
 }
 
 function rAM(){
@@ -440,16 +522,19 @@ function rAL(){
   const vc=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=2);
   const adm=usuarios.filter(u=>u.role==='admin');
   let h='';
-  if(at.length){const lk=at.map(t=>{const u=usuarios.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+(u?u.name:t.resp)+',\n\nA tarefa "'+t.nome+'" está atrasada.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');const em=u?u.email:'';return`<a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u?u.name:t.resp}</a>`;}).join('');h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong> ${at.map(t=>{const u=usuarios.find(x=>x.id===t.resp);return t.nome+' ('+(u?u.name:t.resp)+')'}).join(', ')}<br>${lk}</div>`;}
-  if(vc.length){const lk=vc.map(t=>{const u=usuarios.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+(u?u.name:t.resp)+',\n\nA tarefa "'+t.nome+'" vence em breve.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');const em=u?u.email:'';return`<a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar ${u?u.name:t.resp}</a>`;}).join('');h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em até 2 dias:</strong> ${vc.map(t=>{const u=usuarios.find(x=>x.id===t.resp);return t.nome+' ('+(u?u.name:t.resp)+')'}).join(', ')}<br>${lk}</div>`;}
+  if(at.length){const lk=at.map(t=>{const u=usuarios.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+(u?u.name:t.resp)+',\n\nA tarefa "'+t.nome+'" está atrasada.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');return`<a class="mlink" href="mailto:${u?u.email:''}?cc=${cc}&subject=${s}&body=${b}">✉ ${u?u.name:t.resp}</a>`;}).join('');h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong> ${at.map(t=>{const u=usuarios.find(x=>x.id===t.resp);return t.nome+' ('+(u?u.name:t.resp)+')'}).join(', ')}<br>${lk}</div>`;}
+  if(vc.length){const lk=vc.map(t=>{const u=usuarios.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+(u?u.name:t.resp)+',\n\nA tarefa "'+t.nome+'" vence em breve.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');return`<a class="mlink" href="mailto:${u?u.email:''}?cc=${cc}&subject=${s}&body=${b}">✉ ${u?u.name:t.resp}</a>`;}).join('');h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em até 2 dias</strong><br>${lk}</div>`;}
   document.getElementById('adm-al').innerHTML=h;
 }
 
 window.rAT=function(){
   const fi=document.getElementById('ff')?document.getElementById('ff').value:'';
   const fr=document.getElementById('fr')?document.getElementById('fr').value:'';
-  let ls=fi?tarefas.filter(t=>t.resp===fi):tarefas;
+  const fm=document.getElementById('fmes')?document.getElementById('fmes').value:'';
+  let ls=tarefas;
+  if(fi)ls=ls.filter(t=>t.resp===fi);
   if(fr)ls=ls.filter(t=>t.recorrencia===fr);
+  if(fm)ls=ls.filter(t=>t.mesReferencia===fm);
   const tb=document.getElementById('adm-tb');tb.innerHTML='';
   document.getElementById('adm-em').classList.toggle('hidden',ls.length>0);
   ls.forEach(t=>{
@@ -459,27 +544,62 @@ window.rAT=function(){
     tr.innerHTML=`
       <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
       <td>${u?u.name:t.resp}</td>
-      <td>${fD(t.prazo)}</td>
-      <td style="font-size:12px;color:var(--text2)">${fDias(d,t.status)}</td>
       <td>${rBadge(t.recorrencia||'esporadica')}</td>
+      <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
+      <td>${fD(t.prazo)}</td>
+      <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
       <td>${sBadge(t.status,d)}</td>
-      <td style="font-size:12px;color:var(--text2)">${t.dataConclusao?fD(t.dataConclusao):'—'}</td>
-      <td style="font-size:12px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td>
+      <td style="font-size:11px;color:var(--text2)">${fD(t.dataConclusao)}</td>
+      <td style="font-size:11px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td>
       <td><button class="btn btn-sm btn-d" onclick="rmT('${t.id}')">🗑</button></td>`;
     tb.appendChild(tr);
   });
   rAM();rAL();
 }
 
+// MINHAS TAREFAS ADM
+function rMyTasks(){
+  if(!CU)return;
+  const m=tarefas.filter(t=>t.resp===CU.id);
+  const ok=m.filter(t=>t.status==='concluida').length;
+  const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+  const vc=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=2).length;
+  document.getElementById('adm-my-met').innerHTML=`
+    <div class="metric"><div class="ml">Minhas tarefas</div><div class="mv">${m.length}</div></div>
+    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div></div>
+    <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
+    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
+  const tb=document.getElementById('adm-my-tb');tb.innerHTML='';
+  document.getElementById('adm-my-em').classList.toggle('hidden',m.length>0);
+  m.forEach(t=>{
+    const d=dR(t.prazo);const tr=document.createElement('tr');
+    if(t.status!=='concluida'){if(d<0)tr.className='ra';else if(d<=2)tr.className='rv';}
+    tr.innerHTML=`
+      <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
+      <td>${rBadge(t.recorrencia||'esporadica')}</td>
+      <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
+      <td>${fD(t.prazo)}</td>
+      <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
+      <td><select class="ss" onchange="uSt('${t.id}',this.value)">
+        <option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option>
+        <option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option>
+        <option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option>
+      </select></td>
+      <td style="font-size:11px;color:var(--text2)">${fD(t.dataConclusao)}</td>
+      <td><textarea class="oi" rows="1" placeholder="Observação..." onblur="uOb('${t.id}',this.value)">${t.obs||''}</textarea></td>`;
+    tb.appendChild(tr);
+  });
+}
+
 function rEq(){
   const w=document.getElementById('eq-cards');w.innerHTML='';
-  usuarios.filter(u=>u.role==='func').forEach(u=>{
+  usuarios.forEach(u=>{
     const m=tarefas.filter(t=>t.resp===u.id);
     const ok=m.filter(t=>t.status==='concluida').length;
     const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
     const p=m.length?Math.round(ok/m.length*100):0;
     const d=document.createElement('div');d.className='eq-card';
-    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.email}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${p}% concluído</div><div class="pw"><div class="pb" style="width:${p}%;background:${bC(p)}"></div></div>`;
+    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.email}</div><span class="badge ${u.role==='admin'?'b-adm':'b-pend'}" style="margin-top:2px">${u.role==='admin'?'Admin':'Funcionário'}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${p}% concluído</div><div class="pw"><div class="pb" style="width:${p}%;background:${bC(p)}"></div></div>`;
     w.appendChild(d);
   });
 }
@@ -489,12 +609,20 @@ window.addT=async function(){
   const rp=document.getElementById('nt-rp').value;
   const pr=document.getElementById('nt-pr').value;
   const rec=document.getElementById('nt-rec').value;
-  const mes=document.getElementById('nt-mes').value;
   const st=document.getElementById('nt-st').value;
   if(!nm||!rp||!pr){document.getElementById('nt-er').classList.remove('hidden');return}
   document.getElementById('nt-er').classList.add('hidden');
   try{
-    await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:mes||'',status:st,obs:'',dataConclusao:''});
+    if(rec==='mensal'){
+      const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
+      const meses=checks.length>0?checks:[mesAtual];
+      for(const mes of meses){
+        await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:'mensal',mesReferencia:mes,status:st,obs:'',dataConclusao:''});
+      }
+    }else{
+      const mesRef=document.getElementById('nt-mes-ref').value;
+      await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:mesRef,status:st,obs:'',dataConclusao:''});
+    }
     document.getElementById('nt-nm').value='';
     document.getElementById('nt-ok').classList.remove('hidden');
     setTimeout(()=>document.getElementById('nt-ok').classList.add('hidden'),3000);
@@ -516,17 +644,17 @@ function rDash(){
   document.getElementById('d-mes').textContent='Orthocrin — '+hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
   document.getElementById('d-kpi').innerHTML=`
     <div class="metric"><div class="ml">Total</div><div class="mv">${tot}</div><div class="ms">no mês</div></div>
-    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div><div class="ms">${p}% do total</div></div>
-    <div class="metric"><div class="ml">Em andamento</div><div class="mv i">${an}</div><div class="ms">em execução</div></div>
-    <div class="metric"><div class="ml">Pendentes</div><div class="mv w">${pe}</div><div class="ms">não iniciadas</div></div>
-    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div><div class="ms">prazo vencido</div></div>`;
+    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div><div class="ms">${p}%</div></div>
+    <div class="metric"><div class="ml">Em andamento</div><div class="mv i">${an}</div></div>
+    <div class="metric"><div class="ml">Pendentes</div><div class="mv w">${pe}</div></div>
+    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
   const clr=['#16a34a','#2563eb','#d97706','#dc2626'];
   const lbs=['Concluídas','Em andamento','Pendentes','Atrasadas'];
   const dat=[ok,an,pe,at];
   document.getElementById('d-leg').innerHTML=lbs.map((l,i)=>`<div class="li"><div class="ld" style="background:${clr[i]}"></div>${l}: ${dat[i]}</div>`).join('');
   if(DC)DC.destroy();
   DC=new Chart(document.getElementById('d-chart'),{type:'doughnut',data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed+' ('+Math.round(c.parsed/(tot||1)*100)+'%)'}}}}});
-  const ud=usuarios.filter(u=>u.role==='func').map(u=>{
+  const ud=usuarios.map(u=>{
     const m=tarefas.filter(t=>t.resp===u.id);
     const ok=m.filter(t=>t.status==='concluida').length;
     const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
@@ -534,10 +662,10 @@ function rDash(){
     return{...u,tot:m.length,ok,at,p};
   }).sort((a,b)=>b.p-a.p);
   document.getElementById('d-rank').innerHTML=ud.map((u,i)=>`<div class="rr"><div class="rn">${i+1}</div><div class="av" style="width:28px;height:28px;font-size:11px">${ini(u.name)}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;margin-bottom:3px">${u.name}</div><div class="rbw"><div class="rb" style="width:${u.p}%;background:${bC(u.p)}"></div></div></div><div class="rp">${u.p}%</div></div>`).join('');
-  document.getElementById('d-prod').innerHTML=ud.map(u=>{const bc=bC(u.p);const bclass=u.at>0?'b-atras':u.p>=80?'b-ok':'b-warn';const bt=u.at>0?u.at+' atrasada(s)':u.p>=80?'Em dia':'Atenção';return`<div class="pg-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${bt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.p}% concluído</span><span>${u.ok}/${u.tot}</span></div><div class="pw"><div class="pb" style="width:${u.p}%;background:${bc}"></div></div></div>`;}).join('');
+  document.getElementById('d-prod').innerHTML=ud.map(u=>{const bc=bC(u.p);const bclass=u.at>0?'b-atras':u.p>=80?'b-ok':'b-warn';const bt=u.at>0?u.at+' atrasada(s)':u.p>=80?'Em dia':'Atenção';return`<div class="pg-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${bt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.p}%</span><span>${u.ok}/${u.tot}</span></div><div class="pw"><div class="pb" style="width:${u.p}%;background:${bc}"></div></div></div>`;}).join('');
 }
 
-// FUNC INIT
+// FUNCIONÁRIO
 function iF(){
   document.getElementById('func-nm').textContent=CU.name;
   document.getElementById('func-av').textContent=ini(CU.name);
@@ -556,8 +684,8 @@ function rFunc(){
     <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
     <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
   const adm=usuarios.filter(x=>x.role==='admin');let ah='';
-  if(at){const s=encodeURIComponent('Tarefa atrasada');const b=encodeURIComponent('Olá,\nTenho tarefas atrasadas.\n'+u.name);const cc=adm.map(a=>a.email).join(',');const em=adm[0]?adm[0].email:'';ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.<br><a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div>`;}
-  if(vc){const s=encodeURIComponent('Tarefa vencendo em breve');const b=encodeURIComponent('Olá,\nTenho tarefas próximas do vencimento.\n'+u.name);const cc=adm.map(a=>a.email).join(',');const em=adm[0]?adm[0].email:'';ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em até 2 dias.<br><a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar administrador</a></div>`;}
+  if(at){const s=encodeURIComponent('Tarefa atrasada');const b=encodeURIComponent('Olá,\nTenho tarefas atrasadas.\n'+u.name);const cc=adm.map(a=>a.email).join(',');const em=adm[0]?adm[0].email:'';ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.<br><a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar admin</a></div>`;}
+  if(vc){const s=encodeURIComponent('Tarefa vencendo');const b=encodeURIComponent('Olá,\nTenho tarefas próximas do vencimento.\n'+u.name);const cc=adm.map(a=>a.email).join(',');const em=adm[0]?adm[0].email:'';ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em até 2 dias.<br><a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar admin</a></div>`;}
   document.getElementById('func-al').innerHTML=ah;
   const tb=document.getElementById('func-tb');tb.innerHTML='';
   document.getElementById('func-em').classList.toggle('hidden',m.length>0);
@@ -567,14 +695,15 @@ function rFunc(){
     tr.innerHTML=`
       <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
       <td>${rBadge(t.recorrencia||'esporadica')}</td>
+      <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
       <td>${fD(t.prazo)}</td>
-      <td style="font-size:12px;color:var(--text2)">${fDias(d,t.status)}</td>
+      <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
       <td><select class="ss" onchange="uSt('${t.id}',this.value)">
         <option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option>
         <option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option>
         <option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option>
       </select></td>
-      <td style="font-size:12px;color:var(--text2)">${t.dataConclusao?fD(t.dataConclusao):'—'}</td>
+      <td style="font-size:11px;color:var(--text2)">${fD(t.dataConclusao)}</td>
       <td><textarea class="oi" rows="1" placeholder="Observação..." onblur="uOb('${t.id}',this.value)">${t.obs||''}</textarea></td>`;
     tb.appendChild(tr);
   });
@@ -590,23 +719,19 @@ window.uOb=async function(id,v){
   try{await updateDoc(doc(db,'tarefas',id),{obs:v});}catch(e){alert('Erro: '+e.message);}
 }
 
-// GERENCIAR USUÁRIOS
-window.openUsuarios=function(){
-  renderUsersList();
-  document.getElementById('modal-users').classList.remove('hidden');
-}
+// USUÁRIOS
+window.openUsuarios=function(){renderUsersList();document.getElementById('modal-users').classList.remove('hidden')}
 window.closeUsuarios=function(){document.getElementById('modal-users').classList.add('hidden')}
 
 function renderUsersList(){
-  const el=document.getElementById('users-list');
-  el.innerHTML=usuarios.map(u=>`
+  document.getElementById('users-list').innerHTML=usuarios.map(u=>`
     <div class="user-row">
       <div class="av" style="flex-shrink:0">${ini(u.name)}</div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:500;font-size:14px">${u.name}</div>
         <div style="font-size:12px;color:var(--text2)">${u.email} · ${u.role==='admin'?'Admin':'Funcionário'}</div>
       </div>
-      <button class="btn btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>
+      <button class="btn btn-sm" onclick="openEditUser('${u.id}')">✏️</button>
     </div>`).join('');
 }
 
@@ -619,9 +744,7 @@ window.addUsuario=async function(){
   document.getElementById('nu-er').classList.add('hidden');
   try{
     await addDoc(collection(db,'usuarios'),{name:nm,email:em,role,pass});
-    document.getElementById('nu-nm').value='';
-    document.getElementById('nu-em').value='';
-    document.getElementById('nu-pass').value='123456';
+    document.getElementById('nu-nm').value='';document.getElementById('nu-em').value='';document.getElementById('nu-pass').value='123456';
     document.getElementById('nu-ok').classList.remove('hidden');
     setTimeout(()=>document.getElementById('nu-ok').classList.add('hidden'),3000);
     renderUsersList();
@@ -648,7 +771,6 @@ window.saveEditUser=async function(){
   const role=document.getElementById('eu-role').value;
   const pass=document.getElementById('eu-pass').value.trim();
   if(!nm||!em){document.getElementById('eu-er').classList.remove('hidden');return}
-  document.getElementById('eu-er').classList.add('hidden');
   const data={name:nm,email:em,role};
   if(pass)data.pass=pass;
   try{
@@ -664,9 +786,8 @@ window.deleteUser=async function(){
   try{await deleteDoc(doc(db,'usuarios',id));closeEditUser();renderUsersList();}catch(e){alert('Erro: '+e.message);}
 }
 
-// Inicializa usuários padrão no Firestore se vazio
+// Inicializa usuários padrão
 async function initUsuariosPadrao(){
-  const {getDocs}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
   const snap=await getDocs(collection(db,'usuarios'));
   if(snap.empty){
     const padrao=[
@@ -680,7 +801,6 @@ async function initUsuariosPadrao(){
     for(const u of padrao)await addDoc(collection(db,'usuarios'),u);
   }
 }
-
 initUsuariosPadrao();
 </script>
 </body>
