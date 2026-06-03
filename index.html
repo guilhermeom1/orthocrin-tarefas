@@ -14,7 +14,7 @@
   --text:#1a1917;--text2:#6b6860;--text3:#9c9a94;
   --blue:#2563eb;--blue-bg:#eff6ff;--blue-text:#1d4ed8;
   --green:#16a34a;--green-bg:#f0fdf4;--green-text:#15803d;
-  --amber:#d97706;--amber-bg:#fffbeb;--amber-text:#b45309;
+  --amber:#c2410c;--amber-bg:#fff0e6;--amber-text:#9a3412;
   --red:#dc2626;--red-bg:#fef2f2;--red-text:#b91c1c;
   --gray-bg:#f1f0ec;--radius:10px;--radius-lg:14px;
   --conc-bg:#dcfce7;
@@ -490,6 +490,9 @@ const EJS_TEMPLATE='template_qj1mwhr';
 const EJS_KEY='1MrGSi7Cjrz_48AMO';
 emailjs.init(EJS_KEY);
 
+// Guarda status dos e-mails enviados: {tarefaId: 'enviado'|'erro'}
+const emailStatus={};
+
 async function enviarEmailLembrete(tarefa,usuario,admins){
   const d=dR(tarefa.prazo);
   const diasTxt=d<0?Math.abs(d)+' dia(s) de atraso':d===0?'vence hoje':d+' dia(s) restante(s)';
@@ -505,17 +508,21 @@ async function enviarEmailLembrete(tarefa,usuario,admins){
   };
   try{
     await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,params);
-    // Envia cópia para admins
     for(const adm of admins){
       if(adm.email&&adm.email!==usuario.email){
         await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{...params,destinatario_nome:adm.name,destinatario_email:adm.email});
       }
     }
-  }catch(e){console.warn('EmailJS erro:',e);}
+    emailStatus[tarefa.id]='enviado';
+    return true;
+  }catch(e){
+    console.warn('EmailJS erro:',e);
+    emailStatus[tarefa.id]='erro';
+    return false;
+  }
 }
 
 async function verificarEEnviarEmails(){
-  // Evita enviar mais de uma vez por dia
   const chaveEmail='oc_email_'+new Date().toISOString().split('T')[0];
   if(localStorage.getItem(chaveEmail))return;
   const admins=usuarios.filter(u=>u.role==='admin');
@@ -524,16 +531,18 @@ async function verificarEEnviarEmails(){
     if(t.status==='concluida')continue;
     const d=dR(t.prazo);
     const alerta=parseInt(t.alerta)||2;
-    // Envia se atrasada ou vencendo dentro do alerta
     if(d<0||d<=alerta){
       const u=usuarios.find(x=>x.id===t.resp);
       if(u&&u.email){
-        await enviarEmailLembrete(t,u,admins);
-        enviados++;
+        const ok=await enviarEmailLembrete(t,u,admins);
+        if(ok)enviados++;
       }
     }
   }
   if(enviados>0)localStorage.setItem(chaveEmail,'1');
+  // Atualiza alertas com status
+  if(CU&&CU.role==='admin')rAL();
+  else if(CU)rFunc();
   return enviados;
 }
 
@@ -737,12 +746,37 @@ function rAM(){
     <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
 }
 
+function emailBadge(id){
+  const st=emailStatus[id];
+  if(st==='enviado')return'<span style="font-size:11px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:20px;padding:2px 8px">✉ E-mail enviado</span>';
+  if(st==='erro')return'<span style="font-size:11px;background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5;border-radius:20px;padding:2px 8px">✉ Falha no envio</span>';
+  return'<span style="font-size:11px;background:#f1f0ec;color:#6b6860;border:1px solid #e2e0da;border-radius:20px;padding:2px 8px">✉ Aguardando...</span>';
+}
+
 function rAL(){
   const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0);
   const vc=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=(parseInt(t.alerta)||2));
   const adm=usuarios.filter(u=>u.role==='admin');let h='';
-  if(at.length){const lk=at.map(t=>{const u=usuarios.find(x=>x.id===t.resp);const s=encodeURIComponent('Tarefa atrasada: '+t.nome);const b=encodeURIComponent('Olá '+(u?u.name:'')+',\n\nA tarefa "'+t.nome+'" está atrasada.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');return`<a class="mlink" href="mailto:${u?u.email:''}?cc=${cc}&subject=${s}&body=${b}">✉ ${u?u.name:t.resp}</a>`;}).join('');h+=`<div class="alert ad"><strong>${at.length} atrasada(s):</strong> ${at.map(t=>{const u=usuarios.find(x=>x.id===t.resp);return t.nome+' ('+(u?u.name:t.resp)+')'}).join(', ')}<br>${lk}</div>`;}
-  if(vc.length){const lk=vc.map(t=>{const u=usuarios.find(x=>x.id===t.resp);const s=encodeURIComponent('Lembrete: '+t.nome);const b=encodeURIComponent('Olá '+(u?u.name:'')+',\n\nA tarefa "'+t.nome+'" vence em breve.\n\nOrthocrin');const cc=adm.map(a=>a.email).join(',');return`<a class="mlink" href="mailto:${u?u.email:''}?cc=${cc}&subject=${s}&body=${b}">✉ ${u?u.name:t.resp}</a>`;}).join('');h+=`<div class="alert aw"><strong>${vc.length} vencendo em breve</strong><br>${lk}</div>`;}
+  if(at.length){
+    const rows=at.map(t=>{
+      const u=usuarios.find(x=>x.id===t.resp);
+      const s=encodeURIComponent('Tarefa atrasada: '+t.nome);
+      const b=encodeURIComponent('Olá '+(u?u.name:'')+',\n\nA tarefa "'+t.nome+'" está atrasada.\n\nOrthocrin');
+      const cc=adm.map(a=>a.email).join(',');
+      return`<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px"><span style="font-size:13px;font-weight:500">${t.nome} (${u?u.name:t.resp})</span>${emailBadge(t.id)}<a class="mlink" href="mailto:${u?u.email:''}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar</a></div>`;
+    }).join('');
+    h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong>${rows}</div>`;
+  }
+  if(vc.length){
+    const rows=vc.map(t=>{
+      const u=usuarios.find(x=>x.id===t.resp);
+      const s=encodeURIComponent('Lembrete: '+t.nome);
+      const b=encodeURIComponent('Olá '+(u?u.name:'')+',\n\nA tarefa "'+t.nome+'" vence em breve.\n\nOrthocrin');
+      const cc=adm.map(a=>a.email).join(',');
+      return`<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px"><span style="font-size:13px;font-weight:500">${t.nome} (${u?u.name:t.resp})</span>${emailBadge(t.id)}<a class="mlink" href="mailto:${u?u.email:''}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar</a></div>`;
+    }).join('');
+    h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em breve:</strong>${rows}</div>`;
+  }
   document.getElementById('adm-al').innerHTML=h;
 }
 
