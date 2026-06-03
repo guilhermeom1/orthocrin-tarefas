@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orthocrin — Controle de Tarefas</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -115,6 +116,7 @@ tr.rc{background:var(--conc-bg)}
 .info-box{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--blue-text);margin-bottom:14px}
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:10px 14px;background:var(--gray-bg);border-radius:var(--radius)}
 .filter-bar label{font-size:12px;color:var(--text2);white-space:nowrap}
+.prazo-preview{font-size:12px;color:var(--blue-text);background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--radius);padding:8px 12px;margin-bottom:14px}
 @media(max-width:640px){.m5,.m4{grid-template-columns:1fr 1fr}.f2,.f3,.dr2{grid-template-columns:1fr}}
 @media print{body{background:#fff}.topbar .btn,.tab-bar,.filter-bar{display:none!important}.app{padding:0}}
 </style>
@@ -281,7 +283,30 @@ tr.rc{background:var(--conc-bg)}
             </select>
           </div>
         </div>
-        <div class="f3">
+        <!-- Campo dia útil para mensais -->
+        <div id="fg-du" class="f3" style="display:none">
+          <div class="fg">
+            <label>Nº dia útil do mês seguinte ao de execução</label>
+            <select id="nt-du" class="ss" onchange="atualizarPreviewPrazos()">
+              <option value="1">1º dia útil</option>
+              <option value="2">2º dia útil</option>
+              <option value="3" selected>3º dia útil</option>
+              <option value="4">4º dia útil</option>
+              <option value="5">5º dia útil</option>
+              <option value="6">6º dia útil</option>
+              <option value="7">7º dia útil</option>
+              <option value="8">8º dia útil</option>
+              <option value="9">9º dia útil</option>
+              <option value="10">10º dia útil</option>
+            </select>
+          </div>
+          <div class="fg" id="fg-preview" style="grid-column:span 2">
+            <label>Preview dos prazos calculados</label>
+            <div id="prazo-preview" class="prazo-preview">Selecione os meses para visualizar os prazos.</div>
+          </div>
+        </div>
+        <!-- Campo prazo manual para não-mensais -->
+        <div class="f3" id="fg-prazo-manual">
           <div class="fg"><label>Prazo</label><input type="date" id="nt-pr"></div>
           <div class="fg">
             <label>Notificar quantos dias antes?</label>
@@ -302,7 +327,28 @@ tr.rc{background:var(--conc-bg)}
             </select>
           </div>
         </div>
-        <div id="info-mensal" class="info-box hidden">💡 Esta tarefa será criada para cada mês selecionado e terá o status resetado para <strong>Pendente</strong> automaticamente todo mês.</div>
+        <!-- Alerta e status para mensais -->
+        <div class="f2" id="fg-mensal-extra" style="display:none">
+          <div class="fg">
+            <label>Notificar quantos dias antes?</label>
+            <select id="nt-alerta-m" class="ss">
+              <option value="1">1 dia antes</option>
+              <option value="2" selected>2 dias antes</option>
+              <option value="3">3 dias antes</option>
+              <option value="5">5 dias antes</option>
+              <option value="7">7 dias antes</option>
+              <option value="10">10 dias antes</option>
+              <option value="15">15 dias antes</option>
+            </select>
+          </div>
+          <div class="fg"><label>Status inicial</label>
+            <select id="nt-st-m">
+              <option value="pendente">Pendente</option>
+              <option value="andamento">Em andamento</option>
+            </select>
+          </div>
+        </div>
+        <div id="info-mensal" class="info-box hidden">💡 O prazo será calculado automaticamente como o Nº dia útil do mês seguinte ao de execução, para cada mês selecionado.</div>
         <button class="btn btn-p" onclick="addT()">+ Cadastrar tarefa</button>
         <div class="err hidden" id="nt-er">Preencha todos os campos obrigatórios.</div>
         <div class="suc hidden" id="nt-ok">✓ Tarefa(s) cadastrada(s) com sucesso!</div>
@@ -341,8 +387,6 @@ tr.rc{background:var(--conc-bg)}
       <button class="tab active" onclick="fTab('t',this)">Minhas tarefas</button>
       <button class="tab" onclick="fTab('d',this)">📊 Meu desempenho</button>
     </div>
-
-    <!-- FUNC: TAREFAS -->
     <div id="ft-t">
       <div class="metrics m4" id="func-met"></div>
       <div class="card">
@@ -377,20 +421,15 @@ tr.rc{background:var(--conc-bg)}
         <div id="func-em" class="empty hidden">Nenhuma tarefa encontrada com esses filtros.</div>
       </div>
     </div>
-
-    <!-- FUNC: DASHBOARD PESSOAL -->
     <div id="ft-d" class="hidden">
       <div style="font-size:18px;font-weight:500;margin-bottom:4px" id="fd-titulo"></div>
       <div style="font-size:13px;color:var(--text2);margin-bottom:1.5rem" id="fd-sub"></div>
       <div class="metrics m4" id="fd-kpi"></div>
       <div class="dr2">
         <div class="card"><div class="ct" style="margin-bottom:10px">Meu status atual</div><div class="legend" id="fd-leg"></div><div style="position:relative;width:100%;height:200px"><canvas id="fd-chart"></canvas></div></div>
-        <div class="card">
-          <div class="ct" style="margin-bottom:10px">Minhas tarefas por recorrência</div>
-          <div id="fd-rec"></div>
-        </div>
+        <div class="card"><div class="ct" style="margin-bottom:10px">Por recorrência</div><div id="fd-rec"></div></div>
       </div>
-      <div style="font-size:15px;font-weight:500;margin-bottom:12px">Tarefas próximas do vencimento</div>
+      <div style="font-size:15px;font-weight:500;margin-bottom:12px">Vencendo nos próximos 7 dias</div>
       <div id="fd-venc"></div>
     </div>
   </div>
@@ -445,6 +484,59 @@ tr.rc{background:var(--conc-bg)}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+// EmailJS
+const EJS_SERVICE='service_scwkrr6';
+const EJS_TEMPLATE='template_qj1mwhr';
+const EJS_KEY='1MrGSi7Cjrz_48AMO';
+emailjs.init(EJS_KEY);
+
+async function enviarEmailLembrete(tarefa,usuario,admins){
+  const d=dR(tarefa.prazo);
+  const diasTxt=d<0?Math.abs(d)+' dia(s) de atraso':d===0?'vence hoje':d+' dia(s) restante(s)';
+  const statusTxt=tarefa.status==='pendente'?'Pendente':tarefa.status==='andamento'?'Em andamento':'Concluída';
+  const params={
+    tarefa_nome:tarefa.nome,
+    destinatario_nome:usuario.name,
+    destinatario_email:usuario.email,
+    responsavel:usuario.name,
+    prazo:fD(tarefa.prazo),
+    status:statusTxt,
+    dias_restantes:diasTxt,
+  };
+  try{
+    await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,params);
+    // Envia cópia para admins
+    for(const adm of admins){
+      if(adm.email&&adm.email!==usuario.email){
+        await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{...params,destinatario_nome:adm.name,destinatario_email:adm.email});
+      }
+    }
+  }catch(e){console.warn('EmailJS erro:',e);}
+}
+
+async function verificarEEnviarEmails(){
+  // Evita enviar mais de uma vez por dia
+  const chaveEmail='oc_email_'+new Date().toISOString().split('T')[0];
+  if(localStorage.getItem(chaveEmail))return;
+  const admins=usuarios.filter(u=>u.role==='admin');
+  let enviados=0;
+  for(const t of tarefas){
+    if(t.status==='concluida')continue;
+    const d=dR(t.prazo);
+    const alerta=parseInt(t.alerta)||2;
+    // Envia se atrasada ou vencendo dentro do alerta
+    if(d<0||d<=alerta){
+      const u=usuarios.find(x=>x.id===t.resp);
+      if(u&&u.email){
+        await enviarEmailLembrete(t,u,admins);
+        enviados++;
+      }
+    }
+  }
+  if(enviados>0)localStorage.setItem(chaveEmail,'1');
+  return enviados;
+}
+
 const cfg={apiKey:"AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",authDomain:"orthocrin-3cbae.firebaseapp.com",projectId:"orthocrin-3cbae",storageBucket:"orthocrin-3cbae.firebasestorage.app",messagingSenderId:"592799072147",appId:"1:592799072147:web:27d84faf3116fc7e4c3266"};
 const app=initializeApp(cfg);
 const db=getFirestore(app);
@@ -454,7 +546,11 @@ let tarefas=[],usuarios=[],CU=null,DC=null,FDC=null,iniciado=false;
 const hj=new Date();hj.setHours(0,0,0,0);
 const anoAtual=hj.getFullYear();
 const mesAtual=String(hj.getMonth()+1).padStart(2,'0');
+// Mês anterior
+const mesAnteriorNum=hj.getMonth()===0?12:hj.getMonth();
+const mesAnterior=String(mesAnteriorNum).padStart(2,'0');
 const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const anoFim=`${anoAtual}-12-31`;
 
 const fD=s=>s?new Date(s+'T00:00:00').toLocaleDateString('pt-BR'):'—';
 const dR=s=>Math.round((new Date(s+'T00:00:00')-hj)/86400000);
@@ -462,7 +558,44 @@ const fDias=(d,st)=>st==='concluida'?'—':d<0?Math.abs(d)+' d. atraso':d===0?'h
 const ini=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 const bC=p=>p>=80?'#16a34a':p>=50?'#2563eb':'#d97706';
 const fMes=m=>m?MESES[parseInt(m)-1]||m:'—';
-const anoFim=`${anoAtual}-12-31`;
+
+// Calcula Nº dia útil de um mês/ano (sem feriados nacionais fixos)
+function calcDiaUtil(ano, mes0based, nDiaUtil){
+  // mes0based: 0=Jan ... 11=Dec
+  let count=0;
+  for(let d=1;d<=31;d++){
+    const dt=new Date(ano,mes0based,d);
+    if(dt.getMonth()!==mes0based)break;
+    const dow=dt.getDay();
+    if(dow!==0&&dow!==6){count++;if(count===nDiaUtil)return dt;}
+  }
+  return null;
+}
+
+function toISO(dt){return dt?dt.toISOString().split('T')[0]:''}
+
+// Calcula prazo para tarefa mensal: nDiaUtil do mês seguinte ao mesExecucao
+// mesExecucao: "01".."12"
+function calcPrazoMensal(mesExecucao, nDiaUtil){
+  const m=parseInt(mesExecucao)-1; // 0based do mês de execução
+  const mesSeguinte=(m+1)%12;
+  const anoSeguinte=m===11?anoAtual+1:anoAtual;
+  const dt=calcDiaUtil(anoSeguinte,mesSeguinte,nDiaUtil);
+  return toISO(dt);
+}
+
+// Preview dos prazos
+window.atualizarPreviewPrazos=function(){
+  const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
+  const du=parseInt(document.getElementById('nt-du').value)||3;
+  const prev=document.getElementById('prazo-preview');
+  if(checks.length===0){prev.textContent='Selecione os meses para visualizar os prazos.';return;}
+  const linhas=checks.map(mes=>{
+    const prazo=calcPrazoMensal(mes,du);
+    return`${fMes(mes)} → prazo: ${prazo?fD(prazo):'—'}`;
+  });
+  prev.innerHTML='<strong>Prazos calculados:</strong><br>'+linhas.join('<br>');
+}
 
 function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
 
@@ -482,12 +615,9 @@ function rBadge(rec){
 function trClass(t){
   if(t.status==='concluida')return'rc';
   const d=dR(t.prazo),a=parseInt(t.alerta)||2;
-  if(d<0)return'ra';
-  if(d<=a)return'rv';
-  return'';
+  if(d<0)return'ra';if(d<=a)return'rv';return'';
 }
 
-// Reset mensais
 async function resetarMensais(){
   const chave='reset_'+anoAtual+'_'+mesAtual;
   const resetados=JSON.parse(localStorage.getItem('oc_reset')||'[]');
@@ -502,29 +632,36 @@ async function resetarMensais(){
 }
 
 function populateMesFiltro(){
-  ['fmes'].forEach(id=>{
-    const sel=document.getElementById(id);if(!sel)return;
-    sel.innerHTML='<option value="">Todos</option>';
-    MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;sel.appendChild(o);});
-  });
+  const sel=document.getElementById('fmes');if(!sel)return;
+  sel.innerHTML='<option value="">Todos</option>';
+  MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;sel.appendChild(o);});
 }
 
 function populateMesesCheck(){
   const wrap=document.getElementById('meses-check');if(!wrap)return;
-  wrap.innerHTML=MESES.map((m,i)=>{const v=String(i+1).padStart(2,'0');return`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" value="${v}" style="width:auto;padding:0"> ${m}</label>`;}).join('');
+  wrap.innerHTML=MESES.map((m,i)=>{
+    const v=String(i+1).padStart(2,'0');
+    return`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" value="${v}" onchange="atualizarPreviewPrazos()" style="width:auto;padding:0"> ${m}</label>`;
+  }).join('');
 }
 
 window.toggleRecFields=function(){
   const rec=document.getElementById('nt-rec').value;
-  document.getElementById('fg-meses').style.display=rec==='mensal'?'block':'none';
-  document.getElementById('fg-mes-ref').style.display=rec!=='mensal'?'block':'none';
-  document.getElementById('info-mensal').classList.toggle('hidden',rec!=='mensal');
+  const isMensal=rec==='mensal';
+  document.getElementById('fg-meses').style.display=isMensal?'block':'none';
+  document.getElementById('fg-mes-ref').style.display=isMensal?'none':'block';
+  document.getElementById('fg-du').style.display=isMensal?'grid':'none';
+  document.getElementById('fg-prazo-manual').style.display=isMensal?'none':'grid';
+  document.getElementById('fg-mensal-extra').style.display=isMensal?'grid':'none';
+  document.getElementById('info-mensal').classList.toggle('hidden',!isMensal);
+  if(isMensal)atualizarPreviewPrazos();
 }
 
-// Limpar filtros
 window.limparFiltrosAdm=function(){
-  ['ff','fst','fr','fmes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('fdata').value='';rAT();
+  ['ff','fst','fr'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('fmes').value=mesAnterior;
+  document.getElementById('fdata').value='9999-12-31';
+  rAT();
 }
 window.limparFiltrosMy=function(){
   document.getElementById('my-fst').value='pendente_andamento';
@@ -535,7 +672,6 @@ window.limparFiltrosFunc=function(){
   document.getElementById('func-fdata').value=anoFim;rFunc();
 }
 
-// Listeners
 onSnapshot(collection(db,'tarefas'),snap=>{
   tarefas=snap.docs.map(d=>({id:d.id,...d.data()}));
   if(!iniciado)return;
@@ -554,7 +690,6 @@ function populateRespSelect(){
   if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
 }
 
-// LOGIN
 window.dL=function(){
   const u=document.getElementById('lu').value.trim().toLowerCase();
   const p=document.getElementById('lp').value;
@@ -572,10 +707,16 @@ function iA(){
   populateRespSelect();populateMesFiltro();populateMesesCheck();toggleRecFields();
   const pd=new Date(hj);pd.setDate(pd.getDate()+7);
   document.getElementById('nt-pr').value=pd.toISOString().split('T')[0];
-  // Filtros padrão
+  // Filtros padrão aba equipe
+  document.getElementById('fmes').value=mesAnterior;
+  document.getElementById('fdata').value='9999-12-31';
+  // Filtros padrão aba minhas tarefas
   document.getElementById('my-fst').value='pendente_andamento';
   document.getElementById('my-fdata').value=anoFim;
-  rAM();rAT();rAL();rMyTasks();resetarMensais();show('sc-adm');
+  rAM();rAT();rAL();rMyTasks();resetarMensais();
+  // Verificar e enviar e-mails automáticos
+  setTimeout(()=>verificarEEnviarEmails(),3000);
+  show('sc-adm');
 }
 
 window.aTab=function(t,el){
@@ -678,7 +819,7 @@ function rMyTasks(){
       </select></td>
       <td><input type="date" class="ss" style="font-size:11px;padding:4px 6px" value="${t.dataConclusao||''}" onchange="uDC('${t.id}',this.value)"></td>
       <td><textarea class="oi" rows="1" id="obs-adm-${t.id}" placeholder="Observação...">${t.obs||''}</textarea></td>
-      <td><button class="btn btn-sm" style="font-size:11px" onclick="uOb('${t.id}',document.getElementById('obs-adm-${t.id}').value,'adm')">💾 Salvar</button></td>`;
+      <td><button class="btn btn-sm" style="font-size:11px" onclick="uOb('${t.id}',document.getElementById('obs-adm-${t.id}').value)">💾 Salvar</button></td>`;
     tb.appendChild(tr);
   });
 }
@@ -694,10 +835,7 @@ function rEq(){
     d.innerHTML=`
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
         <div class="av">${ini(u.name)}</div>
-        <div>
-          <div style="font-weight:500">${u.name}</div>
-          <span class="badge ${u.role==='admin'?'b-adm':'b-pend'}">${u.role==='admin'?'Admin':'Funcionário'}</span>
-        </div>
+        <div><div style="font-weight:500">${u.name}</div><span class="badge ${u.role==='admin'?'b-adm':'b-pend'}">${u.role==='admin'?'Admin':'Funcionário'}</span></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px">
         <div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div>
@@ -713,19 +851,28 @@ function rEq(){
 window.addT=async function(){
   const nm=document.getElementById('nt-nm').value.trim();
   const rp=document.getElementById('nt-rp').value;
-  const pr=document.getElementById('nt-pr').value;
   const rec=document.getElementById('nt-rec').value;
-  const st=document.getElementById('nt-st').value;
-  const alerta=parseInt(document.getElementById('nt-alerta').value)||2;
-  if(!nm||!rp||!pr){document.getElementById('nt-er').classList.remove('hidden');return}
+  const isMensal=rec==='mensal';
+  if(!nm||!rp){document.getElementById('nt-er').classList.remove('hidden');return}
   document.getElementById('nt-er').classList.add('hidden');
   try{
-    if(rec==='mensal'){
+    if(isMensal){
       const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
       const meses=checks.length>0?checks:[mesAtual];
-      for(const mes of meses)await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:'mensal',mesReferencia:mes,alerta,status:st,obs:'',dataConclusao:''});
+      const du=parseInt(document.getElementById('nt-du').value)||3;
+      const alerta=parseInt(document.getElementById('nt-alerta-m').value)||2;
+      const st=document.getElementById('nt-st-m').value;
+      for(const mes of meses){
+        const prazo=calcPrazoMensal(mes,du);
+        if(!prazo){alert('Não foi possível calcular o prazo para '+fMes(mes));continue;}
+        await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo,recorrencia:'mensal',mesReferencia:mes,alerta,status:st,obs:'',dataConclusao:'',diaUtil:du});
+      }
     }else{
+      const pr=document.getElementById('nt-pr').value;
+      if(!pr){document.getElementById('nt-er').classList.remove('hidden');return}
       const mesRef=document.getElementById('nt-mes-ref').value;
+      const alerta=parseInt(document.getElementById('nt-alerta').value)||2;
+      const st=document.getElementById('nt-st').value;
       await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:mesRef,alerta,status:st,obs:'',dataConclusao:''});
     }
     document.getElementById('nt-nm').value='';
@@ -769,15 +916,15 @@ function rDash(){
   document.getElementById('d-prod').innerHTML=ud.map(u=>{const bc=bC(u.p);const bclass=u.at>0?'b-atras':u.p>=80?'b-ok':'b-warn';const bt=u.at>0?u.at+' atrasada(s)':u.p>=80?'Em dia':'Atenção';return`<div class="pg-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${bt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.p}%</span><span>${u.ok}/${u.tot}</span></div><div class="pw"><div class="pb" style="width:${u.p}%;background:${bc}"></div></div></div>`;}).join('');
 }
 
-// FUNCIONÁRIO
 function iF(){
   document.getElementById('func-nm').textContent=CU.name;
   document.getElementById('func-av').textContent=ini(CU.name);
   document.getElementById('func-mes').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-  // Filtros padrão
   document.getElementById('func-fst').value='pendente_andamento';
   document.getElementById('func-fdata').value=anoFim;
-  rFunc();show('sc-func');
+  rFunc();
+  setTimeout(()=>verificarEEnviarEmails(),3000);
+  show('sc-func');
 }
 
 window.fTab=function(t,el){
@@ -825,12 +972,11 @@ function rFunc(){
       </select></td>
       <td><input type="date" class="ss" style="font-size:11px;padding:4px 6px" value="${t.dataConclusao||''}" onchange="uDC('${t.id}',this.value)"></td>
       <td><textarea class="oi" rows="1" id="obs-func-${t.id}" placeholder="Observação...">${t.obs||''}</textarea></td>
-      <td><button class="btn btn-sm" style="font-size:11px" onclick="uOb('${t.id}',document.getElementById('obs-func-${t.id}').value,'func')">💾 Salvar</button></td>`;
+      <td><button class="btn btn-sm" style="font-size:11px" onclick="uOb('${t.id}',document.getElementById('obs-func-${t.id}').value)">💾 Salvar</button></td>`;
     tb.appendChild(tr);
   });
 }
 
-// DASHBOARD PESSOAL DO FUNCIONÁRIO
 function rFuncDash(){
   if(!CU)return;
   const m=tarefas.filter(t=>t.resp===CU.id);
@@ -855,9 +1001,9 @@ function rFuncDash(){
   FDC=new Chart(document.getElementById('fd-chart'),{type:'doughnut',data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed}}}}});
   const rec={mensal:m.filter(t=>t.recorrencia==='mensal').length,anual:m.filter(t=>t.recorrencia==='anual').length,eventual:m.filter(t=>!t.recorrencia||t.recorrencia==='eventual').length};
   document.getElementById('fd-rec').innerHTML=`
-    <div class="rr"><div style="flex:1;font-size:13px"><span class="badge b-mensal">Mensal</span></div><div class="rp">${rec.mensal}</div></div>
-    <div class="rr"><div style="flex:1;font-size:13px"><span class="badge b-anual">Anual</span></div><div class="rp">${rec.anual}</div></div>
-    <div class="rr"><div style="flex:1;font-size:13px"><span class="badge b-eventual">Eventual</span></div><div class="rp">${rec.eventual}</div></div>`;
+    <div class="rr"><div style="flex:1"><span class="badge b-mensal">Mensal</span></div><div class="rp">${rec.mensal}</div></div>
+    <div class="rr"><div style="flex:1"><span class="badge b-anual">Anual</span></div><div class="rp">${rec.anual}</div></div>
+    <div class="rr"><div style="flex:1"><span class="badge b-eventual">Eventual</span></div><div class="rp">${rec.eventual}</div></div>`;
   const vencendo=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=7).sort((a,b)=>dR(a.prazo)-dR(b.prazo));
   document.getElementById('fd-venc').innerHTML=vencendo.length?`
     <div class="card" style="padding:0.75rem 1.25rem">${vencendo.map(t=>`
@@ -878,7 +1024,7 @@ window.uSt=async function(id,v){
 window.uDC=async function(id,v){
   try{await updateDoc(doc(db,'tarefas',id),{dataConclusao:v});}catch(e){alert('Erro: '+e.message);}
 }
-window.uOb=async function(id,v,ctx){
+window.uOb=async function(id,v){
   try{
     await updateDoc(doc(db,'tarefas',id),{obs:v});
     const btn=document.querySelector(`button[onclick*="uOb('${id}'"]`);
@@ -886,7 +1032,6 @@ window.uOb=async function(id,v,ctx){
   }catch(e){alert('Erro: '+e.message);}
 }
 
-// USUÁRIOS
 window.openUsuarios=function(){renderUsersList();document.getElementById('modal-users').classList.remove('hidden')}
 window.closeUsuarios=function(){document.getElementById('modal-users').classList.add('hidden')}
 function renderUsersList(){
@@ -913,14 +1058,10 @@ window.addUsuario=async function(){
 }
 window.openEditUser=function(id){
   const u=usuarios.find(x=>x.id===id);if(!u)return;
-  document.getElementById('eu-id').value=id;
-  document.getElementById('eu-nm').value=u.name;
-  document.getElementById('eu-em').value=u.email;
-  document.getElementById('eu-role').value=u.role;
-  document.getElementById('eu-pass').value='';
-  document.getElementById('eu-er').classList.add('hidden');
-  document.getElementById('eu-ok').classList.add('hidden');
-  document.getElementById('modal-edit-user').classList.remove('hidden');
+  document.getElementById('eu-id').value=id;document.getElementById('eu-nm').value=u.name;
+  document.getElementById('eu-em').value=u.email;document.getElementById('eu-role').value=u.role;
+  document.getElementById('eu-pass').value='';document.getElementById('eu-er').classList.add('hidden');
+  document.getElementById('eu-ok').classList.add('hidden');document.getElementById('modal-edit-user').classList.remove('hidden');
 }
 window.closeEditUser=function(){document.getElementById('modal-edit-user').classList.add('hidden')}
 window.saveEditUser=async function(){
