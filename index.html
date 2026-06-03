@@ -230,14 +230,16 @@ tr.rc{background:var(--conc-bg)}
         </div>
         <div class="tw"><table>
           <thead><tr>
-            <th style="width:17%">Tarefa</th>
-            <th style="width:8%">Recorrência</th>
-            <th style="width:7%">Mês ref.</th>
+            <th style="width:15%">Tarefa</th>
+            <th style="width:7%">Recorrência</th>
+            <th style="width:6%">Mês ref.</th>
             <th style="width:8%">Prazo</th>
-            <th style="width:6%">Dias</th>
-            <th style="width:11%">Status</th>
-            <th style="width:11%">Data conclusão</th>
-            <th style="width:18%">Observação</th>
+            <th style="width:5%">Dias</th>
+            <th style="width:10%">Status</th>
+            <th style="width:9%">Conclusão</th>
+            <th style="width:16%">Observação</th>
+            <th style="width:5%" title="Status da notificação">✉</th>
+            <th style="width:5%" title="Renotificar">🔔</th>
             <th style="width:14%"></th>
           </tr></thead>
           <tbody id="adm-my-tb"></tbody>
@@ -406,14 +408,16 @@ tr.rc{background:var(--conc-bg)}
         </div>
         <div class="tw"><table>
           <thead><tr>
-            <th style="width:17%">Tarefa</th>
-            <th style="width:8%">Recorrência</th>
-            <th style="width:7%">Mês ref.</th>
+            <th style="width:15%">Tarefa</th>
+            <th style="width:7%">Recorrência</th>
+            <th style="width:6%">Mês ref.</th>
             <th style="width:8%">Prazo</th>
-            <th style="width:6%">Dias</th>
-            <th style="width:11%">Status</th>
-            <th style="width:11%">Data conclusão</th>
-            <th style="width:18%">Observação</th>
+            <th style="width:5%">Dias</th>
+            <th style="width:10%">Status</th>
+            <th style="width:9%">Conclusão</th>
+            <th style="width:16%">Observação</th>
+            <th style="width:5%" title="Status da notificação">✉</th>
+            <th style="width:5%" title="Renotificar">🔔</th>
             <th style="width:14%"></th>
           </tr></thead>
           <tbody id="func-tb"></tbody>
@@ -816,12 +820,12 @@ window.rAT=function(){
 
 function rMyTasks(){
   if(!CU)return;
-  const fst=document.getElementById('my-fst')?document.getElementById('my-fst').value:'';
+  const fst=document.getElementById('my-fst')?document.getElementById('my-fst').value:'pendente_andamento';
   const fd=document.getElementById('my-fdata')?document.getElementById('my-fdata').value:'';
   let m=tarefas.filter(t=>t.resp===CU.id);
   if(fst==='pendente_andamento')m=m.filter(t=>t.status==='pendente'||t.status==='andamento');
   else if(fst)m=m.filter(t=>t.status===fst);
-  if(fd)m=m.filter(t=>t.prazo&&t.prazo<=fd);
+  if(fd)m=m.filter(t=>!fd||t.prazo<=fd);
   const tot=tarefas.filter(t=>t.resp===CU.id);
   const ok=tot.filter(t=>t.status==='concluida').length;
   const at=tot.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
@@ -840,6 +844,8 @@ function rMyTasks(){
   m.forEach(t=>{
     const d=dR(t.prazo),a=parseInt(t.alerta)||2;
     const tr=document.createElement('tr');tr.className=trClass(t);
+    const est=emailStatus[t.id];
+    const emailIcon=est==='enviado'?'<span title="E-mail enviado" style="color:#16a34a;font-size:16px;cursor:default">✉✔</span>':est==='erro'?'<span title="Falha no envio" style="color:#dc2626;font-size:16px;cursor:default">✉✗</span>':'<span title="Não notificado" style="color:#9c9a94;font-size:16px;cursor:default">✉</span>';
     tr.innerHTML=`
       <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
       <td>${rBadge(t.recorrencia||'eventual')}</td>
@@ -853,6 +859,8 @@ function rMyTasks(){
       </select></td>
       <td><input type="date" class="ss" style="font-size:11px;padding:4px 6px" value="${t.dataConclusao||''}" onchange="uDC('${t.id}',this.value)"></td>
       <td><textarea class="oi" rows="1" id="obs-adm-${t.id}" placeholder="Observação...">${t.obs||''}</textarea></td>
+      <td style="text-align:center">${emailIcon}</td>
+      <td style="text-align:center"><button class="btn btn-sm" title="Renotificar" style="font-size:14px;padding:3px 8px" onclick="renotificar('${t.id}')">🔔</button></td>
       <td><button class="btn btn-sm" style="font-size:11px" onclick="uOb('${t.id}',document.getElementById('obs-adm-${t.id}').value)">💾 Salvar</button></td>`;
     tb.appendChild(tr);
   });
@@ -975,7 +983,7 @@ function rFunc(){
   const u=CU;let m=tarefas.filter(t=>t.resp===u.id);
   if(fst==='pendente_andamento')m=m.filter(t=>t.status==='pendente'||t.status==='andamento');
   else if(fst)m=m.filter(t=>t.status===fst);
-  if(fd)m=m.filter(t=>t.prazo&&t.prazo<=fd);
+  if(fd)m=m.filter(t=>!fd||t.prazo<=fd);
   const tot=tarefas.filter(t=>t.resp===u.id);
   const ok=tot.filter(t=>t.status==='concluida').length;
   const at=tot.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
@@ -993,6 +1001,8 @@ function rFunc(){
   document.getElementById('func-em').classList.toggle('hidden',m.length>0);
   m.forEach(t=>{
     const d=dR(t.prazo),a=parseInt(t.alerta)||2;const tr=document.createElement('tr');tr.className=trClass(t);
+    const est=emailStatus[t.id];
+    const emailIcon=est==='enviado'?'<span title="E-mail enviado" style="color:#16a34a;font-size:16px;cursor:default">✉✔</span>':est==='erro'?'<span title="Falha no envio" style="color:#dc2626;font-size:16px;cursor:default">✉✗</span>':'<span title="Não notificado" style="color:#9c9a94;font-size:16px;cursor:default">✉</span>';
     tr.innerHTML=`
       <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
       <td>${rBadge(t.recorrencia||'eventual')}</td>
@@ -1006,6 +1016,8 @@ function rFunc(){
       </select></td>
       <td><input type="date" class="ss" style="font-size:11px;padding:4px 6px" value="${t.dataConclusao||''}" onchange="uDC('${t.id}',this.value)"></td>
       <td><textarea class="oi" rows="1" id="obs-func-${t.id}" placeholder="Observação...">${t.obs||''}</textarea></td>
+      <td style="text-align:center">${emailIcon}</td>
+      <td style="text-align:center"><button class="btn btn-sm" title="Renotificar" style="font-size:14px;padding:3px 8px" onclick="renotificar('${t.id}')">🔔</button></td>
       <td><button class="btn btn-sm" style="font-size:11px" onclick="uOb('${t.id}',document.getElementById('obs-func-${t.id}').value)">💾 Salvar</button></td>`;
     tb.appendChild(tr);
   });
@@ -1064,6 +1076,20 @@ window.uOb=async function(id,v){
     const btn=document.querySelector(`button[onclick*="uOb('${id}'"]`);
     if(btn){const orig=btn.textContent;btn.textContent='✓ Salvo!';setTimeout(()=>btn.textContent=orig,1500);}
   }catch(e){alert('Erro: '+e.message);}
+}
+
+window.renotificar=async function(id){
+  if(!confirm('Deseja notificar novamente por e-mail?'))return;
+  const t=tarefas.find(x=>x.id===id);
+  const u=usuarios.find(x=>x.id===t?.resp);
+  if(!t||!u){alert('Tarefa ou usuário não encontrado.');return;}
+  const admins=usuarios.filter(x=>x.role==='admin');
+  emailStatus[id]='enviando';
+  if(CU&&CU.role==='admin'){rMyTasks();}else{rFunc();}
+  const ok=await enviarEmailLembrete(t,u,admins);
+  if(ok){alert('✉ E-mail enviado com sucesso!');}
+  else{alert('❌ Falha no envio. Verifique o EmailJS.');}
+  if(CU&&CU.role==='admin'){rMyTasks();}else{rFunc();}
 }
 
 window.openUsuarios=function(){renderUsersList();document.getElementById('modal-users').classList.remove('hidden')}
