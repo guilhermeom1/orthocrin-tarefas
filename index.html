@@ -4,36 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orthocrin — Controle de Tarefas</title>
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Orthocrin%20Tarefas%22%2C%22short_name%22%3A%22Orthocrin%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f5f4f1%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAA1BMVEX%2F%2F%2F%2BnxBvIAAAAI0lEQVR4nO3BMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAeAMBcAABHAABHQAAAABJRU5ErkJggg%3D%3D%22%2C%22sizes%22%3A%22192x192%22%7D%5D%7D">
+<meta name="theme-color" content="#6B1728">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Orthocrin">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f5f4f1;--surface:#fff;--border:#e2e0da;--border2:#d0cec6;
-  --text:#1a1917;--text2:#6b6860;--text3:#9c9a94;
-  --blue:#2563eb;--blue-bg:#eff6ff;--blue-text:#1d4ed8;
-  --green:#16a34a;--green-bg:#f0fdf4;--green-text:#15803d;
-  --amber:#c2410c;--amber-bg:#fff0e6;--amber-text:#9a3412;
+  /* ── Orthocrin Brand ── */
+  --brand:#6B1728;--brand-dk:#4e1020;--brand-lt:#f9f0f2;--brand-mid:#e8c4cc;
+  /* ── Superfícies ── */
+  --bg:#faeef0;--surface:#ffffff;--surface2:#fdf7f8;
+  /* ── Bordas ── */
+  --border:#e8e4de;--border2:#d4cfc8;
+  /* ── Texto ── */
+  --text:#1c1917;--text2:#6b6460;--text3:#a09b96;
+  /* ── Ações (azul neutro — permanece funcional) ── */
+  --blue:#6B1728;--blue-bg:#f9f0f2;--blue-text:#6B1728;
+  /* ── Semânticas ── */
+  --green:#15803d;--green-bg:#f0fdf4;--green-text:#15803d;
+  --amber:#b45309;--amber-bg:#fffbeb;--amber-text:#92400e;
   --red:#dc2626;--red-bg:#fef2f2;--red-text:#b91c1c;
-  --gray-bg:#f1f0ec;--radius:10px;--radius-lg:14px;
-  --conc-bg:#dcfce7;
+  /* ── Misc ── */
+  --gray-bg:#f1eeea;--radius:8px;--radius-lg:12px;--conc-bg:#dcfce7;
+  --shadow-sm:0 1px 3px rgba(107,23,40,.07),0 1px 2px rgba(107,23,40,.05);
+  --shadow:0 4px 12px rgba(107,23,40,.08),0 2px 4px rgba(107,23,40,.05);
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;min-height:100vh}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:15px;min-height:100vh}
 .hidden{display:none!important}
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
-.login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:380px}
-.login-logo{font-size:22px;font-weight:500;margin-bottom:4px}
-.login-sub{font-size:13px;color:var(--text2);margin-bottom:2rem}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:linear-gradient(135deg,var(--brand-dk) 0%,var(--brand) 55%,#9b2438 100%)}
+.login-box{background:var(--surface);border-radius:16px;padding:2.25rem 2rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.login-logo-mark{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.login-logo-mark svg{width:18px;height:18px;fill:#fff}
+.login-logo-text{font-size:20px;font-weight:600;color:var(--brand);letter-spacing:-.3px}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:2rem;margin-top:4px;padding-left:42px}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
-.fg label{font-size:12px;color:var(--text2);font-weight:500}
-input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border .15s}
-input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+.fg label{font-size:12px;color:var(--text2);font-weight:500;letter-spacing:.02em;text-transform:uppercase}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(107,23,40,.1)}
 textarea{resize:vertical;min-height:56px}
-.btn{padding:9px 16px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);font-family:inherit;font-size:14px;color:var(--text);cursor:pointer;transition:background .15s}
-.btn:hover{background:var(--gray-bg)}
-.btn-p{background:var(--text);color:#fff;border-color:var(--text)}
-.btn-p:hover{background:#333}
+.btn{padding:9px 16px;border:1.5px solid var(--border2);border-radius:var(--radius);background:var(--surface);font-family:inherit;font-size:14px;color:var(--text);cursor:pointer;transition:all .15s;font-weight:500}
+.btn:hover{background:var(--gray-bg);border-color:var(--border2)}
+.btn-p{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn-p:hover{background:var(--brand-dk);border-color:var(--brand-dk)}
 .btn-sm{padding:5px 12px;font-size:13px}
 .btn-d{color:var(--red);border-color:#fca5a5}
 .btn-d:hover{background:var(--red-bg)}
@@ -41,14 +58,14 @@ textarea{resize:vertical;min-height:56px}
 .suc{font-size:13px;color:var(--green);margin-top:8px}
 .hint{font-size:12px;color:var(--text3);margin-top:12px}
 .app{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
 .tl{display:flex;align-items:center;gap:12px}
-.av{width:36px;height:36px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
-.un{font-size:15px;font-weight:500}
-.badge{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
-.b-adm{background:var(--blue-bg);color:var(--blue-text)}
+.av{width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;letter-spacing:.02em}
+.un{font-size:15px;font-weight:600;color:var(--text)}
+.badge{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;letter-spacing:.02em}
+.b-adm{background:var(--brand-lt);color:var(--brand)}
 .b-pend{background:var(--gray-bg);color:var(--text2)}
-.b-and{background:var(--blue-bg);color:var(--blue-text)}
+.b-and{background:var(--brand-lt);color:var(--brand)}
 .b-conc{background:var(--green-bg);color:var(--green-text)}
 .b-atras{background:var(--red-bg);color:var(--red-text)}
 .b-venc{background:var(--amber-bg);color:var(--amber-text)}
@@ -60,23 +77,34 @@ textarea{resize:vertical;min-height:56px}
 .metrics{display:grid;gap:10px;margin-bottom:1.5rem}
 .m5{grid-template-columns:repeat(5,1fr)}
 .m4{grid-template-columns:repeat(4,1fr)}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
-.ml{font-size:12px;color:var(--text2);margin-bottom:4px}
-.mv{font-size:24px;font-weight:500}
-.mv.s{color:var(--green)}.mv.w{color:var(--amber)}.mv.d{color:var(--red)}.mv.i{color:var(--blue)}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-sm);transition:box-shadow .15s}
+.metric:hover{box-shadow:var(--shadow)}
+.ml{font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.mv{font-size:24px;font-weight:600;letter-spacing:-.5px}
+.mv.s{color:var(--green)}.mv.w{color:var(--amber)}.mv.d{color:var(--red)}.mv.i{color:var(--brand)}
 .ms{font-size:11px;color:var(--text3);margin-top:3px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow-sm)}
 .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
-.ct{font-size:15px;font-weight:500}
-.tab-bar{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap}
-.tab{padding:7px 16px;border-radius:var(--radius);font-size:13px;cursor:pointer;border:1px solid transparent;color:var(--text2);background:transparent;font-family:inherit}
-.tab:hover{background:var(--surface);border-color:var(--border)}
-.tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500}
+.ct{font-size:15px;font-weight:600;color:var(--text)}
+.tab-bar{display:flex;gap:3px;margin-bottom:1rem;flex-wrap:wrap;background:var(--surface);padding:4px;border-radius:var(--radius);border:1px solid var(--border);width:fit-content;box-shadow:var(--shadow-sm)}
+.tab{padding:6px 16px;border-radius:6px;font-size:13px;cursor:pointer;border:none;color:var(--text2);background:transparent;font-family:inherit;transition:all .15s;font-weight:500}
+.tab:hover{color:var(--text);background:var(--gray-bg)}
+.tab.active{background:var(--brand);color:#fff;font-weight:600;box-shadow:0 1px 4px rgba(107,23,40,.3)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.aba-fade{animation:fadeIn .18s ease}
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
-th{text-align:left;font-size:11px;font-weight:500;color:var(--text2);padding:7px 8px;border-bottom:1px solid var(--border)}
+/* CABEÇALHOS ORDENÁVEIS */
+th{text-align:left;font-size:11px;font-weight:600;color:var(--text2);padding:7px 8px;border-bottom:2px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--brand)}
+th .sort-icon{margin-left:3px;opacity:.4;font-size:10px}
+th.sort-asc .sort-icon::after{content:'▲'}
+th.sort-desc .sort-icon::after{content:'▼'}
+th:not(.sort-asc):not(.sort-desc) .sort-icon::after{content:'⇅'}
 td{padding:8px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
 tr.rv{background:var(--amber-bg)}
 tr.ra{background:var(--red-bg)}
 tr.rc{background:var(--conc-bg)}
@@ -87,41 +115,97 @@ tr.rc{background:var(--conc-bg)}
 .mlink{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-right:6px;font-size:12px;padding:4px 10px;border:1px solid currentColor;border-radius:20px;color:inherit;text-decoration:none;opacity:.8}
 .mlink:hover{opacity:1}
 .eq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.eq-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.eq-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;box-shadow:var(--shadow-sm)}
 .pw{height:5px;background:var(--gray-bg);border-radius:3px;overflow:hidden;margin-top:6px}
 .pb{height:5px;border-radius:3px}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
-.ss{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit}
-.oi{width:100%;font-size:12px;padding:5px 7px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;resize:none}
+.ss{font-size:13px;padding:5px 8px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit}
+.oi{width:100%;font-size:12px;padding:5px 7px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;resize:none;transition:border-color .3s}
+.oi.salvo{border-color:var(--green)}
 .dr2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
 .legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
 .li{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
 .ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 .rr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
 .rr:last-child{border-bottom:none}
-.rn{font-size:13px;font-weight:500;color:var(--text3);width:18px;text-align:center}
+.rn{font-size:13px;font-weight:600;color:var(--text3);width:18px;text-align:center}
 .rbw{flex:1;height:6px;background:var(--gray-bg);border-radius:3px;overflow:hidden}
 .rb{height:6px;border-radius:3px}
-.rp{font-size:13px;font-weight:500;min-width:36px;text-align:right}
+.rp{font-size:13px;font-weight:600;min-width:36px;text-align:right}
 .pg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
-.pg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
-.spin{display:inline-block;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:12px}
+.pg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;box-shadow:var(--shadow-sm)}
+.spin{display:inline-block;width:28px;height:28px;border:3px solid var(--border-mid,#e8c4cc);border-top-color:var(--brand);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:12px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
-.modal{background:var(--surface);border-radius:var(--radius-lg);padding:1.5rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+/* MODAIS */
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(28,25,23,0.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;backdrop-filter:blur(2px)}
+.modal{background:var(--surface);border-radius:var(--radius-lg);padding:1.5rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow)}
+.modal-lg{max-width:680px}
+/* Modal de confirmação */
+.confirm-modal{max-width:380px;text-align:center}
+.confirm-modal .confirm-msg{font-size:15px;margin-bottom:1.5rem;line-height:1.5}
+.confirm-modal .confirm-btns{display:flex;gap:10px;justify-content:center}
 .user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .user-row:last-child{border-bottom:none}
 .divider{height:1px;background:var(--border);margin:1rem 0}
-.info-box{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--blue-text);margin-bottom:14px}
-.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:10px 14px;background:var(--gray-bg);border-radius:var(--radius)}
-.filter-bar label{font-size:12px;color:var(--text2);white-space:nowrap}
-.prazo-preview{font-size:12px;color:var(--blue-text);background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--radius);padding:8px 12px;margin-bottom:14px}
-@media(max-width:640px){.m5,.m4{grid-template-columns:1fr 1fr}.f2,.f3,.dr2{grid-template-columns:1fr}}
-@media print{body{background:#fff}.topbar .btn,.tab-bar,.filter-bar{display:none!important}.app{padding:0}}
+.info-box{background:var(--brand-lt);border:1px solid var(--brand-mid);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--brand);margin-bottom:14px}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius)}
+.filter-bar label{font-size:11px;color:var(--text2);white-space:nowrap;font-weight:500;text-transform:uppercase;letter-spacing:.03em}
+/* Busca por texto */
+.search-wrap{position:relative;display:flex;align-items:center}
+.search-wrap input{padding-left:28px;font-size:13px;padding-top:5px;padding-bottom:5px}
+.search-wrap .search-ico{position:absolute;left:8px;font-size:13px;color:var(--text3);pointer-events:none}
+.prazo-preview{font-size:12px;color:var(--brand);background:var(--brand-lt);border:1px solid var(--brand-mid);border-radius:var(--radius);padding:8px 12px;margin-bottom:14px}
+/* PAGINAÇÃO */
+.pg-bar{display:flex;align-items:center;gap:6px;padding:10px 0;font-size:13px;color:var(--text2);flex-wrap:wrap}
+.pg-bar button{padding:4px 10px;border:1.5px solid var(--border2);border-radius:var(--radius);background:var(--surface);font-size:12px;cursor:pointer;font-weight:500;transition:all .15s}
+.pg-bar button:hover{background:var(--gray-bg)}
+.pg-bar button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.pg-bar button:disabled{opacity:.4;cursor:default}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;font-size:13px;padding:10px 18px;border-radius:var(--radius);z-index:9999;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;max-width:320px;transform:translateY(8px);display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);font-weight:500}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.t-ok{background:#166534;color:#fff}
+.toast.t-err{background:#991b1b;color:#fff}
+.toast.t-warn{background:#92400e;color:#fff}
+.toast.t-info{background:var(--brand-dk);color:#fff}
+/* BANNER LIMITE EMAIL */
+.email-limit-banner{display:none;background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--radius);padding:10px 16px;margin-bottom:1rem;font-size:13px;color:#92400e;align-items:center;gap:10px}
+.email-limit-banner.show{display:flex}
+/* LOG */
+.log-entry{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.log-entry:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+/* PRINT */
+@media print{
+  body{background:#fff;font-size:12px}
+  .topbar,.tab-bar,.filter-bar,.btn,.btn-sm,#adm-al,#func-al,.pg-bar,.d-no-print{display:none!important}
+  .app{padding:0;max-width:100%}
+  [id^="at-"]:not(#at-d),[id^="ft-"]:not(#ft-d){display:none!important}
+  #at-d,#ft-d{display:block!important}
+  .card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}
+  .dr2{grid-template-columns:1fr 1fr}
+  .pg-grid{grid-template-columns:repeat(3,1fr)}
+  canvas{max-height:180px!important}
+  .d-print-header{display:block!important}
+}
+.d-print-header{display:none;font-size:18px;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--brand)}
+@media(max-width:640px){.m5,.m4{grid-template-columns:1fr 1fr}.f2,.f3,.dr2{grid-template-columns:1fr}.tab-bar{width:100%}}
 </style>
 </head>
 <body>
+<div class="toast" id="toast"></div>
+
+<!-- MODAL DE CONFIRMAÇÃO GENÉRICO -->
+<div id="modal-confirm" class="modal-bg hidden">
+  <div class="modal confirm-modal">
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="confirm-btns">
+      <button class="btn btn-d" id="confirm-yes">Confirmar</button>
+      <button class="btn" id="confirm-no">Cancelar</button>
+    </div>
+  </div>
+</div>
 
 <div id="sc-load" class="login-page">
   <div style="text-align:center"><div class="spin"></div><div style="font-size:14px;color:var(--text2)">Conectando...</div></div>
@@ -129,7 +213,12 @@ tr.rc{background:var(--conc-bg)}
 
 <div id="sc-login" class="login-page hidden">
   <div class="login-box">
-    <div class="login-logo">Orthocrin</div>
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      </div>
+      <span class="login-logo-text">Orthocrin</span>
+    </div>
     <div class="login-sub">Controle de tarefas da equipe</div>
     <div class="fg"><label>Usuário</label><input type="text" id="lu" placeholder="seu nome" autocomplete="username"></div>
     <div class="fg"><label>Senha</label><input type="password" id="lp" placeholder="senha" onkeydown="if(event.key==='Enter')dL()"></div>
@@ -153,6 +242,13 @@ tr.rc{background:var(--conc-bg)}
       </div>
     </div>
     <div id="adm-al"></div>
+    <div class="email-limit-banner" id="email-limit-banner">
+      <span style="font-size:18px">⚠️</span>
+      <div>
+        <strong>Limite de e-mails atingido.</strong>
+        <span id="email-limit-msg"> O serviço de notificações está temporariamente indisponível.</span>
+      </div>
+    </div>
     <div class="tab-bar">
       <button class="tab active" onclick="aTab('t',this)">Tarefas da equipe</button>
       <button class="tab" onclick="aTab('m',this)">Minhas tarefas</button>
@@ -165,23 +261,20 @@ tr.rc{background:var(--conc-bg)}
     <div id="at-t">
       <div class="metrics m4" id="adm-met"></div>
       <div class="card">
-        <div class="ch"><span class="ct">Tarefas da equipe</span></div>
+        <div class="ch"><span class="ct">Tarefas da equipe</span><span style="font-size:12px;color:var(--text2)" id="at-count"></span></div>
         <div class="filter-bar">
+          <div class="search-wrap"><span class="search-ico">🔍</span><input type="text" id="fbusca" placeholder="Buscar tarefa..." oninput="debSearch('rAT')" style="width:160px"></div>
           <label>Responsável:</label>
           <select id="ff" onchange="rAT()" class="ss" style="width:auto"><option value="">Todos</option></select>
           <label>Status:</label>
           <select id="fst" onchange="rAT()" class="ss" style="width:auto">
-            <option value="">Todos</option>
-            <option value="pendente">Pendente</option>
-            <option value="andamento">Em andamento</option>
-            <option value="concluida">Concluída</option>
+            <option value="">Todos</option><option value="pendente">Pendente</option>
+            <option value="andamento">Em andamento</option><option value="concluida">Concluída</option>
           </select>
           <label>Recorrência:</label>
           <select id="fr" onchange="rAT()" class="ss" style="width:auto">
-            <option value="">Todas</option>
-            <option value="mensal">Mensal</option>
-            <option value="anual">Anual</option>
-            <option value="eventual">Eventual</option>
+            <option value="">Todas</option><option value="mensal">Mensal</option>
+            <option value="anual">Anual</option><option value="eventual">Eventual</option>
           </select>
           <label>Mês ref.:</label>
           <select id="fmes" onchange="rAT()" class="ss" style="width:auto"><option value="">Todos</option></select>
@@ -189,23 +282,26 @@ tr.rc{background:var(--conc-bg)}
           <input type="date" id="fdata" onchange="rAT()" style="width:140px;padding:5px 8px;font-size:13px">
           <button class="btn btn-sm" onclick="limparFiltrosAdm()">✕ Limpar</button>
         </div>
-        <div class="tw"><table>
+        <div class="tw"><table id="tbl-at">
           <thead><tr>
-            <th style="width:17%">Tarefa</th>
-            <th style="width:9%">Responsável</th>
-            <th style="width:8%">Recorrência</th>
-            <th style="width:7%">Mês ref.</th>
-            <th style="width:8%">Prazo</th>
-            <th style="width:6%">Dias</th>
-            <th style="width:10%">Status</th>
-            <th style="width:8%">Conclusão</th>
-            <th style="width:5%">Alerta</th>
-            <th style="width:14%">Observação</th>
-            <th style="width:8%"></th>
+            <th class="sortable" data-col="nome" style="width:15%">Tarefa <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="resp" style="width:8%">Responsável <span class="sort-icon"></span></th>
+            <th style="width:7%">Recorrência</th>
+            <th class="sortable" data-col="mesReferencia" style="width:6%">Mês ref. <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="prazo" style="width:7%">Prazo <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="dias" style="width:5%">Dias <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="status" style="width:9%">Status <span class="sort-icon"></span></th>
+            <th style="width:7%">Conclusão</th>
+            <th style="width:4%">Alerta</th>
+            <th style="width:10%">Observação</th>
+            <th style="width:4%" title="Status da notificação">✉</th>
+            <th style="width:4%" title="Notificar novamente">🔔</th>
+            <th style="width:9%"></th>
           </tr></thead>
           <tbody id="adm-tb"></tbody>
         </table></div>
-        <div id="adm-em" class="empty hidden">Nenhuma tarefa encontrada.</div>
+        <div id="adm-em" class="empty hidden"></div>
+        <div class="pg-bar" id="at-pg"></div>
       </div>
     </div>
 
@@ -216,13 +312,12 @@ tr.rc{background:var(--conc-bg)}
       <div class="card">
         <div class="ch"><span class="ct">Minhas tarefas</span><span style="font-size:13px;color:var(--text2)" id="adm-my-mes"></span></div>
         <div class="filter-bar">
+          <div class="search-wrap"><span class="search-ico">🔍</span><input type="text" id="my-fbusca" placeholder="Buscar..." oninput="debSearch('rMyTasks')" style="width:140px"></div>
           <label>Status:</label>
           <select id="my-fst" onchange="rMyTasks()" class="ss" style="width:auto">
             <option value="pendente_andamento">Pendentes e Em andamento</option>
-            <option value="">Todos</option>
-            <option value="pendente">Pendente</option>
-            <option value="andamento">Em andamento</option>
-            <option value="concluida">Concluída</option>
+            <option value="">Todos</option><option value="pendente">Pendente</option>
+            <option value="andamento">Em andamento</option><option value="concluida">Concluída</option>
           </select>
           <label>Prazo até:</label>
           <input type="date" id="my-fdata" onchange="rMyTasks()" style="width:140px;padding:5px 8px;font-size:13px">
@@ -230,21 +325,16 @@ tr.rc{background:var(--conc-bg)}
         </div>
         <div class="tw"><table>
           <thead><tr>
-            <th style="width:15%">Tarefa</th>
-            <th style="width:7%">Recorrência</th>
-            <th style="width:6%">Mês ref.</th>
-            <th style="width:8%">Prazo</th>
-            <th style="width:5%">Dias</th>
-            <th style="width:10%">Status</th>
-            <th style="width:9%">Conclusão</th>
-            <th style="width:16%">Observação</th>
-            <th style="width:5%" title="Status da notificação">✉</th>
-            <th style="width:5%" title="Renotificar">🔔</th>
-            <th style="width:14%"></th>
+            <th style="width:17%">Tarefa</th><th style="width:8%">Recorrência</th>
+            <th style="width:7%">Mês ref.</th><th style="width:9%">Prazo</th>
+            <th style="width:6%">Dias</th><th style="width:11%">Status</th>
+            <th style="width:28%">Observação</th>
+            <th style="width:5%" title="Histórico de status">📋</th>
+            <th style="width:5%" title="Excluir tarefa">🗑</th>
           </tr></thead>
           <tbody id="adm-my-tb"></tbody>
         </table></div>
-        <div id="adm-my-em" class="empty hidden">Nenhuma tarefa encontrada.</div>
+        <div id="adm-my-em" class="empty hidden"></div>
       </div>
     </div>
 
@@ -285,21 +375,15 @@ tr.rc{background:var(--conc-bg)}
             </select>
           </div>
         </div>
-        <!-- Campo dia útil para mensais -->
         <div id="fg-du" class="f3" style="display:none">
           <div class="fg">
-            <label>Nº dia útil do mês seguinte ao de execução</label>
+            <label>Nº dia útil do mês seguinte</label>
             <select id="nt-du" class="ss" onchange="atualizarPreviewPrazos()">
-              <option value="1">1º dia útil</option>
-              <option value="2">2º dia útil</option>
-              <option value="3" selected>3º dia útil</option>
-              <option value="4">4º dia útil</option>
-              <option value="5">5º dia útil</option>
-              <option value="6">6º dia útil</option>
-              <option value="7">7º dia útil</option>
-              <option value="8">8º dia útil</option>
-              <option value="9">9º dia útil</option>
-              <option value="10">10º dia útil</option>
+              <option value="1">1º dia útil</option><option value="2">2º dia útil</option>
+              <option value="3" selected>3º dia útil</option><option value="4">4º dia útil</option>
+              <option value="5">5º dia útil</option><option value="6">6º dia útil</option>
+              <option value="7">7º dia útil</option><option value="8">8º dia útil</option>
+              <option value="9">9º dia útil</option><option value="10">10º dia útil</option>
             </select>
           </div>
           <div class="fg" id="fg-preview" style="grid-column:span 2">
@@ -307,50 +391,36 @@ tr.rc{background:var(--conc-bg)}
             <div id="prazo-preview" class="prazo-preview">Selecione os meses para visualizar os prazos.</div>
           </div>
         </div>
-        <!-- Campo prazo manual para não-mensais -->
         <div class="f3" id="fg-prazo-manual">
           <div class="fg"><label>Prazo</label><input type="date" id="nt-pr"></div>
           <div class="fg">
             <label>Notificar quantos dias antes?</label>
             <select id="nt-alerta" class="ss">
-              <option value="1">1 dia antes</option>
-              <option value="2" selected>2 dias antes</option>
-              <option value="3">3 dias antes</option>
-              <option value="5">5 dias antes</option>
-              <option value="7">7 dias antes</option>
-              <option value="10">10 dias antes</option>
+              <option value="1">1 dia antes</option><option value="2" selected>2 dias antes</option>
+              <option value="3">3 dias antes</option><option value="5">5 dias antes</option>
+              <option value="7">7 dias antes</option><option value="10">10 dias antes</option>
               <option value="15">15 dias antes</option>
             </select>
           </div>
           <div class="fg"><label>Status inicial</label>
-            <select id="nt-st">
-              <option value="pendente">Pendente</option>
-              <option value="andamento">Em andamento</option>
-            </select>
+            <select id="nt-st"><option value="pendente">Pendente</option><option value="andamento">Em andamento</option></select>
           </div>
         </div>
-        <!-- Alerta e status para mensais -->
         <div class="f2" id="fg-mensal-extra" style="display:none">
           <div class="fg">
             <label>Notificar quantos dias antes?</label>
             <select id="nt-alerta-m" class="ss">
-              <option value="1">1 dia antes</option>
-              <option value="2" selected>2 dias antes</option>
-              <option value="3">3 dias antes</option>
-              <option value="5">5 dias antes</option>
-              <option value="7">7 dias antes</option>
-              <option value="10">10 dias antes</option>
+              <option value="1">1 dia antes</option><option value="2" selected>2 dias antes</option>
+              <option value="3">3 dias antes</option><option value="5">5 dias antes</option>
+              <option value="7">7 dias antes</option><option value="10">10 dias antes</option>
               <option value="15">15 dias antes</option>
             </select>
           </div>
           <div class="fg"><label>Status inicial</label>
-            <select id="nt-st-m">
-              <option value="pendente">Pendente</option>
-              <option value="andamento">Em andamento</option>
-            </select>
+            <select id="nt-st-m"><option value="pendente">Pendente</option><option value="andamento">Em andamento</option></select>
           </div>
         </div>
-        <div id="info-mensal" class="info-box hidden">💡 O prazo será calculado automaticamente como o Nº dia útil do mês seguinte ao de execução, para cada mês selecionado.</div>
+        <div id="info-mensal" class="info-box hidden">💡 Prazo calculado automaticamente (dia útil do mês seguinte). Feriados nacionais e MG incluídos.</div>
         <button class="btn btn-p" onclick="addT()">+ Cadastrar tarefa</button>
         <div class="err hidden" id="nt-er">Preencha todos os campos obrigatórios.</div>
         <div class="suc hidden" id="nt-ok">✓ Tarefa(s) cadastrada(s) com sucesso!</div>
@@ -359,9 +429,24 @@ tr.rc{background:var(--conc-bg)}
 
     <!-- ABA: DASHBOARD -->
     <div id="at-d" class="hidden">
+      <div class="d-print-header" id="d-print-header">Orthocrin — Dashboard de Produtividade</div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px">
         <div><div style="font-size:18px;font-weight:500">Dashboard de produtividade</div><div style="font-size:13px;color:var(--text2)" id="d-mes"></div></div>
-        <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        <div class="d-no-print" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:12px;color:var(--text2)">Mês:</label>
+          <select id="d-fmes" onchange="rDash()" class="ss" style="width:auto">
+            <option value="">Todos</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <label style="font-size:12px;color:var(--text2)">Ano:</label>
+          <select id="d-fano" onchange="rDash()" class="ss" style="width:auto"></select>
+          <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        </div>
       </div>
       <div class="metrics m5" id="d-kpi"></div>
       <div class="dr2">
@@ -394,13 +479,12 @@ tr.rc{background:var(--conc-bg)}
       <div class="card">
         <div class="ch"><span class="ct">Minhas tarefas</span><span style="font-size:13px;color:var(--text2)" id="func-mes"></span></div>
         <div class="filter-bar">
+          <div class="search-wrap"><span class="search-ico">🔍</span><input type="text" id="func-fbusca" placeholder="Buscar..." oninput="debSearch('rFunc')" style="width:140px"></div>
           <label>Status:</label>
           <select id="func-fst" onchange="rFunc()" class="ss" style="width:auto">
             <option value="pendente_andamento">Pendentes e Em andamento</option>
-            <option value="">Todos</option>
-            <option value="pendente">Pendente</option>
-            <option value="andamento">Em andamento</option>
-            <option value="concluida">Concluída</option>
+            <option value="">Todos</option><option value="pendente">Pendente</option>
+            <option value="andamento">Em andamento</option><option value="concluida">Concluída</option>
           </select>
           <label>Prazo até:</label>
           <input type="date" id="func-fdata" onchange="rFunc()" style="width:140px;padding:5px 8px;font-size:13px">
@@ -408,24 +492,19 @@ tr.rc{background:var(--conc-bg)}
         </div>
         <div class="tw"><table>
           <thead><tr>
-            <th style="width:15%">Tarefa</th>
-            <th style="width:7%">Recorrência</th>
-            <th style="width:6%">Mês ref.</th>
-            <th style="width:8%">Prazo</th>
-            <th style="width:5%">Dias</th>
-            <th style="width:10%">Status</th>
-            <th style="width:9%">Conclusão</th>
-            <th style="width:16%">Observação</th>
-            <th style="width:5%" title="Status da notificação">✉</th>
-            <th style="width:5%" title="Renotificar">🔔</th>
-            <th style="width:14%"></th>
+            <th style="width:18%">Tarefa</th><th style="width:9%">Recorrência</th>
+            <th style="width:7%">Mês ref.</th><th style="width:9%">Prazo</th>
+            <th style="width:6%">Dias</th><th style="width:11%">Status</th>
+            <th style="width:32%">Observação</th>
+            <th style="width:5%" title="Histórico de status">📋</th>
           </tr></thead>
           <tbody id="func-tb"></tbody>
         </table></div>
-        <div id="func-em" class="empty hidden">Nenhuma tarefa encontrada com esses filtros.</div>
+        <div id="func-em" class="empty hidden"></div>
       </div>
     </div>
     <div id="ft-d" class="hidden">
+      <div class="d-print-header" id="fd-print-header"></div>
       <div style="font-size:18px;font-weight:500;margin-bottom:4px" id="fd-titulo"></div>
       <div style="font-size:13px;color:var(--text2);margin-bottom:1.5rem" id="fd-sub"></div>
       <div class="metrics m4" id="fd-kpi"></div>
@@ -484,133 +563,213 @@ tr.rc{background:var(--conc-bg)}
   </div>
 </div>
 
+<!-- MODAL LOG -->
+<div id="modal-log" class="modal-bg hidden">
+  <div class="modal modal-lg">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div>
+        <div style="font-size:16px;font-weight:500">📋 Histórico de status</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-top:2px" id="log-sub"></div>
+      </div>
+      <button class="btn btn-sm" onclick="closeLog()">✕</button>
+    </div>
+    <div id="log-lista"><div class="empty">Carregando...</div></div>
+  </div>
+</div>
+
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getFirestore,collection,doc,addDoc,updateDoc,deleteDoc,onSnapshot,getDocs,query,where,orderBy,limit}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// EmailJS
-const EJS_SERVICE='service_scwkrr6';
-const EJS_TEMPLATE='template_qj1mwhr';
-const EJS_KEY='1MrGSi7Cjrz_48AMO';
+// ── PWA ──────────────────────────────────────────────────────────────────────
+if('serviceWorker'in navigator){
+  const blob=new Blob(['self.addEventListener("fetch",e=>{});'],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+
+// ── EMAIL ────────────────────────────────────────────────────────────────────
+const EJS_SERVICE='service_scwkrr6',EJS_TEMPLATE='template_qj1mwhr',EJS_KEY='1MrGSi7Cjrz_48AMO';
 emailjs.init(EJS_KEY);
-
-// Guarda status dos e-mails enviados: {tarefaId: 'enviado'|'erro'}
 const emailStatus={};
 
-async function enviarEmailLembrete(tarefa,usuario,admins){
-  const d=dR(tarefa.prazo);
-  const diasTxt=d<0?Math.abs(d)+' dia(s) de atraso':d===0?'vence hoje':d+' dia(s) restante(s)';
-  const statusTxt=tarefa.status==='pendente'?'Pendente':tarefa.status==='andamento'?'Em andamento':'Concluída';
-  const params={
-    tarefa_nome:tarefa.nome,
-    destinatario_nome:usuario.name,
-    destinatario_email:usuario.email,
-    responsavel:usuario.name,
-    prazo:fD(tarefa.prazo),
-    status:statusTxt,
-    dias_restantes:diasTxt,
-  };
-  try{
-    await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,params);
-    for(const adm of admins){
-      if(adm.email&&adm.email!==usuario.email){
-        await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{...params,destinatario_nome:adm.name,destinatario_email:adm.email});
-      }
-    }
-    emailStatus[tarefa.id]='enviado';
-    return true;
-  }catch(e){
-    console.warn('EmailJS erro:',e);
-    emailStatus[tarefa.id]='erro';
-    return false;
+// ── LIMPEZA PERIÓDICA DO LOCALSTORAGE ────────────────────────────────────────
+(function limparLocalStorageAntigo(){
+  const hoje=new Date();
+  const limite=60; // dias
+  const keysParaRemover=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k||!k.startsWith('oc_notif_'))continue;
+    // formato: oc_notif_{id}_{YYYY-MM-DD}
+    const partes=k.split('_');
+    const dataStr=partes[partes.length-1];
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(dataStr))continue;
+    const dias=Math.round((hoje-new Date(dataStr))/86400000);
+    if(dias>limite)keysParaRemover.push(k);
   }
+  keysParaRemover.forEach(k=>localStorage.removeItem(k));
+})();
+
+// ── TOAST ────────────────────────────────────────────────────────────────────
+let _toastTimer=null;
+function toast(msg,tipo='info',dur=2500){
+  const el=document.getElementById('toast');
+  el.className='toast'; // reset
+  // detecta tipo pela mensagem se não informado
+  if(tipo==='info'){
+    if(msg.startsWith('✓')||msg.startsWith('✉'))tipo='ok';
+    else if(msg.startsWith('❌')||msg.startsWith('⚠'))tipo='err';
+  }
+  el.classList.add('t-'+tipo);
+  // ícone automático
+  const icones={ok:'✓',err:'✗',warn:'⚠',info:'ℹ'};
+  el.innerHTML=`<span style="font-weight:700;font-size:15px">${icones[tipo]||''}</span><span>${msg.replace(/^[✓✉❌⚠ℹ]\s*/,'')}</span>`;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>{el.classList.remove('show');},dur);
 }
 
-async function verificarEEnviarEmails(){
-  const chaveEmail='oc_email_'+new Date().toISOString().split('T')[0];
-  if(localStorage.getItem(chaveEmail))return;
-  const admins=usuarios.filter(u=>u.role==='admin');
-  let enviados=0;
-  for(const t of tarefas){
-    if(t.status==='concluida')continue;
-    const d=dR(t.prazo);
-    const alerta=parseInt(t.alerta)||2;
-    if(d<0||d<=alerta){
-      const u=usuarios.find(x=>x.id===t.resp);
-      if(u&&u.email){
-        const ok=await enviarEmailLembrete(t,u,admins);
-        if(ok)enviados++;
-      }
-    }
-  }
-  if(enviados>0)localStorage.setItem(chaveEmail,'1');
-  // Atualiza alertas com status
-  if(CU&&CU.role==='admin')rAL();
-  else if(CU)rFunc();
-  return enviados;
+// ── HASH DE SENHA (Web Crypto API nativa) ────────────────────────────────────
+async function hashSenha(senha){
+  const enc=new TextEncoder();
+  const buf=await crypto.subtle.digest('SHA-256',enc.encode(senha));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
+// ── CONFIRMAÇÃO INLINE (substitui confirm() nativo) ──────────────────────────
+function confirmDialog(msg){
+  return new Promise(res=>{
+    document.getElementById('confirm-msg').textContent=msg;
+    document.getElementById('modal-confirm').classList.remove('hidden');
+    const yes=document.getElementById('confirm-yes');
+    const no=document.getElementById('confirm-no');
+    const close=v=>{
+      document.getElementById('modal-confirm').classList.add('hidden');
+      yes.replaceWith(yes.cloneNode(true));no.replaceWith(no.cloneNode(true));
+      res(v);
+    };
+    document.getElementById('confirm-yes').onclick=()=>close(true);
+    document.getElementById('confirm-no').onclick=()=>close(false);
+  });
+}
+
+// ── TECLA ESCAPE FECHA MODAIS ────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  ['modal-users','modal-edit-user','modal-log','modal-confirm'].forEach(id=>{
+    document.getElementById(id).classList.add('hidden');
+  });
+});
+
+// ── FERIADOS NACIONAIS + MG ──────────────────────────────────────────────────
+function getFeriados(ano){
+  const f=new Set();
+  [`${ano}-01-01`,`${ano}-04-21`,`${ano}-05-01`,`${ano}-09-07`,
+   `${ano}-10-12`,`${ano}-11-02`,`${ano}-11-15`,`${ano}-12-25`,
+   `${ano}-12-08`].forEach(d=>f.add(d));
+  const a=ano%19,b=Math.floor(ano/100),c=ano%100;
+  const d2=Math.floor(b/4),e=b%4,g=Math.floor((8*b+13)/25);
+  const h=(19*a+b-d2-g+15)%30,i=Math.floor(c/4),k=c%4;
+  const l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+19*l)/433);
+  const mes=Math.floor((h+l-7*m+90)/25),dia=(h+l-7*m+33*mes+19)%32;
+  const pascoa=new Date(ano,mes-1,dia);
+  const adj=(base,d)=>{const dt=new Date(base);dt.setDate(base.getDate()+d);return toISO(dt);};
+  [adj(pascoa,-48),adj(pascoa,-47),adj(pascoa,-2),toISO(pascoa),adj(pascoa,60)].forEach(d=>f.add(d));
+  return f;
+}
+const _fCache={};
+const getFeriadosCached=ano=>_fCache[ano]||(_fCache[ano]=getFeriados(ano));
+const isDiaUtil=dt=>{const d=dt.getDay();return d!==0&&d!==6&&!getFeriadosCached(dt.getFullYear()).has(toISO(dt));};
+function calcDiaUtil(ano,mes0,n){
+  let c=0;
+  for(let d=1;d<=31;d++){const dt=new Date(ano,mes0,d);if(dt.getMonth()!==mes0)break;if(isDiaUtil(dt)&&++c===n)return dt;}
+  return null;
+}
+const toISO=dt=>dt?dt.toISOString().split('T')[0]:'';
+function calcPrazoMensal(mesExec,nDu,anoBase){
+  const base=anoBase||(typeof anoAtual!=='undefined'?anoAtual:new Date().getFullYear());
+  const m=parseInt(mesExec)-1,ms=(m+1)%12,as=m===11?base+1:base;
+  return toISO(calcDiaUtil(as,ms,nDu));
+}
+window.atualizarPreviewPrazos=function(){
+  const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
+  const du=parseInt(document.getElementById('nt-du').value)||3;
+  const prev=document.getElementById('prazo-preview');
+  if(!checks.length){prev.textContent='Selecione os meses para visualizar os prazos.';return;}
+  prev.innerHTML='<strong>Prazos (feriados nacionais + MG):</strong><br>'+
+    checks.map(mes=>{const p=calcPrazoMensal(mes,du);return`${fMes(mes)} → ${p?fD(p):'—'}`;}).join('<br>');
+};
+
+// ── ANIMAÇÃO DE CONTAGEM ──────────────────────────────────────────────────────
+function animCount(el,target,dur=500){
+  const start=performance.now();
+  const from=parseInt(el.textContent)||0;
+  if(from===target){el.textContent=target;return;}
+  function step(now){
+    const p=Math.min((now-start)/dur,1);
+    const ease=1-Math.pow(1-p,3); // ease-out cubic
+    el.textContent=Math.round(from+(target-from)*ease);
+    if(p<1)requestAnimationFrame(step);
+    else el.textContent=target;
+  }
+  requestAnimationFrame(step);
+}
+function metricHTML(label,value,cls,sub){
+  return`<div class="metric"><div class="ml">${label}</div><div class="mv${cls?' '+cls:''}" data-val="${value}">0</div>${sub?`<div class="ms">${sub}</div>`:''}</div>`;
+}
+function animarMetricas(containerId){
+  document.querySelectorAll('#'+containerId+' .mv[data-val]').forEach(el=>{
+    animCount(el,parseInt(el.dataset.val)||0);
+  });
+}
+
+// ── DEBOUNCE DE BUSCA ─────────────────────────────────────────────────────────
+const _debTimers={};
+window.debSearch=function(fn){
+  clearTimeout(_debTimers[fn]);
+  _debTimers[fn]=setTimeout(()=>window[fn]&&window[fn](),200);
+};
+
+// ── FIREBASE ─────────────────────────────────────────────────────────────────
 const cfg={apiKey:"AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",authDomain:"orthocrin-3cbae.firebaseapp.com",projectId:"orthocrin-3cbae",storageBucket:"orthocrin-3cbae.firebasestorage.app",messagingSenderId:"592799072147",appId:"1:592799072147:web:27d84faf3116fc7e4c3266"};
-const app=initializeApp(cfg);
-const db=getFirestore(app);
+const db=getFirestore(initializeApp(cfg));
 
 let tarefas=[],usuarios=[],CU=null,DC=null,FDC=null,iniciado=false;
+let _unsub1=null,_unsub2=null; // FIX #6: guardar refs dos listeners
+// Paginação e ordenação
+let atPage=1,atList=[];
+const PAGE=15;
+let sortCol='prazo',sortDir='asc';
 
 const hj=new Date();hj.setHours(0,0,0,0);
 const anoAtual=hj.getFullYear();
 const mesAtual=String(hj.getMonth()+1).padStart(2,'0');
-// Mês anterior
 const mesAnteriorNum=hj.getMonth()===0?12:hj.getMonth();
 const mesAnterior=String(mesAnteriorNum).padStart(2,'0');
 const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const anoFim=`${anoAtual}-12-31`;
 
 const fD=s=>s?new Date(s+'T00:00:00').toLocaleDateString('pt-BR'):'—';
-const dR=s=>Math.round((new Date(s+'T00:00:00')-hj)/86400000);
-const fDias=(d,st)=>st==='concluida'?'—':d<0?Math.abs(d)+' d. atraso':d===0?'hoje':d+' dias';
+// FIX #1: dR memoizado — não recria Date a cada chamada dentro de loops
+const _dRCache=new Map();
+function dR(s){
+  if(!s)return 9999;
+  if(_dRCache.has(s))return _dRCache.get(s);
+  const v=Math.round((new Date(s+'T00:00:00')-hj)/86400000);
+  _dRCache.set(s,v);return v;
+}
+const fDias=(d,st)=>{
+  if(st==='concluida')return'—';
+  if(d<0)return`<span style="color:var(--red);font-weight:500">${Math.abs(d)} d. atraso</span>`;
+  if(d===0)return'<span style="color:var(--amber);font-weight:500">hoje</span>';
+  return d+' dias';
+};
 const ini=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 const bC=p=>p>=80?'#16a34a':p>=50?'#2563eb':'#d97706';
 const fMes=m=>m?MESES[parseInt(m)-1]||m:'—';
+const fTS=ts=>{if(!ts)return'—';const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
 
-// Calcula Nº dia útil de um mês/ano (sem feriados nacionais fixos)
-function calcDiaUtil(ano, mes0based, nDiaUtil){
-  // mes0based: 0=Jan ... 11=Dec
-  let count=0;
-  for(let d=1;d<=31;d++){
-    const dt=new Date(ano,mes0based,d);
-    if(dt.getMonth()!==mes0based)break;
-    const dow=dt.getDay();
-    if(dow!==0&&dow!==6){count++;if(count===nDiaUtil)return dt;}
-  }
-  return null;
-}
-
-function toISO(dt){return dt?dt.toISOString().split('T')[0]:''}
-
-// Calcula prazo para tarefa mensal: nDiaUtil do mês seguinte ao mesExecucao
-// mesExecucao: "01".."12"
-function calcPrazoMensal(mesExecucao, nDiaUtil){
-  const m=parseInt(mesExecucao)-1; // 0based do mês de execução
-  const mesSeguinte=(m+1)%12;
-  const anoSeguinte=m===11?anoAtual+1:anoAtual;
-  const dt=calcDiaUtil(anoSeguinte,mesSeguinte,nDiaUtil);
-  return toISO(dt);
-}
-
-// Preview dos prazos
-window.atualizarPreviewPrazos=function(){
-  const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
-  const du=parseInt(document.getElementById('nt-du').value)||3;
-  const prev=document.getElementById('prazo-preview');
-  if(checks.length===0){prev.textContent='Selecione os meses para visualizar os prazos.';return;}
-  const linhas=checks.map(mes=>{
-    const prazo=calcPrazoMensal(mes,du);
-    return`${fMes(mes)} → prazo: ${prazo?fD(prazo):'—'}`;
-  });
-  prev.innerHTML='<strong>Prazos calculados:</strong><br>'+linhas.join('<br>');
-}
-
-function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
 
 function sBadge(st,d,alerta){
   const a=parseInt(alerta)||2;
@@ -620,47 +779,216 @@ function sBadge(st,d,alerta){
   if(st==='andamento')return'<span class="badge b-and">Em andamento</span>';
   return'<span class="badge b-pend">Pendente</span>';
 }
-function rBadge(rec){
-  if(rec==='mensal')return'<span class="badge b-mensal">Mensal</span>';
-  if(rec==='anual')return'<span class="badge b-anual">Anual</span>';
-  return'<span class="badge b-eventual">Eventual</span>';
-}
+const rBadge=rec=>rec==='mensal'?'<span class="badge b-mensal">Mensal</span>':rec==='anual'?'<span class="badge b-anual">Anual</span>':'<span class="badge b-eventual">Eventual</span>';
 function trClass(t){
   if(t.status==='concluida')return'rc';
   const d=dR(t.prazo),a=parseInt(t.alerta)||2;
   if(d<0)return'ra';if(d<=a)return'rv';return'';
 }
 
+// FIX #7: memoizar contadores para evitar múltiplos .filter() no mesmo render
+function calcStats(list){
+  let ok=0,at=0,vc=0;
+  for(const t of list){
+    const d=dR(t.prazo),a=parseInt(t.alerta)||2;
+    if(t.status==='concluida')ok++;
+    else if(d<0)at++;
+    else if(d<=a)vc++;
+  }
+  return{ok,at,vc,tot:list.length};
+}
+
+// FIX #8: Map de usuários por id — O(1) lookup em vez de O(n)
+let userMap=new Map();
+
+// ── LOG ───────────────────────────────────────────────────────────────────────
+async function registrarLog(tarefaId,novoStatus,nomeUsuario){
+  try{await addDoc(collection(db,'tarefas',tarefaId,'logs'),{status:novoStatus,usuario:nomeUsuario,ts:new Date()});}
+  catch(e){console.warn('Log err:',e);}
+}
+const corStatus={pendente:'#9c9a94',andamento:'#2563eb',concluida:'#16a34a'};
+window.openLog=async function(id,nome){
+  document.getElementById('log-sub').textContent=nome;
+  document.getElementById('log-lista').innerHTML='<div class="empty">Carregando...</div>';
+  document.getElementById('modal-log').classList.remove('hidden');
+  try{
+    const snap=await getDocs(query(collection(db,'tarefas',id,'logs'),orderBy('ts','desc'),limit(50)));
+    if(snap.empty){document.getElementById('log-lista').innerHTML='<div class="empty">Nenhuma alteração registrada.</div>';return;}
+    document.getElementById('log-lista').innerHTML=snap.docs.map(d=>{
+      const l=d.data(),cor=corStatus[l.status]||'#9c9a94';
+      const lbl=l.status==='pendente'?'Pendente':l.status==='andamento'?'Em andamento':'Concluída';
+      return`<div class="log-entry"><div class="log-dot" style="background:${cor}"></div><div><div style="font-weight:500">${lbl}</div><div style="color:var(--text2)">${l.usuario||'—'} · ${fTS(l.ts)}</div></div></div>`;
+    }).join('');
+  }catch(e){document.getElementById('log-lista').innerHTML='<div class="empty">Erro ao carregar.</div>';}
+};
+window.closeLog=()=>document.getElementById('modal-log').classList.add('hidden');
+
+// ── RESET MENSAIS ─────────────────────────────────────────────────────────────
 async function resetarMensais(){
   const chave='reset_'+anoAtual+'_'+mesAtual;
   const resetados=JSON.parse(localStorage.getItem('oc_reset')||'[]');
   if(resetados.includes(chave))return;
   for(const t of tarefas){
-    if(t.recorrencia==='mensal'&&t.status==='concluida'){
-      const tMes=t.mesReferencia||'';
-      if(!tMes||tMes===mesAtual)await updateDoc(doc(db,'tarefas',t.id),{status:'pendente',dataConclusao:''});
-    }
+    if(t.recorrencia!=='mensal'||t.status!=='concluida')continue;
+    const tMes=t.mesReferencia||'';
+    if(tMes&&tMes!==mesAnterior)continue;
+    const jaExiste=tarefas.some(x=>x.id!==t.id&&x.recorrencia==='mensal'&&x.nome===t.nome&&x.resp===t.resp&&x.mesReferencia===mesAtual&&x.status!=='concluida');
+    if(jaExiste)continue;
+    const du=parseInt(t.diaUtil)||3;
+    await addDoc(collection(db,'tarefas'),{nome:t.nome,resp:t.resp,prazo:calcPrazoMensal(mesAtual,du)||t.prazo,recorrencia:'mensal',mesReferencia:mesAtual,alerta:t.alerta||2,status:'pendente',obs:'',dataConclusao:'',diaUtil:du});
   }
   resetados.push(chave);localStorage.setItem('oc_reset',JSON.stringify(resetados));
 }
 
+// ── EMAIL ─────────────────────────────────────────────────────────────────────
+async function enviarEmailLembrete(tarefa,usuario,admins){
+  const d=dR(tarefa.prazo);
+  const diasTxt=d<0?Math.abs(d)+' dia(s) de atraso':d===0?'vence hoje':d+' dia(s) restante(s)';
+  const params={tarefa_nome:tarefa.nome,destinatario_nome:usuario.name,destinatario_email:usuario.email,responsavel:usuario.name,prazo:fD(tarefa.prazo),status:tarefa.status==='pendente'?'Pendente':tarefa.status==='andamento'?'Em andamento':'Concluída',dias_restantes:diasTxt};
+  try{
+    await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,params);
+    for(const adm of admins)if(adm.email&&adm.email!==usuario.email)await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{...params,destinatario_nome:adm.name,destinatario_email:adm.email});
+    emailStatus[tarefa.id]='enviado';
+    // Esconde banner se estava visível (limite resolvido)
+    document.getElementById('email-limit-banner')?.classList.remove('show');
+    return true;
+  }catch(e){
+    console.warn('EmailJS:',e);
+    emailStatus[tarefa.id]='erro';
+    // Detecta erro de limite (status 402, 429 ou mensagem "quota")
+    const msg=JSON.stringify(e).toLowerCase();
+    const isLimite=msg.includes('402')||msg.includes('429')||msg.includes('quota')||msg.includes('limit')||msg.includes('exceeded');
+    if(isLimite){
+      const banner=document.getElementById('email-limit-banner');
+      if(banner){
+        // Tenta descobrir data de reset pelo localStorage ou usa mensagem genérica
+        const reset=localStorage.getItem('oc_email_reset');
+        const resetTxt=reset?` Renovação prevista para ${reset}.`:' Verifique o painel do EmailJS para a data de renovação.';
+        document.getElementById('email-limit-msg').textContent=resetTxt;
+        banner.classList.add('show');
+      }
+    }
+    return false;
+  }
+}
+async function verificarEEnviarEmails(){
+  const hoje=new Date().toISOString().split('T')[0];
+  const admins=usuarios.filter(u=>u.role==='admin');
+  tarefas.forEach(t=>{if(!emailStatus[t.id])emailStatus[t.id]='nao_enviado';});
+  // Monta lista de tarefas que precisam de notificação hoje
+  const pendentes=tarefas.filter(t=>{
+    if(t.status==='concluida')return false;
+    const d=dR(t.prazo),alerta=parseInt(t.alerta)||2;
+    if(d>alerta)return false;
+    if(localStorage.getItem('oc_notif_'+t.id+'_'+hoje))return false;
+    return !!userMap.get(t.resp)?.email;
+  });
+  // Envia todos em paralelo (Promise.all) em vez de um por um
+  await Promise.all(pendentes.map(async t=>{
+    const u=userMap.get(t.resp);
+    const ok=await enviarEmailLembrete(t,u,admins);
+    if(ok)localStorage.setItem('oc_notif_'+t.id+'_'+hoje,'1');
+  }));
+  if(CU?.role==='admin'){rAL();rMyTasks();}else if(CU){rFunc();}
+}
+
+// ── LISTENERS FIRESTORE ───────────────────────────────────────────────────────
+const anoInicio=`${anoAtual}-01-01`,anoFimISO=`${anoAtual}-12-31`;
+const qTarefas=query(collection(db,'tarefas'),where('prazo','>=',anoInicio),where('prazo','<=',anoFimISO));
+
+// Anti-piscar
+function capturarFoco(){const el=document.activeElement;if(!el?.id)return null;return{elId:el.id,ss:el.selectionStart,se:el.selectionEnd};}
+function restaurarFoco(f){if(!f)return;const el=document.getElementById(f.elId);if(!el)return;el.focus();try{el.setSelectionRange(f.ss,f.se);}catch(e){}}
+
+function startListeners(){
+  // FIX #6: guardar refs para cancelar no logout
+  _unsub1=onSnapshot(qTarefas,snap=>{
+    _dRCache.clear(); // limpa cache de dias pois "hoje" é o mesmo mas tarefas mudaram
+    tarefas=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!iniciado)return;
+    // FIX #3: só re-renderiza a aba que está visível
+    const foco=capturarFoco();
+    if(CU){
+      if(CU.role==='admin'){
+        const abaAt=document.getElementById('at-t');
+        if(!abaAt.classList.contains('hidden'))rAT();
+        const abaM=document.getElementById('at-m');
+        if(!abaM.classList.contains('hidden'))rMyTasks();
+        rAL(); // alertas sempre atualizados
+      }else rFunc();
+    }
+    restaurarFoco(foco);
+  });
+  _unsub2=onSnapshot(collection(db,'usuarios'),snap=>{
+    usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
+    // FIX #8: recria o Map a cada update
+    userMap=new Map(usuarios.map(u=>[u.id,u]));
+    if(!iniciado){iniciado=true;show('sc-login');}
+    if(CU?.role==='admin')populateRespSelect();
+  });
+}
+startListeners();
+
+// ── PAGINAÇÃO ─────────────────────────────────────────────────────────────────
+function renderPagBar(containerId,page,total,onPage){
+  const pages=Math.ceil(total/PAGE)||1;
+  const el=document.getElementById(containerId);
+  if(pages<=1){el.innerHTML=`<span>${total} resultado(s)</span>`;return;}
+  let html=`<button ${page===1?'disabled':''} onclick="${onPage}(${page-1})">‹</button>`;
+  for(let p=1;p<=pages;p++){
+    if(pages>7&&Math.abs(p-page)>2&&p!==1&&p!==pages){if(p===page-3||p===page+3)html+='<span style="padding:0 4px">…</span>';continue;}
+    html+=`<button class="${p===page?'active':''}" onclick="${onPage}(${p})">${p}</button>`;
+  }
+  html+=`<button ${page===pages?'disabled':''} onclick="${onPage}(${page+1})">›</button><span style="margin-left:4px">${total} resultado(s)</span>`;
+  el.innerHTML=html;
+}
+
+// ── ORDENAÇÃO ─────────────────────────────────────────────────────────────────
+function initSortHeaders(){
+  document.querySelectorAll('#tbl-at th.sortable').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const col=th.dataset.col;
+      if(sortCol===col)sortDir=sortDir==='asc'?'desc':'asc';
+      else{sortCol=col;sortDir='asc';}
+      document.querySelectorAll('#tbl-at th.sortable').forEach(h=>{h.classList.remove('sort-asc','sort-desc');});
+      th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');
+      atPage=1;rAT();
+    });
+  });
+}
+function sortList(list){
+  return [...list].sort((a,b)=>{
+    let va,vb;
+    if(sortCol==='dias'){va=dR(a.prazo);vb=dR(b.prazo);}
+    else if(sortCol==='resp'){va=(userMap.get(a.resp)?.name||'').toLowerCase();vb=(userMap.get(b.resp)?.name||'').toLowerCase();}
+    else{va=(a[sortCol]||'').toLowerCase?.()??a[sortCol]??'';vb=(b[sortCol]||'').toLowerCase?.()??b[sortCol]??'';}
+    if(va<vb)return sortDir==='asc'?-1:1;
+    if(va>vb)return sortDir==='asc'?1:-1;
+    return 0;
+  });
+}
+
+// ── SELECTS ───────────────────────────────────────────────────────────────────
+function populateRespSelect(){
+  const ff=document.getElementById('ff'),cur=ff?.value||'';
+  if(ff){ff.innerHTML='<option value="">Todos</option>';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;if(u.id===cur)o.selected=true;ff.appendChild(o)});}
+  const rp=document.getElementById('nt-rp');
+  if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
+}
 function populateMesFiltro(){
   const sel=document.getElementById('fmes');if(!sel)return;
   sel.innerHTML='<option value="">Todos</option>';
   MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;sel.appendChild(o);});
 }
-
 function populateMesesCheck(){
-  const wrap=document.getElementById('meses-check');if(!wrap)return;
-  wrap.innerHTML=MESES.map((m,i)=>{
+  document.getElementById('meses-check').innerHTML=MESES.map((m,i)=>{
     const v=String(i+1).padStart(2,'0');
     return`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" value="${v}" onchange="atualizarPreviewPrazos()" style="width:auto;padding:0"> ${m}</label>`;
   }).join('');
 }
 
 window.toggleRecFields=function(){
-  const rec=document.getElementById('nt-rec').value;
-  const isMensal=rec==='mensal';
+  const rec=document.getElementById('nt-rec').value,isMensal=rec==='mensal';
   document.getElementById('fg-meses').style.display=isMensal?'block':'none';
   document.getElementById('fg-mes-ref').style.display=isMensal?'none':'block';
   document.getElementById('fg-du').style.display=isMensal?'grid':'none';
@@ -668,51 +996,53 @@ window.toggleRecFields=function(){
   document.getElementById('fg-mensal-extra').style.display=isMensal?'grid':'none';
   document.getElementById('info-mensal').classList.toggle('hidden',!isMensal);
   if(isMensal)atualizarPreviewPrazos();
-}
-
+};
 window.limparFiltrosAdm=function(){
   ['ff','fst','fr'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('fmes').value=mesAnterior;
+  document.getElementById('fmes').value=mesAtual;
   document.getElementById('fdata').value='9999-12-31';
-  rAT();
-}
+  document.getElementById('fbusca').value='';
+  atPage=1;rAT();
+};
 window.limparFiltrosMy=function(){
   document.getElementById('my-fst').value='pendente_andamento';
-  document.getElementById('my-fdata').value=anoFim;rMyTasks();
-}
+  document.getElementById('my-fdata').value=anoFim;
+  document.getElementById('my-fbusca').value='';
+  rMyTasks();
+};
 window.limparFiltrosFunc=function(){
   document.getElementById('func-fst').value='pendente_andamento';
-  document.getElementById('func-fdata').value=anoFim;rFunc();
-}
+  document.getElementById('func-fdata').value=anoFim;
+  document.getElementById('func-fbusca').value='';
+  rFunc();
+};
 
-onSnapshot(collection(db,'tarefas'),snap=>{
-  tarefas=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(!iniciado)return;
-  if(CU){CU.role==='admin'?[rAT(),rMyTasks()]:rFunc();}
-});
-onSnapshot(collection(db,'usuarios'),snap=>{
-  usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(!iniciado){iniciado=true;show('sc-login');}
-  if(CU&&CU.role==='admin')populateRespSelect();
-});
-
-function populateRespSelect(){
-  const ff=document.getElementById('ff');const cur=ff?ff.value:'';
-  if(ff){ff.innerHTML='<option value="">Todos</option>';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;if(u.id===cur)o.selected=true;ff.appendChild(o)});}
-  const rp=document.getElementById('nt-rp');
-  if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
-}
-
-window.dL=function(){
+// ── LOGIN / LOGOUT ────────────────────────────────────────────────────────────
+window.dL=async function(){
   const u=document.getElementById('lu').value.trim().toLowerCase();
   const p=document.getElementById('lp').value;
   const usr=usuarios.find(x=>x.id===u||x.name.toLowerCase()===u||x.name.toLowerCase().split(' ')[0]===u);
-  if(!usr||usr.pass!==p){document.getElementById('le').classList.remove('hidden');return}
+  if(!usr){document.getElementById('le').classList.remove('hidden');return;}
+  // Suporta senhas em texto puro (legado) e em hash (novo)
+  const hashed=await hashSenha(p);
+  const senhaOk=(usr.pass===p||usr.pass===hashed);
+  if(!senhaOk){document.getElementById('le').classList.remove('hidden');return;}
   document.getElementById('le').classList.add('hidden');
   CU=usr;usr.role==='admin'?iA():iF();
-}
-window.logout=function(){CU=null;document.getElementById('lu').value='';document.getElementById('lp').value='';show('sc-login')}
+};
+window.logout=function(){
+  // FIX #6: cancela listeners ao sair
+  if(_unsub1){_unsub1();_unsub1=null;}
+  if(_unsub2){_unsub2();_unsub2=null;}
+  CU=null;DC=null;FDC=null;
+  document.getElementById('lu').value='';document.getElementById('lp').value='';
+  tarefas=[];usuarios=[];userMap.clear();iniciado=false;
+  show('sc-login');
+  // Reinicia listeners para próximo login
+  setTimeout(startListeners,300);
+};
 
+// ── ADMIN INIT ────────────────────────────────────────────────────────────────
 function iA(){
   document.getElementById('adm-nm').textContent=CU.name;
   document.getElementById('adm-av').textContent=ini(CU.name);
@@ -720,91 +1050,93 @@ function iA(){
   populateRespSelect();populateMesFiltro();populateMesesCheck();toggleRecFields();
   const pd=new Date(hj);pd.setDate(pd.getDate()+7);
   document.getElementById('nt-pr').value=pd.toISOString().split('T')[0];
-  // Filtros padrão aba equipe
-  document.getElementById('fmes').value=mesAnterior;
+  document.getElementById('fmes').value=mesAtual;
   document.getElementById('fdata').value='9999-12-31';
-  // Filtros padrão aba minhas tarefas
   document.getElementById('my-fst').value='pendente_andamento';
   document.getElementById('my-fdata').value=anoFim;
+  const dFano=document.getElementById('d-fano');
+  if(dFano){dFano.innerHTML='';for(let y=anoAtual;y>=anoAtual-2;y--){const o=document.createElement('option');o.value=y;o.textContent=y;dFano.appendChild(o);}}
+  document.getElementById('d-fmes').value=mesAtual;
+  initSortHeaders();
   rAM();rAT();rAL();rMyTasks();resetarMensais();
-  // Verificar e enviar e-mails automáticos
   setTimeout(()=>verificarEEnviarEmails(),3000);
   show('sc-adm');
 }
-
 window.aTab=function(t,el){
-  ['t','m','e','n','d'].forEach(x=>document.getElementById('at-'+x).classList.add('hidden'));
+  ['t','m','e','n','d','h'].forEach(x=>{const el=document.getElementById('at-'+x);if(el)el.classList.add('hidden');});
   document.querySelectorAll('#sc-adm .tab-bar .tab').forEach(x=>x.classList.remove('active'));
-  document.getElementById('at-'+t).classList.remove('hidden');el.classList.add('active');
+  const abaEl=document.getElementById('at-'+t);
+  abaEl.classList.remove('hidden');abaEl.classList.add('aba-fade');
+  el.classList.add('active');
   if(t==='e')rEq();if(t==='d')rDash();if(t==='m')rMyTasks();
-}
+};
 
+// ── MÉTRICAS ──────────────────────────────────────────────────────────────────
 function rAM(){
-  const tot=tarefas.length,ok=tarefas.filter(t=>t.status==='concluida').length;
-  const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
-  const vc=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=(parseInt(t.alerta)||2)).length;
-  document.getElementById('adm-met').innerHTML=`
-    <div class="metric"><div class="ml">Total</div><div class="mv">${tot}</div></div>
-    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div></div>
-    <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
-    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
+  const{ok,at,vc,tot}=calcStats(tarefas);
+  document.getElementById('adm-met').innerHTML=
+    metricHTML('Total',tot)+metricHTML('Concluídas',ok,'s')+
+    metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('adm-met');
 }
 
-function emailBadge(id){
-  const st=emailStatus[id];
-  if(st==='enviado')return'<span style="font-size:11px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:20px;padding:2px 8px">✉ E-mail enviado</span>';
-  if(st==='erro')return'<span style="font-size:11px;background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5;border-radius:20px;padding:2px 8px">✉ Falha no envio</span>';
-  return'<span style="font-size:11px;background:#f1f0ec;color:#6b6860;border:1px solid #e2e0da;border-radius:20px;padding:2px 8px">✉ Aguardando...</span>';
-}
+const emailIconHtml=(id,tarefa)=>{
+  const st=emailStatus[id]||'nao_enviado';
+  if(st==='enviado')
+    return'<span title="Notificação enviada" style="color:#16a34a;font-size:15px;font-weight:700">✔</span>';
+  if(st==='erro')
+    return'<span title="Falha no envio" style="color:#dc2626;font-size:15px;font-weight:700">✗</span>';
+  // Concluída sem ter sido notificada → mostra "—"
+  if(tarefa?.status==='concluida')
+    return'<span title="Concluída sem necessidade de notificação" style="color:#9c9a94;font-size:15px;font-weight:500">—</span>';
+  // Pendente/andamento ainda fora do período de alerta → traço cinza claro
+  return'<span title="Fora do período de alerta" style="color:#d0cec6;font-size:15px">—</span>';
+};
+// emailBadge removida (não utilizada)
 
 function rAL(){
   const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0);
   const vc=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=(parseInt(t.alerta)||2));
   const adm=usuarios.filter(u=>u.role==='admin');let h='';
-  if(at.length){
-    const rows=at.map(t=>{
-      const u=usuarios.find(x=>x.id===t.resp);
-      const s=encodeURIComponent('Tarefa atrasada: '+t.nome);
-      const b=encodeURIComponent('Olá '+(u?u.name:'')+',\n\nA tarefa "'+t.nome+'" está atrasada.\n\nOrthocrin');
-      const cc=adm.map(a=>a.email).join(',');
-      return`<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px"><span style="font-size:13px;font-weight:500">${t.nome} (${u?u.name:t.resp})</span>${emailBadge(t.id)}<a class="mlink" href="mailto:${u?u.email:''}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar</a></div>`;
-    }).join('');
-    h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong>${rows}</div>`;
-  }
-  if(vc.length){
-    const rows=vc.map(t=>{
-      const u=usuarios.find(x=>x.id===t.resp);
-      const s=encodeURIComponent('Lembrete: '+t.nome);
-      const b=encodeURIComponent('Olá '+(u?u.name:'')+',\n\nA tarefa "'+t.nome+'" vence em breve.\n\nOrthocrin');
-      const cc=adm.map(a=>a.email).join(',');
-      return`<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px"><span style="font-size:13px;font-weight:500">${t.nome} (${u?u.name:t.resp})</span>${emailBadge(t.id)}<a class="mlink" href="mailto:${u?u.email:''}?cc=${cc}&subject=${s}&body=${b}">✉ Notificar</a></div>`;
-    }).join('');
-    h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em breve:</strong>${rows}</div>`;
-  }
+  const makeRow=t=>{const u=userMap.get(t.resp);const d=dR(t.prazo);const diasTxt=d<0?Math.abs(d)+' dia(s) de atraso':d===0?'vence hoje':d+' dia(s)';const mesComp=t.mesReferencia?`<span style="font-size:11px;background:var(--gray-bg);color:var(--text2);padding:1px 6px;border-radius:10px;border:1px solid var(--border)">${fMes(t.mesReferencia)}</span>`:'';return`<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px"><span style="font-size:13px;font-weight:500">${t.nome} (${u?.name||t.resp})</span>${mesComp}<span style="font-size:11px;color:var(--text2)">${diasTxt}</span></div>`;};
+  if(at.length)h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong>${at.map(makeRow).join('')}</div>`;
+  if(vc.length)h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em breve:</strong>${vc.map(makeRow).join('')}</div>`;
   document.getElementById('adm-al').innerHTML=h;
 }
 
-window.rAT=function(){
-  const fi=document.getElementById('ff')?document.getElementById('ff').value:'';
-  const fst=document.getElementById('fst')?document.getElementById('fst').value:'';
-  const fr=document.getElementById('fr')?document.getElementById('fr').value:'';
-  const fm=document.getElementById('fmes')?document.getElementById('fmes').value:'';
-  const fd=document.getElementById('fdata')?document.getElementById('fdata').value:'';
-  let ls=tarefas;
-  if(fi)ls=ls.filter(t=>t.resp===fi);
-  if(fst)ls=ls.filter(t=>t.status===fst);
-  if(fr)ls=ls.filter(t=>t.recorrencia===fr);
-  if(fm)ls=ls.filter(t=>t.mesReferencia===fm);
-  if(fd)ls=ls.filter(t=>t.prazo&&t.prazo<=fd);
-  const tb=document.getElementById('adm-tb');tb.innerHTML='';
-  document.getElementById('adm-em').classList.toggle('hidden',ls.length>0);
-  ls.forEach(t=>{
-    const d=dR(t.prazo),u=usuarios.find(x=>x.id===t.resp),a=parseInt(t.alerta)||2;
+// ── TAREFAS DA EQUIPE (com busca + ordenação + paginação + DocumentFragment) ──
+window.rAT=function(pg){
+  if(typeof pg==='number')atPage=pg;
+  const fi=document.getElementById('ff')?.value||'';
+  const fst=document.getElementById('fst')?.value||'';
+  const fr=document.getElementById('fr')?.value||'';
+  const fm=document.getElementById('fmes')?.value||'';
+  const fd=document.getElementById('fdata')?.value||'';
+  const fb=(document.getElementById('fbusca')?.value||'').toLowerCase().trim(); // FIX #11: busca por texto
+  atList=tarefas;
+  if(fi)atList=atList.filter(t=>t.resp===fi);
+  if(fst)atList=atList.filter(t=>t.status===fst);
+  if(fr)atList=atList.filter(t=>t.recorrencia===fr);
+  if(fm)atList=atList.filter(t=>t.mesReferencia===fm);
+  if(fd)atList=atList.filter(t=>t.prazo&&t.prazo<=fd);
+  if(fb)atList=atList.filter(t=>t.nome.toLowerCase().includes(fb)||(userMap.get(t.resp)?.name||'').toLowerCase().includes(fb));
+  atList=sortList(atList); // FIX #10: ordenação
+  document.getElementById('at-count').textContent=atList.length+' tarefa(s)';
+  const tb=document.getElementById('adm-tb');
+  const frag=document.createDocumentFragment();
+  const emAdm=document.getElementById('adm-em');
+  const temFiltro=fi||fst||fr||fm||fd||fb;
+  emAdm.innerHTML=atList.length===0?(temFiltro?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosAdm();return false;" style="color:var(--blue)">Limpar filtros</a>':'📋 Nenhuma tarefa cadastrada ainda.'):'';
+  emAdm.classList.toggle('hidden',atList.length>0);
+  const slice=atList.slice((atPage-1)*PAGE,atPage*PAGE);
+  slice.forEach(t=>{
+    const d=dR(t.prazo); // FIX #1: calculado 1x por linha
+    const u=userMap.get(t.resp); // FIX #8: O(1)
+    const a=parseInt(t.alerta)||2;
     const tr=document.createElement('tr');tr.className=trClass(t);
     tr.innerHTML=`
       <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
-      <td>${u?u.name:t.resp}</td>
-      <td>${rBadge(t.recorrencia||'eventual')}</td>
+      <td>${u?.name||t.resp}</td><td>${rBadge(t.recorrencia||'eventual')}</td>
       <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
       <td>${fD(t.prazo)}</td>
       <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
@@ -812,40 +1144,72 @@ window.rAT=function(){
       <td style="font-size:11px;color:var(--text2)">${fD(t.dataConclusao)}</td>
       <td style="font-size:11px;color:var(--text2);text-align:center">${a}d</td>
       <td style="font-size:11px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td>
-      <td><button class="btn btn-sm btn-d" onclick="rmT('${t.id}')">🗑</button></td>`;
-    tb.appendChild(tr);
+      <td style="text-align:center">${emailIconHtml(t.id,t)}</td>
+      <td style="text-align:center">${(t.status==='pendente'||t.status==='andamento')&&(d<0||d<=a)
+        ?`<button class="btn btn-sm" title="Notificar novamente" style="font-size:14px;padding:3px 7px" onclick="renotificar('${t.id}')">🔔</button>`
+        :'<span title="Notificação não disponível neste momento" style="font-size:14px;opacity:0.25;filter:grayscale(1);cursor:not-allowed;display:inline-block">🔔</span>'
+      }</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm" title="Histórico" style="font-size:12px;padding:3px 7px;margin-right:3px" onclick="openLog('${t.id}','${t.nome.replace(/'/g,"\\'")}')">📋</button>
+        <button class="btn btn-sm btn-d" onclick="rmT('${t.id}','${t.nome.replace(/'/g,"\\'")}')">🗑</button>
+      </td>`;
+    frag.appendChild(tr);
   });
+  tb.innerHTML=''; // limpa só depois de montar o fragment
+  tb.appendChild(frag);
+  renderPagBar('at-pg',atPage,atList.length,'rAT');
   rAM();rAL();
+};
+
+// ── AUTOSAVE OBS COM DEBOUNCE ─────────────────────────────────────────────────
+const obsTimers={};
+function makeObsTd(id,prefixo,valorAtual){
+  const td=document.createElement('td');td.style.overflow='visible';
+  const ta=document.createElement('textarea');
+  ta.className='oi';ta.rows=1;ta.id=`obs-${prefixo}-${id}`;ta.placeholder='Observação...';ta.textContent=valorAtual||'';
+  ta.addEventListener('input',function(){
+    const val=this.value; // FIX #2: captura valor antes do setTimeout
+    clearTimeout(obsTimers[id]);
+    obsTimers[id]=setTimeout(async()=>{
+      try{await updateDoc(doc(db,'tarefas',id),{obs:val});ta.classList.add('salvo');toast('✓ Observação salva');setTimeout(()=>ta.classList.remove('salvo'),1500);}
+      catch(e){console.warn('Obs err:',e);}
+    },800);
+  });
+  ta.addEventListener('blur',function(){clearTimeout(obsTimers[id]);updateDoc(doc(db,'tarefas',id),{obs:this.value}).catch(()=>{});});
+  td.appendChild(ta);return td;
 }
 
-function rMyTasks(){
+// ── MINHAS TAREFAS ADM ────────────────────────────────────────────────────────
+window.rMyTasks=function(){
   if(!CU)return;
-  const fst=document.getElementById('my-fst')?document.getElementById('my-fst').value:'pendente_andamento';
-  const fd=document.getElementById('my-fdata')?document.getElementById('my-fdata').value:'';
+  const fst=document.getElementById('my-fst')?.value;
+  const fd=document.getElementById('my-fdata')?.value||'';
+  const fb=(document.getElementById('my-fbusca')?.value||'').toLowerCase().trim();
   let m=tarefas.filter(t=>t.resp===CU.id);
   if(fst==='pendente_andamento')m=m.filter(t=>t.status==='pendente'||t.status==='andamento');
-  else if(fst)m=m.filter(t=>t.status===fst);
-  if(fd)m=m.filter(t=>!fd||t.prazo<=fd);
+  else if(fst&&fst!=='')m=m.filter(t=>t.status===fst);
+  // fst==='' significa 'Todos' — não aplica filtro de status
+  if(fd)m=m.filter(t=>t.prazo<=fd);
+  if(fb)m=m.filter(t=>t.nome.toLowerCase().includes(fb));
   const tot=tarefas.filter(t=>t.resp===CU.id);
-  const ok=tot.filter(t=>t.status==='concluida').length;
-  const at=tot.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
-  const vc=tot.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=(parseInt(t.alerta)||2)).length;
-  document.getElementById('adm-my-met').innerHTML=`
-    <div class="metric"><div class="ml">Total</div><div class="mv">${tot.length}</div></div>
-    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div></div>
-    <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
-    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
+  const{ok,at,vc}=calcStats(tot); // FIX #7
+  document.getElementById('adm-my-met').innerHTML=
+    metricHTML('Total',tot.length)+metricHTML('Concluídas',ok,'s')+
+    metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('adm-my-met');
   let ah='';
   if(at)ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.</div>`;
   if(vc)ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em breve.</div>`;
   document.getElementById('adm-my-al').innerHTML=ah;
-  const tb=document.getElementById('adm-my-tb');tb.innerHTML='';
-  document.getElementById('adm-my-em').classList.toggle('hidden',m.length>0);
+  const focoId=document.activeElement?.id?.startsWith('obs-adm-')?document.activeElement.id:null;
+  const frag=document.createDocumentFragment();
+  const emMy=document.getElementById('adm-my-em');
+  const temFiltroMy=fst!=='pendente_andamento'||fd||fb;
+  emMy.innerHTML=m.length===0?(temFiltroMy?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosMy();return false;" style="color:var(--blue)">Limpar filtros</a>':'🎉 Nenhuma tarefa pendente no momento!'):'';
+  emMy.classList.toggle('hidden',m.length>0);
   m.forEach(t=>{
     const d=dR(t.prazo),a=parseInt(t.alerta)||2;
     const tr=document.createElement('tr');tr.className=trClass(t);
-    const est=emailStatus[t.id];
-    const emailIcon=est==='enviado'?'<span title="E-mail enviado" style="color:#16a34a;font-size:16px;cursor:default">✉✔</span>':est==='erro'?'<span title="Falha no envio" style="color:#dc2626;font-size:16px;cursor:default">✉✗</span>':'<span title="Não notificado" style="color:#9c9a94;font-size:16px;cursor:default">✉</span>';
     tr.innerHTML=`
       <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
       <td>${rBadge(t.recorrencia||'eventual')}</td>
@@ -857,152 +1221,147 @@ function rMyTasks(){
         <option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option>
         <option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option>
       </select></td>
-      <td><input type="date" class="ss" style="font-size:11px;padding:4px 6px" value="${t.dataConclusao||''}" onchange="uDC('${t.id}',this.value)"></td>
-      <td><textarea class="oi" rows="1" id="obs-adm-${t.id}" placeholder="Observação...">${t.obs||''}</textarea></td>
-      <td style="text-align:center">${emailIcon}</td>
-      <td style="text-align:center"><button class="btn btn-sm" title="Renotificar" style="font-size:14px;padding:3px 8px" onclick="renotificar('${t.id}')">🔔</button></td>
-      <td><button class="btn btn-sm" style="font-size:11px" onclick="uOb('${t.id}',document.getElementById('obs-adm-${t.id}').value)">💾 Salvar</button></td>`;
-    tb.appendChild(tr);
+`;
+    tr.appendChild(makeObsTd(t.id,'adm',t.obs));
+    const tl=document.createElement('td');tl.style.textAlign='center';tl.innerHTML=`<button class="btn btn-sm" title="Histórico" style="font-size:13px;padding:3px 7px" onclick="openLog('${t.id}','${t.nome.replace(/'/g,"\\'")}')">📋</button>`;tr.appendChild(tl);
+    const td2=document.createElement('td');td2.style.textAlign='center';td2.innerHTML=`<button class="btn btn-sm btn-d" title="Excluir tarefa" style="font-size:13px;padding:3px 7px" onclick="rmT('${t.id}','${t.nome.replace(/'/g,"\\'")}')">🗑</button>`;tr.appendChild(td2);
+    frag.appendChild(tr);
   });
-}
+  const tb=document.getElementById('adm-my-tb');tb.innerHTML='';tb.appendChild(frag);
+  if(focoId){const el=document.getElementById(focoId);if(el)el.focus();}
+};
 
+// ── EQUIPE ────────────────────────────────────────────────────────────────────
 function rEq(){
   const w=document.getElementById('eq-cards');w.innerHTML='';
   usuarios.forEach(u=>{
     const m=tarefas.filter(t=>t.resp===u.id);
-    const ok=m.filter(t=>t.status==='concluida').length;
-    const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+    const{ok,at}=calcStats(m);
     const p=m.length?Math.round(ok/m.length*100):0;
     const d=document.createElement('div');d.className='eq-card';
-    d.innerHTML=`
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div class="av">${ini(u.name)}</div>
-        <div><div style="font-weight:500">${u.name}</div><span class="badge ${u.role==='admin'?'b-adm':'b-pend'}">${u.role==='admin'?'Admin':'Funcionário'}</span></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px">
-        <div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div>
-        <div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div>
-        <div><div style="font-size:20px;font-weight:500;color:var(--red)">${at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div>
-      </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">${p}% concluído</div>
-      <div class="pw"><div class="pb" style="width:${p}%;background:${bC(p)}"></div></div>`;
+    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${u.role==='admin'?'b-adm':'b-pend'}">${u.role==='admin'?'Admin':'Funcionário'}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${p}% concluído</div><div class="pw"><div class="pb" style="width:${p}%;background:${bC(p)}"></div></div>`;
     w.appendChild(d);
   });
 }
 
+// ── NOVA TAREFA ───────────────────────────────────────────────────────────────
 window.addT=async function(){
-  const nm=document.getElementById('nt-nm').value.trim();
-  const rp=document.getElementById('nt-rp').value;
-  const rec=document.getElementById('nt-rec').value;
-  const isMensal=rec==='mensal';
-  if(!nm||!rp){document.getElementById('nt-er').classList.remove('hidden');return}
+  const nm=document.getElementById('nt-nm').value.trim(),rp=document.getElementById('nt-rp').value,rec=document.getElementById('nt-rec').value,isMensal=rec==='mensal';
+  if(!nm||!rp){document.getElementById('nt-er').classList.remove('hidden');return;}
   document.getElementById('nt-er').classList.add('hidden');
   try{
     if(isMensal){
       const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
-      const meses=checks.length>0?checks:[mesAtual];
-      const du=parseInt(document.getElementById('nt-du').value)||3;
-      const alerta=parseInt(document.getElementById('nt-alerta-m').value)||2;
-      const st=document.getElementById('nt-st-m').value;
-      for(const mes of meses){
-        const prazo=calcPrazoMensal(mes,du);
-        if(!prazo){alert('Não foi possível calcular o prazo para '+fMes(mes));continue;}
-        await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo,recorrencia:'mensal',mesReferencia:mes,alerta,status:st,obs:'',dataConclusao:'',diaUtil:du});
-      }
+      const meses=checks.length?checks:[mesAtual],du=parseInt(document.getElementById('nt-du').value)||3,alerta=parseInt(document.getElementById('nt-alerta-m').value)||2,st=document.getElementById('nt-st-m').value;
+      for(const mes of meses){const prazo=calcPrazoMensal(mes,du);if(!prazo){alert('Não foi possível calcular o prazo para '+fMes(mes));continue;}await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo,recorrencia:'mensal',mesReferencia:mes,alerta,status:st,obs:'',dataConclusao:'',diaUtil:du});}
     }else{
-      const pr=document.getElementById('nt-pr').value;
-      if(!pr){document.getElementById('nt-er').classList.remove('hidden');return}
-      const mesRef=document.getElementById('nt-mes-ref').value;
-      const alerta=parseInt(document.getElementById('nt-alerta').value)||2;
-      const st=document.getElementById('nt-st').value;
-      await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:mesRef,alerta,status:st,obs:'',dataConclusao:''});
+      const pr=document.getElementById('nt-pr').value;if(!pr){document.getElementById('nt-er').classList.remove('hidden');return;}
+      await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:document.getElementById('nt-mes-ref').value,alerta:parseInt(document.getElementById('nt-alerta').value)||2,status:document.getElementById('nt-st').value,obs:'',dataConclusao:''});
     }
     document.getElementById('nt-nm').value='';
     document.getElementById('nt-ok').classList.remove('hidden');
     setTimeout(()=>document.getElementById('nt-ok').classList.add('hidden'),3000);
     window.aTab('t',document.querySelectorAll('#sc-adm .tab-bar .tab')[0]);
   }catch(e){alert('Erro ao salvar: '+e.message);}
-}
+};
 
-window.rmT=async function(id){
-  if(!confirm('Remover esta tarefa?'))return;
-  try{await deleteDoc(doc(db,'tarefas',id));}catch(e){alert('Erro: '+e.message);}
-}
+// FIX #12: rmT usa confirmDialog em vez de confirm() nativo
+window.rmT=async function(id,nome){
+  const ok=await confirmDialog(`Remover a tarefa "${nome||id}"?`);
+  if(!ok)return;
+  try{await deleteDoc(doc(db,'tarefas',id));toast('🗑 Tarefa removida');}catch(e){alert('Erro: '+e.message);}
+};
 
-function rDash(){
-  const tot=tarefas.length,ok=tarefas.filter(t=>t.status==='concluida').length;
-  const an=tarefas.filter(t=>t.status==='andamento').length,pe=tarefas.filter(t=>t.status==='pendente').length;
-  const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+window.rDash=function rDash(){
+  const fmes=document.getElementById('d-fmes')?.value||'';
+  const fano=parseInt(document.getElementById('d-fano')?.value||anoAtual);
+  let base=tarefas.filter(t=>t.prazo&&parseInt(t.prazo.substring(0,4))===fano);
+  if(fmes)base=base.filter(t=>t.mesReferencia===fmes);
+  const{ok,at,vc,tot}=calcStats(base);
+  const an=base.filter(t=>t.status==='andamento').length,pe=base.filter(t=>t.status==='pendente').length;
   const p=tot?Math.round(ok/tot*100):0;
-  document.getElementById('d-mes').textContent='Orthocrin — '+hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-  document.getElementById('d-kpi').innerHTML=`
-    <div class="metric"><div class="ml">Total</div><div class="mv">${tot}</div><div class="ms">no mês</div></div>
-    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div><div class="ms">${p}%</div></div>
-    <div class="metric"><div class="ml">Em andamento</div><div class="mv i">${an}</div></div>
-    <div class="metric"><div class="ml">Pendentes</div><div class="mv w">${pe}</div></div>
-    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
-  const clr=['#16a34a','#2563eb','#d97706','#dc2626'];
-  const lbs=['Concluídas','Em andamento','Pendentes','Atrasadas'];
-  const dat=[ok,an,pe,at];
+  const tituloMes=fmes?fMes(fmes)+' de '+fano:'Todos os meses — '+fano;
+  document.getElementById('d-mes').textContent='Orthocrin — '+tituloMes;
+  const ph=document.getElementById('d-print-header');if(ph)ph.textContent='Orthocrin — Dashboard: '+tituloMes;
+  const subLabel=fmes?'no mês':'no ano';
+  document.getElementById('d-kpi').innerHTML=
+    metricHTML('Total',tot,'',subLabel)+metricHTML('Concluídas',ok,'s',p+'%')+
+    metricHTML('Em andamento',an,'i')+metricHTML('Pendentes',pe,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('d-kpi');
+  const clr=['#16a34a','#2563eb','#d97706','#dc2626'],lbs=['Concluídas','Em andamento','Pendentes','Atrasadas'],dat=[ok,an,pe,at];
   document.getElementById('d-leg').innerHTML=lbs.map((l,i)=>`<div class="li"><div class="ld" style="background:${clr[i]}"></div>${l}: ${dat[i]}</div>`).join('');
-  if(DC)DC.destroy();
-  DC=new Chart(document.getElementById('d-chart'),{type:'doughnut',data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed+' ('+Math.round(c.parsed/(tot||1)*100)+'%)'}}}}});
-  const ud=usuarios.map(u=>{
-    const m=tarefas.filter(t=>t.resp===u.id);
-    const ok=m.filter(t=>t.status==='concluida').length;
-    const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
-    const p=m.length?Math.round(ok/m.length*100):0;
-    return{...u,tot:m.length,ok,at,p};
-  }).sort((a,b)=>b.p-a.p);
+  if(DC){DC.data.datasets[0].data=dat;DC.update();}
+  else{
+    const chartOpts={
+      type:'doughnut',
+      data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},
+      options:{
+        responsive:true,maintainAspectRatio:false,cutout:'65%',
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:function(c){
+            const pct=Math.round(c.parsed/(tot||1)*100);
+            return ' '+c.label+': '+c.parsed+' ('+pct+'%)';
+          }}}
+        }
+      }
+    };
+    DC=new Chart(document.getElementById('d-chart'),chartOpts);
+  }
+  const ud=usuarios.map(u=>{const m=base.filter(t=>t.resp===u.id);const{ok,at}=calcStats(m);const p=m.length?Math.round(ok/m.length*100):0;return{...u,tot:m.length,ok,at,p};}).sort((a,b)=>b.p-a.p);
   document.getElementById('d-rank').innerHTML=ud.map((u,i)=>`<div class="rr"><div class="rn">${i+1}</div><div class="av" style="width:28px;height:28px;font-size:11px">${ini(u.name)}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;margin-bottom:3px">${u.name}</div><div class="rbw"><div class="rb" style="width:${u.p}%;background:${bC(u.p)}"></div></div></div><div class="rp">${u.p}%</div></div>`).join('');
-  document.getElementById('d-prod').innerHTML=ud.map(u=>{const bc=bC(u.p);const bclass=u.at>0?'b-atras':u.p>=80?'b-ok':'b-warn';const bt=u.at>0?u.at+' atrasada(s)':u.p>=80?'Em dia':'Atenção';return`<div class="pg-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${bt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.p}%</span><span>${u.ok}/${u.tot}</span></div><div class="pw"><div class="pb" style="width:${u.p}%;background:${bc}"></div></div></div>`;}).join('');
+  document.getElementById('d-prod').innerHTML=ud.map(u=>{const bc=bC(u.p),bclass=u.at>0?'b-atras':u.p>=80?'b-ok':'b-warn',bt=u.at>0?u.at+' atrasada(s)':u.p>=80?'Em dia':'Atenção';return`<div class="pg-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${bt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.p}%</span><span>${u.ok}/${u.tot}</span></div><div class="pw"><div class="pb" style="width:${u.p}%;background:${bc}"></div></div></div>`;}).join('');
 }
 
+// ── FUNCIONÁRIO ───────────────────────────────────────────────────────────────
 function iF(){
   document.getElementById('func-nm').textContent=CU.name;
   document.getElementById('func-av').textContent=ini(CU.name);
   document.getElementById('func-mes').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
   document.getElementById('func-fst').value='pendente_andamento';
   document.getElementById('func-fdata').value=anoFim;
-  rFunc();
-  setTimeout(()=>verificarEEnviarEmails(),3000);
-  show('sc-func');
+  rFunc();setTimeout(()=>verificarEEnviarEmails(),3000);show('sc-func');
 }
-
 window.fTab=function(t,el){
   ['t','d'].forEach(x=>document.getElementById('ft-'+x).classList.add('hidden'));
   document.querySelectorAll('#sc-func .tab-bar .tab').forEach(x=>x.classList.remove('active'));
-  document.getElementById('ft-'+t).classList.remove('hidden');el.classList.add('active');
+  const ftEl=document.getElementById('ft-'+t);
+  ftEl.classList.remove('hidden');ftEl.classList.add('aba-fade');
+  el.classList.add('active');
   if(t==='d')rFuncDash();
-}
+};
 
-function rFunc(){
+window.rFunc=function rFunc(){
   if(!CU)return;
-  const fst=document.getElementById('func-fst')?document.getElementById('func-fst').value:'';
-  const fd=document.getElementById('func-fdata')?document.getElementById('func-fdata').value:'';
-  const u=CU;let m=tarefas.filter(t=>t.resp===u.id);
+  const fst=document.getElementById('func-fst')?.value;
+  const fd=document.getElementById('func-fdata')?.value||'';
+  const fb=(document.getElementById('func-fbusca')?.value||'').toLowerCase().trim();
+  let m=tarefas.filter(t=>t.resp===CU.id);
   if(fst==='pendente_andamento')m=m.filter(t=>t.status==='pendente'||t.status==='andamento');
-  else if(fst)m=m.filter(t=>t.status===fst);
-  if(fd)m=m.filter(t=>!fd||t.prazo<=fd);
-  const tot=tarefas.filter(t=>t.resp===u.id);
-  const ok=tot.filter(t=>t.status==='concluida').length;
-  const at=tot.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
-  const vc=tot.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=(parseInt(t.alerta)||2)).length;
-  document.getElementById('func-met').innerHTML=`
-    <div class="metric"><div class="ml">Minhas tarefas</div><div class="mv">${tot.length}</div></div>
-    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div></div>
-    <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
-    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
+  else if(fst&&fst!=='')m=m.filter(t=>t.status===fst);
+  // fst==='' significa 'Todos' — não aplica filtro de status
+  if(fd)m=m.filter(t=>t.prazo<=fd);
+  if(fb)m=m.filter(t=>t.nome.toLowerCase().includes(fb));
+  const tot=tarefas.filter(t=>t.resp===CU.id);
+  const{ok,at,vc}=calcStats(tot);
+  document.getElementById('func-met').innerHTML=
+    metricHTML('Minhas tarefas',tot.length)+metricHTML('Concluídas',ok,'s')+
+    metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('func-met');
   const adm=usuarios.filter(x=>x.role==='admin');let ah='';
-  if(at){const s=encodeURIComponent('Tarefa atrasada');const b=encodeURIComponent('Olá,\nTenho tarefas atrasadas.\n'+u.name);const cc=adm.map(a=>a.email).join(',');const em=adm[0]?adm[0].email:'';ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.<br><a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar admin</a></div>`;}
-  if(vc){const s=encodeURIComponent('Tarefa vencendo');const b=encodeURIComponent('Olá,\nTenho tarefas próximas do vencimento.\n'+u.name);const cc=adm.map(a=>a.email).join(',');const em=adm[0]?adm[0].email:'';ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em breve.<br><a class="mlink" href="mailto:${em}?cc=${cc}&subject=${s}&body=${b}">✉ Avisar admin</a></div>`;}
+  if(at)ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.</div>`;
+  if(vc)ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em breve.</div>`;
   document.getElementById('func-al').innerHTML=ah;
-  const tb=document.getElementById('func-tb');tb.innerHTML='';
-  document.getElementById('func-em').classList.toggle('hidden',m.length>0);
+  const focoId=document.activeElement?.id?.startsWith('obs-func-')?document.activeElement.id:null;
+  const frag=document.createDocumentFragment();
+  const emFunc=document.getElementById('func-em');
+  const temFiltroFunc=fst!=='pendente_andamento'||fd||fb;
+  emFunc.innerHTML=m.length===0?(temFiltroFunc?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosFunc();return false;" style="color:var(--blue)">Limpar filtros</a>':'🎉 Nenhuma tarefa pendente no momento!'):'';
+  emFunc.classList.toggle('hidden',m.length>0);
   m.forEach(t=>{
-    const d=dR(t.prazo),a=parseInt(t.alerta)||2;const tr=document.createElement('tr');tr.className=trClass(t);
-    const est=emailStatus[t.id];
-    const emailIcon=est==='enviado'?'<span title="E-mail enviado" style="color:#16a34a;font-size:16px;cursor:default">✉✔</span>':est==='erro'?'<span title="Falha no envio" style="color:#dc2626;font-size:16px;cursor:default">✉✗</span>':'<span title="Não notificado" style="color:#9c9a94;font-size:16px;cursor:default">✉</span>';
+    const d=dR(t.prazo),a=parseInt(t.alerta)||2;
+    const tr=document.createElement('tr');tr.className=trClass(t);
     tr.innerHTML=`
       <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
       <td>${rBadge(t.recorrencia||'eventual')}</td>
@@ -1014,151 +1373,121 @@ function rFunc(){
         <option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option>
         <option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option>
       </select></td>
-      <td><input type="date" class="ss" style="font-size:11px;padding:4px 6px" value="${t.dataConclusao||''}" onchange="uDC('${t.id}',this.value)"></td>
-      <td><textarea class="oi" rows="1" id="obs-func-${t.id}" placeholder="Observação...">${t.obs||''}</textarea></td>
-      <td style="text-align:center">${emailIcon}</td>
-      <td style="text-align:center"><button class="btn btn-sm" title="Renotificar" style="font-size:14px;padding:3px 8px" onclick="renotificar('${t.id}')">🔔</button></td>
-      <td><button class="btn btn-sm" style="font-size:11px" onclick="uOb('${t.id}',document.getElementById('obs-func-${t.id}').value)">💾 Salvar</button></td>`;
-    tb.appendChild(tr);
+`;
+    tr.appendChild(makeObsTd(t.id,'func',t.obs));
+    const tl=document.createElement('td');tl.style.textAlign='center';tl.innerHTML=`<button class="btn btn-sm" title="Histórico" style="font-size:13px;padding:3px 7px" onclick="openLog('${t.id}','${t.nome.replace(/'/g,"\\'")}')">📋</button>`;tr.appendChild(tl);
+    frag.appendChild(tr);
   });
+  const tb=document.getElementById('func-tb');tb.innerHTML='';tb.appendChild(frag);
+  if(focoId){const el=document.getElementById(focoId);if(el)el.focus();}
 }
 
 function rFuncDash(){
   if(!CU)return;
   const m=tarefas.filter(t=>t.resp===CU.id);
-  const ok=m.filter(t=>t.status==='concluida').length;
-  const an=m.filter(t=>t.status==='andamento').length;
-  const pe=m.filter(t=>t.status==='pendente').length;
-  const at=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
-  const vc=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=(parseInt(t.alerta)||2)).length;
-  const p=m.length?Math.round(ok/m.length*100):0;
-  document.getElementById('fd-titulo').textContent='Meu desempenho — '+CU.name;
+  const{ok,at,vc,tot}=calcStats(m);
+  const an=m.filter(t=>t.status==='andamento').length,pe=m.filter(t=>t.status==='pendente').length;
+  const p=tot?Math.round(ok/tot*100):0;
+  const titulo='Meu desempenho — '+CU.name;
+  document.getElementById('fd-titulo').textContent=titulo;
+  document.getElementById('fd-print-header').textContent=titulo;
   document.getElementById('fd-sub').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-  document.getElementById('fd-kpi').innerHTML=`
-    <div class="metric"><div class="ml">Total</div><div class="mv">${m.length}</div></div>
-    <div class="metric"><div class="ml">Concluídas</div><div class="mv s">${ok}</div><div class="ms">${p}%</div></div>
-    <div class="metric"><div class="ml">Vencendo</div><div class="mv w">${vc}</div></div>
-    <div class="metric"><div class="ml">Atrasadas</div><div class="mv d">${at}</div></div>`;
-  const clr=['#16a34a','#2563eb','#d97706','#dc2626'];
-  const lbs=['Concluídas','Em andamento','Pendentes','Atrasadas'];
-  const dat=[ok,an,pe,at];
+  document.getElementById('fd-kpi').innerHTML=
+    metricHTML('Total',tot)+metricHTML('Concluídas',ok,'s',p+'%')+
+    metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('fd-kpi');
+  const clr=['#16a34a','#2563eb','#d97706','#dc2626'],lbs=['Concluídas','Em andamento','Pendentes','Atrasadas'],dat=[ok,an,pe,at];
   document.getElementById('fd-leg').innerHTML=lbs.map((l,i)=>`<div class="li"><div class="ld" style="background:${clr[i]}"></div>${l}: ${dat[i]}</div>`).join('');
-  if(FDC)FDC.destroy();
-  FDC=new Chart(document.getElementById('fd-chart'),{type:'doughnut',data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed}}}}});
+  if(FDC){FDC.data.datasets[0].data=dat;FDC.update();}
+  else FDC=new Chart(document.getElementById('fd-chart'),{type:'doughnut',data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed}}}}});
   const rec={mensal:m.filter(t=>t.recorrencia==='mensal').length,anual:m.filter(t=>t.recorrencia==='anual').length,eventual:m.filter(t=>!t.recorrencia||t.recorrencia==='eventual').length};
   document.getElementById('fd-rec').innerHTML=`
     <div class="rr"><div style="flex:1"><span class="badge b-mensal">Mensal</span></div><div class="rp">${rec.mensal}</div></div>
     <div class="rr"><div style="flex:1"><span class="badge b-anual">Anual</span></div><div class="rp">${rec.anual}</div></div>
     <div class="rr"><div style="flex:1"><span class="badge b-eventual">Eventual</span></div><div class="rp">${rec.eventual}</div></div>`;
   const vencendo=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=7).sort((a,b)=>dR(a.prazo)-dR(b.prazo));
-  document.getElementById('fd-venc').innerHTML=vencendo.length?`
-    <div class="card" style="padding:0.75rem 1.25rem">${vencendo.map(t=>`
-      <div class="rr">
-        <div style="flex:1;font-size:13px;font-weight:500">${t.nome}</div>
-        <div style="font-size:12px;color:var(--text2);margin-right:8px">${fD(t.prazo)}</div>
-        ${sBadge(t.status,dR(t.prazo),t.alerta||2)}
-      </div>`).join('')}
-    </div>`:`<div class="empty">Nenhuma tarefa vencendo nos próximos 7 dias 🎉</div>`;
+  document.getElementById('fd-venc').innerHTML=vencendo.length?`<div class="card" style="padding:0.75rem 1.25rem">${vencendo.map(t=>`<div class="rr"><div style="flex:1;font-size:13px;font-weight:500">${t.nome}</div><div style="font-size:12px;color:var(--text2);margin-right:8px">${fD(t.prazo)}</div>${sBadge(t.status,dR(t.prazo),t.alerta||2)}</div>`).join('')}</div>`:`<div class="empty">Nenhuma tarefa vencendo nos próximos 7 dias 🎉</div>`;
 }
 
+// ── AÇÕES ─────────────────────────────────────────────────────────────────────
 window.uSt=async function(id,v){
   const data={status:v};
   if(v==='concluida'&&!tarefas.find(t=>t.id===id)?.dataConclusao)data.dataConclusao=new Date().toISOString().split('T')[0];
   else if(v!=='concluida')data.dataConclusao='';
-  try{await updateDoc(doc(db,'tarefas',id),data);}catch(e){alert('Erro: '+e.message);}
-}
+  try{await updateDoc(doc(db,'tarefas',id),data);await registrarLog(id,v,CU?.name||'Sistema');toast('✓ Status atualizado');}
+  catch(e){alert('Erro: '+e.message);}
+};
 window.uDC=async function(id,v){
-  try{await updateDoc(doc(db,'tarefas',id),{dataConclusao:v});}catch(e){alert('Erro: '+e.message);}
-}
-window.uOb=async function(id,v){
-  try{
-    await updateDoc(doc(db,'tarefas',id),{obs:v});
-    const btn=document.querySelector(`button[onclick*="uOb('${id}'"]`);
-    if(btn){const orig=btn.textContent;btn.textContent='✓ Salvo!';setTimeout(()=>btn.textContent=orig,1500);}
-  }catch(e){alert('Erro: '+e.message);}
-}
-
+  try{await updateDoc(doc(db,'tarefas',id),{dataConclusao:v});toast('✓ Data salva');}catch(e){alert('Erro: '+e.message);}
+};
 window.renotificar=async function(id){
-  if(!confirm('Deseja notificar novamente por e-mail?'))return;
-  const t=tarefas.find(x=>x.id===id);
-  const u=usuarios.find(x=>x.id===t?.resp);
-  if(!t||!u){alert('Tarefa ou usuário não encontrado.');return;}
-  const admins=usuarios.filter(x=>x.role==='admin');
-  emailStatus[id]='enviando';
-  if(CU&&CU.role==='admin'){rMyTasks();}else{rFunc();}
-  const ok=await enviarEmailLembrete(t,u,admins);
-  if(ok){alert('✉ E-mail enviado com sucesso!');}
-  else{alert('❌ Falha no envio. Verifique o EmailJS.');}
-  if(CU&&CU.role==='admin'){rMyTasks();}else{rFunc();}
-}
+  if(!await confirmDialog('Notificar novamente por e-mail?'))return;
+  const t=tarefas.find(x=>x.id===id),u=userMap.get(t?.resp);
+  if(!t||!u){toast('❌ Tarefa ou usuário não encontrado.');return;}
+  const ok=await enviarEmailLembrete(t,u,usuarios.filter(x=>x.role==='admin'));
+  toast(ok?'✉ E-mail enviado com sucesso!':'❌ Falha no envio. Verifique o EmailJS.');
+  if(CU?.role==='admin')rMyTasks();else rFunc();
+};
 
-window.openUsuarios=function(){renderUsersList();document.getElementById('modal-users').classList.remove('hidden')}
-window.closeUsuarios=function(){document.getElementById('modal-users').classList.add('hidden')}
+// ── USUÁRIOS ──────────────────────────────────────────────────────────────────
+window.openUsuarios=()=>{renderUsersList();document.getElementById('modal-users').classList.remove('hidden');};
+window.closeUsuarios=()=>document.getElementById('modal-users').classList.add('hidden');
 function renderUsersList(){
-  document.getElementById('users-list').innerHTML=usuarios.map(u=>`
-    <div class="user-row">
-      <div class="av" style="flex-shrink:0">${ini(u.name)}</div>
-      <div style="flex:1;min-width:0"><div style="font-weight:500;font-size:14px">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.role==='admin'?'Admin':'Funcionário'}</div></div>
-      <button class="btn btn-sm" onclick="openEditUser('${u.id}')">✏️</button>
-    </div>`).join('');
+  document.getElementById('users-list').innerHTML=usuarios.map(u=>`<div class="user-row"><div class="av" style="flex-shrink:0">${ini(u.name)}</div><div style="flex:1;min-width:0"><div style="font-weight:500;font-size:14px">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.role==='admin'?'Admin':'Funcionário'} · ${u.email||'—'}</div></div><button class="btn btn-sm" onclick="openEditUser('${u.id}')">✏️</button></div>`).join('');
 }
 window.addUsuario=async function(){
-  const nm=document.getElementById('nu-nm').value.trim();
-  const em=document.getElementById('nu-em').value.trim();
-  const role=document.getElementById('nu-role').value;
-  const pass=document.getElementById('nu-pass').value.trim()||'123456';
-  if(!nm||!em){document.getElementById('nu-er').classList.remove('hidden');return}
+  const nm=document.getElementById('nu-nm').value.trim(),em=document.getElementById('nu-em').value.trim(),role=document.getElementById('nu-role').value,pass=document.getElementById('nu-pass').value.trim()||'123456';
+  if(!nm||!em){document.getElementById('nu-er').classList.remove('hidden');return;}
   document.getElementById('nu-er').classList.add('hidden');
   try{
-    await addDoc(collection(db,'usuarios'),{name:nm,email:em,role,pass});
-    document.getElementById('nu-nm').value='';document.getElementById('nu-em').value='';document.getElementById('nu-pass').value='123456';
-    document.getElementById('nu-ok').classList.remove('hidden');
-    setTimeout(()=>document.getElementById('nu-ok').classList.add('hidden'),3000);renderUsersList();
+    const passHash=await hashSenha(pass);
+    await addDoc(collection(db,'usuarios'),{name:nm,email:em,role,pass:passHash});
+    ['nu-nm','nu-em'].forEach(id=>document.getElementById(id).value='');document.getElementById('nu-pass').value='123456';
+    document.getElementById('nu-ok').classList.remove('hidden');setTimeout(()=>document.getElementById('nu-ok').classList.add('hidden'),3000);renderUsersList();
   }catch(e){alert('Erro: '+e.message);}
-}
+};
 window.openEditUser=function(id){
-  const u=usuarios.find(x=>x.id===id);if(!u)return;
+  const u=userMap.get(id);if(!u)return;
   document.getElementById('eu-id').value=id;document.getElementById('eu-nm').value=u.name;
   document.getElementById('eu-em').value=u.email;document.getElementById('eu-role').value=u.role;
-  document.getElementById('eu-pass').value='';document.getElementById('eu-er').classList.add('hidden');
-  document.getElementById('eu-ok').classList.add('hidden');document.getElementById('modal-edit-user').classList.remove('hidden');
-}
-window.closeEditUser=function(){document.getElementById('modal-edit-user').classList.add('hidden')}
+  document.getElementById('eu-pass').value='';
+  ['eu-er','eu-ok'].forEach(i=>document.getElementById(i).classList.add('hidden'));
+  document.getElementById('modal-edit-user').classList.remove('hidden');
+};
+window.closeEditUser=()=>document.getElementById('modal-edit-user').classList.add('hidden');
 window.saveEditUser=async function(){
-  const id=document.getElementById('eu-id').value;
-  const nm=document.getElementById('eu-nm').value.trim();
-  const em=document.getElementById('eu-em').value.trim();
-  const role=document.getElementById('eu-role').value;
-  const pass=document.getElementById('eu-pass').value.trim();
-  if(!nm||!em){document.getElementById('eu-er').classList.remove('hidden');return}
-  const data={name:nm,email:em,role};if(pass)data.pass=pass;
+  const id=document.getElementById('eu-id').value,nm=document.getElementById('eu-nm').value.trim(),em=document.getElementById('eu-em').value.trim(),role=document.getElementById('eu-role').value,pass=document.getElementById('eu-pass').value.trim();
+  if(!nm||!em){document.getElementById('eu-er').classList.remove('hidden');return;}
+  const data={name:nm,email:em,role};
+  if(pass){data.pass=await hashSenha(pass);}
   try{
     await updateDoc(doc(db,'usuarios',id),data);
     document.getElementById('eu-ok').classList.remove('hidden');
     setTimeout(()=>{document.getElementById('eu-ok').classList.add('hidden');closeEditUser();renderUsersList();},2000);
   }catch(e){alert('Erro: '+e.message);}
-}
+};
 window.deleteUser=async function(){
   const id=document.getElementById('eu-id').value;
-  if(!confirm('Remover este usuário?'))return;
-  try{await deleteDoc(doc(db,'usuarios',id));closeEditUser();renderUsersList();}catch(e){alert('Erro: '+e.message);}
-}
+  if(!await confirmDialog('Remover este usuário permanentemente?'))return;
+  try{await deleteDoc(doc(db,'usuarios',id));closeEditUser();renderUsersList();toast('Usuário removido');}catch(e){alert('Erro: '+e.message);}
+};
 
-async function initUsuariosPadrao(){
+// ── INIT USUÁRIOS PADRÃO ──────────────────────────────────────────────────────
+(async()=>{
   const snap=await getDocs(collection(db,'usuarios'));
   if(snap.empty){
+    const h=await hashSenha('123456');
     const padrao=[
-      {name:'Guilherme',email:'fiscal3@orthocrin.com.br',role:'admin',pass:'123456'},
-      {name:'Vanusa',email:'vanusa@orthocrin.com.br',role:'admin',pass:'123456'},
-      {name:'Maurílio',email:'fiscal@orthocrin.com.br',role:'func',pass:'123456'},
-      {name:'Samares',email:'fiscal2@orthocrin.com.br',role:'func',pass:'123456'},
-      {name:'Camila',email:'fiscal1@orthocrin.com.br',role:'func',pass:'123456'},
-      {name:'Luciano',email:'recebimento@orthocrin.com.br',role:'func',pass:'123456'},
+      {name:'Guilherme',email:'fiscal3@orthocrin.com.br',role:'admin',pass:h},
+      {name:'Vanusa',email:'vanusa@orthocrin.com.br',role:'admin',pass:h},
+      {name:'Maurílio',email:'fiscal@orthocrin.com.br',role:'func',pass:h},
+      {name:'Samares',email:'fiscal2@orthocrin.com.br',role:'func',pass:h},
+      {name:'Camila',email:'fiscal1@orthocrin.com.br',role:'func',pass:h},
+      {name:'Luciano',email:'recebimento@orthocrin.com.br',role:'func',pass:h},
     ];
     for(const u of padrao)await addDoc(collection(db,'usuarios'),u);
   }
-}
-initUsuariosPadrao();
+})();
 </script>
 </body>
 </html>
