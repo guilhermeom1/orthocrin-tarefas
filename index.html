@@ -179,18 +179,71 @@ tr.rc{background:var(--conc-bg)}
 /* PRINT */
 @media print{
   body{background:#fff;font-size:12px}
-  .topbar,.tab-bar,.filter-bar,.btn,.btn-sm,#adm-al,#func-al,.pg-bar,.d-no-print{display:none!important}
+  .topbar,.tab-bar,.filter-bar,.btn,.btn-sm,#adm-al,#func-al,.pg-bar,.d-no-print,.fech-no-print,.fech-filtro-bar,.app-title,.email-limit-banner{display:none!important}
   .app{padding:0;max-width:100%}
-  [id^="at-"]:not(#at-d),[id^="ft-"]:not(#ft-d){display:none!important}
-  #at-d,#ft-d{display:block!important}
   .card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}
   .dr2{grid-template-columns:1fr 1fr}
   .pg-grid{grid-template-columns:repeat(3,1fr)}
+  .fech-split{grid-template-columns:1fr 1fr}
+  .fech-item.cm{background:#f9f0f2!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   canvas{max-height:180px!important}
   .d-print-header{display:block!important}
 }
 .d-print-header{display:none;font-size:18px;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--brand)}
-@media(max-width:640px){.m5,.m4{grid-template-columns:1fr 1fr}.f2,.f3,.dr2{grid-template-columns:1fr}.tab-bar{width:100%}}
+.m3{grid-template-columns:repeat(3,1fr)}
+/* ── TÍTULO DO SISTEMA ── */
+.app-title{font-size:15px;font-weight:600;color:var(--brand);letter-spacing:.05em;margin-bottom:10px;padding-left:2px}
+/* ── BADGES EQUIPE / ÁREA ── */
+.b-outros{background:#fdf4ff;color:#7e22ce}
+.b-contab{background:var(--brand-lt);color:var(--brand)}
+.area-badge{display:inline-flex;align-items:center;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:600;white-space:nowrap;vertical-align:middle}
+/* ── TIPO DE ROTINA / CUSTO MÉDIO (cadastro) ── */
+.cm-box{background:var(--surface2);border:1.5px solid var(--brand-mid);border-radius:var(--radius);padding:10px 12px;margin-bottom:14px}
+.cm-box label{color:var(--brand)}
+/* ── JUSTIFICATIVA OBRIGATÓRIA ── */
+.oi.just-required{border-color:var(--red)!important;background:var(--red-bg)}
+/* ── BOTÃO SALVAR / RASCUNHO / TRAVA ── */
+.oi.obs-draft{border-color:var(--amber-text)!important;background:var(--amber-bg)}
+.oi.obs-locked{background:var(--gray-bg);color:var(--text3);cursor:not-allowed;opacity:.8}
+.row-draft>td{background:#fffdf5}
+.row-draft>td:first-child{box-shadow:inset 3px 0 0 var(--amber-text)}
+/* ── MODELO C — FECHAMENTO ── */
+.fech-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
+.fech-filtro-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:1.25rem;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius)}
+.fech-toggle{display:flex;background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius);overflow:hidden}
+.fech-toggle button{padding:5px 14px;font-size:12px;font-weight:500;border:none;cursor:pointer;color:var(--text2);background:transparent;font-family:inherit}
+.fech-toggle button.active{background:var(--brand);color:#fff}
+.fech-split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fech-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;box-shadow:var(--shadow-sm)}
+.fech-col-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+.fech-col-ic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.fech-col-t{font-size:14px;font-weight:600;color:var(--text)}
+.fech-col-c{font-size:11px;color:var(--text3);margin-left:auto}
+.fech-minik{display:flex;gap:8px;margin-bottom:12px}
+.fech-mk{flex:1;background:var(--surface2);border:1px solid var(--brand-mid);border-radius:var(--radius);padding:8px;text-align:center}
+.fech-mk-v{font-size:18px;font-weight:600}
+.fech-mk-l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.03em;margin-top:2px}
+.fech-item{padding:10px 0;border-bottom:1px solid var(--border)}
+.fech-item:last-child{border-bottom:none}
+.fech-item.cm{background:var(--surface2);margin:0 -1rem;padding:10px 1rem;border-left:3px solid var(--brand)}
+.fech-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.fech-item-nome{font-size:13px;font-weight:500;color:var(--text);cursor:pointer;border-bottom:1px dotted var(--brand-mid)}
+.fech-item-nome:hover{color:var(--brand);border-bottom-color:var(--brand)}
+.fech-item-sub{font-size:11px;color:var(--text2);margin-top:3px}
+.fech-cm-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:600;background:var(--brand);color:#fff;padding:2px 7px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.fech-cm-dot{width:4px;height:4px;border-radius:50%;background:#fff}
+.fech-just{font-size:11px;color:var(--red-text);margin-top:4px;background:var(--red-bg);padding:3px 8px;border-radius:5px;border-left:2px solid var(--red);display:inline-block}
+.fech-just.pend{color:var(--amber-text);background:var(--amber-bg);border-left-color:var(--amber)}
+.fech-dias{font-size:11px;font-weight:600;white-space:nowrap;margin-top:4px}
+.fech-dias.ok{color:var(--green)}.fech-dias.atr{color:var(--red)}.fech-dias.venc{color:var(--amber)}.fech-dias.pend{color:var(--text3)}
+.fech-leg{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:11px;color:var(--text2);flex-wrap:wrap}
+/* ── TAREFA CLICÁVEL (histórico) ── */
+.task-link{cursor:pointer;border-bottom:1px dotted var(--brand-mid);color:var(--text)}
+.task-link:hover{color:var(--brand);border-bottom-color:var(--brand)}
+/* ── min-width para evitar cabeçalhos sobrepostos ── */
+.tw>table{min-width:780px}
+#tbl-at{min-width:1120px}
+@media(max-width:640px){.m5,.m4,.m3{grid-template-columns:1fr 1fr}.f2,.f3,.dr2{grid-template-columns:1fr}.tab-bar{width:100%}.fech-split{grid-template-columns:1fr}.fech-toggle{flex-wrap:wrap;border:none;gap:6px;background:transparent}.fech-toggle button{border:1.5px solid var(--border2);border-radius:var(--radius)}.fech-toggle button.active{border-color:var(--brand)}}
 </style>
 </head>
 <body>
@@ -224,13 +277,13 @@ tr.rc{background:var(--conc-bg)}
     <div class="fg"><label>Senha</label><input type="password" id="lp" placeholder="senha" onkeydown="if(event.key==='Enter')dL()"></div>
     <button class="btn btn-p" style="width:100%" onclick="dL()">Entrar</button>
     <div class="err hidden" id="le">Usuário ou senha incorretos.</div>
-    <div class="hint">Senha padrão: <strong>123456</strong></div>
   </div>
 </div>
 
 <!-- ADMIN -->
 <div id="sc-adm" class="hidden">
   <div class="app">
+    <div class="app-title">CONTROLE ROTINAS · CONTABILIDADE</div>
     <div class="topbar">
       <div class="tl">
         <div class="av" id="adm-av"></div>
@@ -238,6 +291,7 @@ tr.rc{background:var(--conc-bg)}
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn btn-sm" onclick="openUsuarios()">👥 Usuários</button>
+        <button class="btn btn-sm" onclick="abrirTrocaSenha(false)">🔑 Alterar senha</button>
         <button class="btn btn-sm" onclick="logout()">Sair</button>
       </div>
     </div>
@@ -255,6 +309,7 @@ tr.rc{background:var(--conc-bg)}
       <button class="tab" onclick="aTab('e',this)">Equipe</button>
       <button class="tab" onclick="aTab('n',this)">Nova tarefa</button>
       <button class="tab" onclick="aTab('d',this)">📊 Dashboard</button>
+      <button class="tab" onclick="aTab('f',this)">📋 Fechamento</button>
     </div>
 
     <!-- ABA: TAREFAS DA EQUIPE -->
@@ -266,6 +321,10 @@ tr.rc{background:var(--conc-bg)}
           <div class="search-wrap"><span class="search-ico">🔍</span><input type="text" id="fbusca" placeholder="Buscar tarefa..." oninput="debSearch('rAT')" style="width:160px"></div>
           <label>Responsável:</label>
           <select id="ff" onchange="rAT()" class="ss" style="width:auto"><option value="">Todos</option></select>
+          <label>Equipe:</label>
+          <select id="fequipe" onchange="rAT()" class="ss" style="width:auto">
+            <option value="">Todas</option><option value="contab">Contabilidade</option><option value="outros">Outros</option>
+          </select>
           <label>Status:</label>
           <select id="fst" onchange="rAT()" class="ss" style="width:auto">
             <option value="">Todos</option><option value="pendente">Pendente</option>
@@ -319,6 +378,16 @@ tr.rc{background:var(--conc-bg)}
             <option value="">Todos</option><option value="pendente">Pendente</option>
             <option value="andamento">Em andamento</option><option value="concluida">Concluída</option>
           </select>
+          <label>Mês ref.:</label>
+          <select id="my-fmes" onchange="rMyTasks()" class="ss" style="width:auto">
+            <option value="">Todos</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
           <label>Prazo até:</label>
           <input type="date" id="my-fdata" onchange="rMyTasks()" style="width:140px;padding:5px 8px;font-size:13px">
           <button class="btn btn-sm" onclick="limparFiltrosMy()">✕ Limpar</button>
@@ -327,9 +396,8 @@ tr.rc{background:var(--conc-bg)}
           <thead><tr>
             <th style="width:17%">Tarefa</th><th style="width:8%">Recorrência</th>
             <th style="width:7%">Mês ref.</th><th style="width:9%">Prazo</th>
-            <th style="width:6%">Dias</th><th style="width:11%">Status</th>
-            <th style="width:28%">Observação</th>
-            <th style="width:5%" title="Histórico de status">📋</th>
+            <th style="width:6%">Dias</th><th style="width:12%">Status</th>
+            <th style="width:33%">Observação / Justificativa</th>
             <th style="width:5%" title="Excluir tarefa">🗑</th>
           </tr></thead>
           <tbody id="adm-my-tb"></tbody>
@@ -348,6 +416,22 @@ tr.rc{background:var(--conc-bg)}
         <div class="f2">
           <div class="fg"><label>Nome da tarefa</label><input type="text" id="nt-nm" placeholder="ex: Fechar DRE"></div>
           <div class="fg"><label>Responsável</label><select id="nt-rp"></select></div>
+        </div>
+        <div class="f2">
+          <div class="fg">
+            <label>Tipo de rotina</label>
+            <select id="nt-tipo" onchange="toggleTipoRotina()">
+              <option value="comum">Rotina comum</option>
+              <option value="fechamento">Fechamento</option>
+            </select>
+          </div>
+          <div class="fg" id="fg-cm" style="display:none">
+            <label>Interfere no cálculo do custo médio?</label>
+            <select id="nt-cm" class="ss">
+              <option value="sim">Sim, interfere</option>
+              <option value="nao">Não interfere</option>
+            </select>
+          </div>
         </div>
         <div class="f3">
           <div class="fg">
@@ -456,18 +540,61 @@ tr.rc{background:var(--conc-bg)}
       <div style="font-size:15px;font-weight:500;margin-bottom:12px">Produtividade individual</div>
       <div class="pg-grid" id="d-prod"></div>
     </div>
+
+    <!-- ABA: FECHAMENTO (Modelo C) -->
+    <div id="at-f" class="hidden">
+      <div class="d-print-header" id="f-print-header">Orthocrin — Relatório de Fechamento Mensal</div>
+      <div class="fech-head">
+        <div>
+          <div style="font-size:18px;font-weight:500">Fechamento mensal</div>
+          <div style="font-size:13px;color:var(--text2)" id="f-subtitulo"></div>
+        </div>
+        <div class="fech-no-print" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:12px;color:var(--text2)">Mês:</label>
+          <select id="f-fmes" onchange="rFech()" class="ss" style="width:auto">
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <label style="font-size:12px;color:var(--text2)">Ano:</label>
+          <select id="f-fano" onchange="rFech()" class="ss" style="width:auto"></select>
+          <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        </div>
+      </div>
+      <div class="metrics m4" id="f-kpi" style="margin-bottom:1.25rem"></div>
+      <div class="fech-filtro-bar fech-no-print">
+        <label style="font-size:11px;color:var(--text2);font-weight:500;text-transform:uppercase;letter-spacing:.03em">Exibir:</label>
+        <div class="fech-toggle">
+          <button class="active" onclick="setFechFiltro('todas',this)">Todas</button>
+          <button onclick="setFechFiltro('cm',this)">Interferem no custo médio</button>
+          <button onclick="setFechFiltro('naocm',this)">Não interferem no custo médio</button>
+        </div>
+      </div>
+      <div class="fech-split">
+        <div class="fech-col" id="fech-col-contab"></div>
+        <div class="fech-col" id="fech-col-outros"></div>
+      </div>
+      <div class="fech-leg"><span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span> = tarefas que interferem no início do cálculo do custo médio — o caminho crítico do resultado mensal</div>
+    </div>
   </div>
 </div>
 
 <!-- FUNCIONÁRIO -->
 <div id="sc-func" class="hidden">
   <div class="app">
+    <div class="app-title">CONTROLE ROTINAS · CONTABILIDADE</div>
     <div class="topbar">
       <div class="tl">
         <div class="av" id="func-av"></div>
         <div><div class="un" id="func-nm"></div><div style="font-size:13px;color:var(--text2)">Minhas tarefas</div></div>
       </div>
-      <button class="btn btn-sm" onclick="logout()">Sair</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" onclick="abrirTrocaSenha(false)">🔑 Alterar senha</button>
+        <button class="btn btn-sm" onclick="logout()">Sair</button>
+      </div>
     </div>
     <div id="func-al"></div>
     <div class="tab-bar">
@@ -486,6 +613,16 @@ tr.rc{background:var(--conc-bg)}
             <option value="">Todos</option><option value="pendente">Pendente</option>
             <option value="andamento">Em andamento</option><option value="concluida">Concluída</option>
           </select>
+          <label>Mês ref.:</label>
+          <select id="func-fmes" onchange="rFunc()" class="ss" style="width:auto">
+            <option value="">Todos</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
           <label>Prazo até:</label>
           <input type="date" id="func-fdata" onchange="rFunc()" style="width:140px;padding:5px 8px;font-size:13px">
           <button class="btn btn-sm" onclick="limparFiltrosFunc()">✕ Limpar</button>
@@ -495,8 +632,7 @@ tr.rc{background:var(--conc-bg)}
             <th style="width:18%">Tarefa</th><th style="width:9%">Recorrência</th>
             <th style="width:7%">Mês ref.</th><th style="width:9%">Prazo</th>
             <th style="width:6%">Dias</th><th style="width:11%">Status</th>
-            <th style="width:32%">Observação</th>
-            <th style="width:5%" title="Histórico de status">📋</th>
+            <th style="width:37%">Observação / Justificativa</th>
           </tr></thead>
           <tbody id="func-tb"></tbody>
         </table></div>
@@ -505,8 +641,24 @@ tr.rc{background:var(--conc-bg)}
     </div>
     <div id="ft-d" class="hidden">
       <div class="d-print-header" id="fd-print-header"></div>
-      <div style="font-size:18px;font-weight:500;margin-bottom:4px" id="fd-titulo"></div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:1.5rem" id="fd-sub"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px">
+        <div><div style="font-size:18px;font-weight:500" id="fd-titulo"></div><div style="font-size:13px;color:var(--text2)" id="fd-sub"></div></div>
+        <div class="d-no-print" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:12px;color:var(--text2)">Mês:</label>
+          <select id="fd-fmes" onchange="rFuncDash()" class="ss" style="width:auto">
+            <option value="">Todos</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <label style="font-size:12px;color:var(--text2)">Ano:</label>
+          <select id="fd-fano" onchange="rFuncDash()" class="ss" style="width:auto"></select>
+          <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        </div>
+      </div>
       <div class="metrics m4" id="fd-kpi"></div>
       <div class="dr2">
         <div class="card"><div class="ct" style="margin-bottom:10px">Meu status atual</div><div class="legend" id="fd-leg"></div><div style="position:relative;width:100%;height:200px"><canvas id="fd-chart"></canvas></div></div>
@@ -531,9 +683,13 @@ tr.rc{background:var(--conc-bg)}
     <div class="f2">
       <div class="fg"><label>Nome</label><input type="text" id="nu-nm" placeholder="Nome completo"></div>
       <div class="fg"><label>E-mail</label><input type="email" id="nu-em" placeholder="email@orthocrin.com.br"></div>
-      <div class="fg"><label>Perfil</label><select id="nu-role"><option value="func">Funcionário</option><option value="admin">Administrador</option></select></div>
+      <div class="fg"><label>Perfil</label><select id="nu-role"><option value="func">Usuário Padrão</option><option value="admin">Administrador</option></select></div>
+      <div class="fg"><label>Equipe</label><select id="nu-equipe" onchange="toggleEquipeField('nu')"><option value="contab">Contabilidade</option><option value="outros">Outros</option></select></div>
+      <div class="fg" id="nu-area-fg" style="display:none"><label>Área (digite)</label><input type="text" id="nu-area" placeholder="ex: RH, PCP, Financeiro"></div>
+      <div class="fg" id="nu-chefia-fg" style="display:none"><label>E-mail da chefia (opcional)</label><input type="email" id="nu-chefia" placeholder="chefia@orthocrin.com.br"></div>
       <div class="fg"><label>Senha inicial</label><input type="text" id="nu-pass" value="123456"></div>
     </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);margin:4px 0 12px;cursor:pointer"><input type="checkbox" id="nu-forcar" style="width:auto;margin:0"> Exigir troca de senha no próximo login</label>
     <button class="btn btn-p" onclick="addUsuario()">+ Adicionar</button>
     <div class="err hidden" id="nu-er">Preencha nome e e-mail.</div>
     <div class="suc hidden" id="nu-ok">✓ Usuário adicionado!</div>
@@ -551,9 +707,13 @@ tr.rc{background:var(--conc-bg)}
     <div class="f2">
       <div class="fg"><label>Nome</label><input type="text" id="eu-nm"></div>
       <div class="fg"><label>E-mail</label><input type="email" id="eu-em"></div>
-      <div class="fg"><label>Perfil</label><select id="eu-role"><option value="func">Funcionário</option><option value="admin">Administrador</option></select></div>
+      <div class="fg"><label>Perfil</label><select id="eu-role"><option value="func">Usuário Padrão</option><option value="admin">Administrador</option></select></div>
+      <div class="fg"><label>Equipe</label><select id="eu-equipe" onchange="toggleEquipeField('eu')"><option value="contab">Contabilidade</option><option value="outros">Outros</option></select></div>
+      <div class="fg" id="eu-area-fg" style="display:none"><label>Área (digite)</label><input type="text" id="eu-area" placeholder="ex: RH, PCP, Financeiro"></div>
+      <div class="fg" id="eu-chefia-fg" style="display:none"><label>E-mail da chefia (opcional)</label><input type="email" id="eu-chefia" placeholder="chefia@orthocrin.com.br"></div>
       <div class="fg"><label>Nova senha</label><input type="text" id="eu-pass" placeholder="Deixe em branco para manter"></div>
     </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);margin:4px 0 12px;cursor:pointer"><input type="checkbox" id="eu-forcar" style="width:auto;margin:0"> Exigir troca de senha no próximo login</label>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-p" onclick="saveEditUser()">Salvar</button>
       <button class="btn btn-d" onclick="deleteUser()">Remover</button>
@@ -574,6 +734,36 @@ tr.rc{background:var(--conc-bg)}
       <button class="btn btn-sm" onclick="closeLog()">✕</button>
     </div>
     <div id="log-lista"><div class="empty">Carregando...</div></div>
+  </div>
+</div>
+
+<!-- MODAL JUSTIFICATIVA OBRIGATÓRIA -->
+<div id="modal-just" class="modal-bg hidden">
+  <div class="modal confirm-modal">
+    <div style="font-size:22px;margin-bottom:.5rem">⚠️</div>
+    <div class="confirm-msg" id="just-msg" style="margin-bottom:1rem">Esta tarefa de fechamento está atrasada. Informe a justificativa antes de salvar.</div>
+    <textarea id="just-input" class="oi" rows="3" placeholder="Descreva o motivo do atraso..." style="width:100%;font-size:13px;margin-bottom:1rem;min-height:64px"></textarea>
+    <div class="confirm-btns">
+      <button class="btn btn-p" id="just-yes">Salvar justificativa</button>
+      <button class="btn" id="just-no">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TROCAR SENHA -->
+<div id="modal-senha" class="modal-bg hidden">
+  <div class="modal" style="max-width:420px">
+    <div style="font-size:16px;font-weight:500;margin-bottom:.25rem" id="sn-titulo">Alterar minha senha</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem" id="sn-msg">Defina uma nova senha de acesso.</div>
+    <div class="fg" id="sn-atual-fg"><label>Senha atual</label><input type="password" id="sn-atual" placeholder="Sua senha atual" autocomplete="current-password"></div>
+    <div class="fg"><label>Nova senha</label><input type="password" id="sn-nova" placeholder="Mínimo de 6 caracteres" autocomplete="new-password"></div>
+    <div class="fg"><label>Confirmar nova senha</label><input type="password" id="sn-conf" placeholder="Repita a nova senha" autocomplete="new-password" onkeydown="if(event.key==='Enter')salvarNovaSenha()"></div>
+    <div class="err hidden" id="sn-er"></div>
+    <div class="suc hidden" id="sn-ok">✓ Senha alterada com sucesso!</div>
+    <div style="display:flex;gap:8px;margin-top:1rem">
+      <button class="btn btn-p" onclick="salvarNovaSenha()">Salvar senha</button>
+      <button class="btn" id="sn-cancel" onclick="fecharTrocaSenha()">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -656,7 +846,7 @@ function confirmDialog(msg){
 // ── TECLA ESCAPE FECHA MODAIS ────────────────────────────────────────────────
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape')return;
-  ['modal-users','modal-edit-user','modal-log','modal-confirm'].forEach(id=>{
+  ['modal-users','modal-edit-user','modal-log','modal-confirm','modal-just'].forEach(id=>{
     document.getElementById(id).classList.add('hidden');
   });
 });
@@ -769,6 +959,79 @@ const bC=p=>p>=80?'#16a34a':p>=50?'#2563eb':'#d97706';
 const fMes=m=>m?MESES[parseInt(m)-1]||m:'—';
 const fTS=ts=>{if(!ts)return'—';const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
 
+// ── HELPERS EQUIPE / ÁREA / CUSTO MÉDIO (v4.0) ───────────────────────────────
+const escJs=s=>(s||'').replace(/'/g,"\\'");
+const isFechamento=t=>t.tipoRotina==='fechamento';
+const isCM=t=>isFechamento(t)&&(t.interfereCustoMedio===true||t.interfereCustoMedio==='sim');
+const userEquipe=uid=>userMap.get(uid)?.equipe||'contab';
+const userArea=uid=>userMap.get(uid)?.area||'';
+function areaBadge(area){
+  if(!area)return'';
+  const m={PCP:['#166534','#f0fdf4'],Financeiro:['#1d4ed8','#eff6ff'],RH:['#be185d','#fce7f3'],Digital:['#7e22ce','#fdf4ff']};
+  const c=m[area]||['#334155','#f1f5f9'];
+  return`<span class="area-badge" style="color:${c[0]};background:${c[1]}">${area}</span>`;
+}
+// Diálogo de justificativa obrigatória — retorna o texto, ou null se cancelado
+function justDialog(msg,optional){
+  return new Promise(res=>{
+    document.getElementById('just-msg').textContent=msg||'Esta tarefa está atrasada.';
+    const inp=document.getElementById('just-input');inp.value='';inp.classList.remove('just-required');
+    const yes=document.getElementById('just-yes'),no=document.getElementById('just-no');
+    yes.textContent=optional?'Salvar com justificativa':'Salvar justificativa';
+    no.textContent=optional?'Salvar sem justificar':'Cancelar';
+    document.getElementById('modal-just').classList.remove('hidden');
+    setTimeout(()=>inp.focus(),50);
+    const close=v=>{document.getElementById('modal-just').classList.add('hidden');yes.replaceWith(yes.cloneNode(true));no.replaceWith(no.cloneNode(true));res(v);};
+    yes.onclick=()=>{const val=inp.value.trim();if(!val){inp.classList.add('just-required');return;}close(val);};
+    no.onclick=()=>close(optional?'':null);
+  });
+}
+
+// Opção B: tarefas recém-concluídas continuam visíveis na sessão (para poder editar a observação)
+// Botão Salvar: alterações de status/observação ficam em rascunho até o usuário clicar em Salvar
+let drafts=new Map();
+function atualizarDraft(id,prefixo){
+  const st=document.getElementById('st-'+prefixo+'-'+id);
+  const ob=document.getElementById('obs-'+prefixo+'-'+id);
+  if(!st)return;
+  const t=tarefas.find(x=>x.id===id);
+  const novoSt=st.value, novaOb=ob?ob.value:'';
+  if(t&&novoSt===t.status&&novaOb===(t.obs||''))drafts.delete(id); // sem alteração real
+  else drafts.set(id,{status:novoSt,obs:novaOb});
+}
+window.onStatusChange=function(id,prefixo){
+  atualizarDraft(id,prefixo);
+  (prefixo==='adm'?rMyTasks:rFunc)(); // re-renderiza para atualizar trava/observação/botão
+};
+window.salvarLinha=async function(id,prefixo){
+  const draft=drafts.get(id);if(!draft)return;
+  const t=tarefas.find(x=>x.id===id);if(!t)return;
+  let novoStatus=draft.status, novaObs=(draft.obs||'').trim();
+  const late=dR(t.prazo)<0, eq=userEquipe(t.resp);
+  // Justificativa de atraso no momento do Salvar
+  if(late&&novoStatus!=='pendente'&&!novaObs){
+    if(eq==='outros'&&isFechamento(t)){
+      const r=await justDialog(`A tarefa "${t.nome}" é de fechamento e está atrasada. Informe a justificativa para registrar a mudança de status.`,false);
+      if(r===null)return; // cancelou: mantém o rascunho
+      novaObs=r;
+    }else if(eq==='contab'){
+      const r=await justDialog(`A tarefa "${t.nome}" está atrasada. Deseja registrar uma justificativa para o atraso? (opcional)`,true);
+      if(r===null)return;
+      if(r)novaObs=r;
+    }
+  }
+  const data={status:novoStatus,obs:novaObs};
+  if(novoStatus==='concluida'&&!t.dataConclusao)data.dataConclusao=new Date().toISOString().split('T')[0];
+  else if(novoStatus!=='concluida')data.dataConclusao='';
+  try{
+    await updateDoc(doc(db,'tarefas',id),data);
+    if(novoStatus!==t.status)await registrarLog(id,novoStatus,CU?.name||'Sistema');
+    drafts.delete(id);
+    toast('💾 Alterações salvas');
+    (prefixo==='adm'?rMyTasks:rFunc)();
+  }catch(e){alert('Erro: '+e.message);}
+};
+
 function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
 
 function sBadge(st,d,alerta){
@@ -835,7 +1098,7 @@ async function resetarMensais(){
     const jaExiste=tarefas.some(x=>x.id!==t.id&&x.recorrencia==='mensal'&&x.nome===t.nome&&x.resp===t.resp&&x.mesReferencia===mesAtual&&x.status!=='concluida');
     if(jaExiste)continue;
     const du=parseInt(t.diaUtil)||3;
-    await addDoc(collection(db,'tarefas'),{nome:t.nome,resp:t.resp,prazo:calcPrazoMensal(mesAtual,du)||t.prazo,recorrencia:'mensal',mesReferencia:mesAtual,alerta:t.alerta||2,status:'pendente',obs:'',dataConclusao:'',diaUtil:du});
+    await addDoc(collection(db,'tarefas'),{nome:t.nome,resp:t.resp,prazo:calcPrazoMensal(mesAtual,du)||t.prazo,recorrencia:'mensal',mesReferencia:mesAtual,alerta:t.alerta||2,status:'pendente',obs:'',dataConclusao:'',diaUtil:du,tipoRotina:t.tipoRotina||'comum',interfereCustoMedio:t.interfereCustoMedio||false});
   }
   resetados.push(chave);localStorage.setItem('oc_reset',JSON.stringify(resetados));
 }
@@ -848,6 +1111,7 @@ async function enviarEmailLembrete(tarefa,usuario,admins){
   try{
     await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,params);
     for(const adm of admins)if(adm.email&&adm.email!==usuario.email)await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{...params,destinatario_nome:adm.name,destinatario_email:adm.email});
+    if(usuario.equipe==='outros'&&usuario.chefiaEmail&&usuario.chefiaEmail!==usuario.email)await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{...params,destinatario_nome:'Chefia',destinatario_email:usuario.chefiaEmail});
     emailStatus[tarefa.id]='enviado';
     // Esconde banner se estava visível (limite resolvido)
     document.getElementById('email-limit-banner')?.classList.remove('show');
@@ -914,6 +1178,8 @@ function startListeners(){
         if(!abaAt.classList.contains('hidden'))rAT();
         const abaM=document.getElementById('at-m');
         if(!abaM.classList.contains('hidden'))rMyTasks();
+        const abaF=document.getElementById('at-f');
+        if(abaF&&!abaF.classList.contains('hidden'))rFech();
         rAL(); // alertas sempre atualizados
       }else rFunc();
     }
@@ -973,7 +1239,7 @@ function populateRespSelect(){
   const ff=document.getElementById('ff'),cur=ff?.value||'';
   if(ff){ff.innerHTML='<option value="">Todos</option>';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;if(u.id===cur)o.selected=true;ff.appendChild(o)});}
   const rp=document.getElementById('nt-rp');
-  if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':'');rp.appendChild(o)});}
+  if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':u.equipe==='outros'&&u.area?' ('+u.area+')':'');rp.appendChild(o)});}
 }
 function populateMesFiltro(){
   const sel=document.getElementById('fmes');if(!sel)return;
@@ -997,8 +1263,17 @@ window.toggleRecFields=function(){
   document.getElementById('info-mensal').classList.toggle('hidden',!isMensal);
   if(isMensal)atualizarPreviewPrazos();
 };
+window.toggleTipoRotina=function(){
+  const fech=document.getElementById('nt-tipo').value==='fechamento';
+  document.getElementById('fg-cm').style.display=fech?'block':'none';
+};
+window.toggleEquipeField=function(prefix){
+  const outros=document.getElementById(prefix+'-equipe').value==='outros';
+  document.getElementById(prefix+'-area-fg').style.display=outros?'block':'none';
+  document.getElementById(prefix+'-chefia-fg').style.display=outros?'block':'none';
+};
 window.limparFiltrosAdm=function(){
-  ['ff','fst','fr'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['ff','fst','fr','fequipe'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('fmes').value=mesAtual;
   document.getElementById('fdata').value='9999-12-31';
   document.getElementById('fbusca').value='';
@@ -1006,12 +1281,14 @@ window.limparFiltrosAdm=function(){
 };
 window.limparFiltrosMy=function(){
   document.getElementById('my-fst').value='pendente_andamento';
+  document.getElementById('my-fmes').value=mesAtual;
   document.getElementById('my-fdata').value=anoFim;
   document.getElementById('my-fbusca').value='';
   rMyTasks();
 };
 window.limparFiltrosFunc=function(){
   document.getElementById('func-fst').value='pendente_andamento';
+  document.getElementById('func-fmes').value=mesAtual;
   document.getElementById('func-fdata').value=anoFim;
   document.getElementById('func-fbusca').value='';
   rFunc();
@@ -1028,7 +1305,57 @@ window.dL=async function(){
   const senhaOk=(usr.pass===p||usr.pass===hashed);
   if(!senhaOk){document.getElementById('le').classList.remove('hidden');return;}
   document.getElementById('le').classList.add('hidden');
-  CU=usr;usr.role==='admin'?iA():iF();
+  CU=usr;
+  if(usr.forcarTrocaSenha){abrirTrocaSenha(true);return;} // troca obrigatória antes de entrar
+  usr.role==='admin'?iA():iF();
+};
+
+// ── TROCAR SENHA ──────────────────────────────────────────────────────────────
+let senhaForcada=false;
+window.abrirTrocaSenha=function(forced){
+  senhaForcada=!!forced;
+  document.getElementById('sn-atual-fg').style.display=forced?'none':'block';
+  document.getElementById('sn-cancel').style.display=forced?'none':'inline-flex';
+  document.getElementById('sn-titulo').textContent=forced?'Defina sua nova senha':'Alterar minha senha';
+  document.getElementById('sn-msg').textContent=forced?'Por segurança, você precisa definir uma nova senha para continuar.':'Informe a senha atual e escolha uma nova.';
+  ['sn-atual','sn-nova','sn-conf'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sn-er').classList.add('hidden');
+  document.getElementById('sn-ok').classList.add('hidden');
+  document.getElementById('modal-senha').classList.remove('hidden');
+  setTimeout(()=>document.getElementById(forced?'sn-nova':'sn-atual').focus(),60);
+};
+window.fecharTrocaSenha=function(){
+  if(senhaForcada)return; // no modo obrigatório não pode cancelar
+  document.getElementById('modal-senha').classList.add('hidden');
+};
+window.salvarNovaSenha=async function(){
+  const er=document.getElementById('sn-er');
+  const nova=document.getElementById('sn-nova').value;
+  const conf=document.getElementById('sn-conf').value;
+  const mostrarErro=msg=>{er.textContent=msg;er.classList.remove('hidden');};
+  if(!senhaForcada){
+    const atual=document.getElementById('sn-atual').value;
+    const hAtual=await hashSenha(atual);
+    if(!(CU.pass===atual||CU.pass===hAtual)){mostrarErro('Senha atual incorreta.');return;}
+  }
+  if(nova.length<6){mostrarErro('A nova senha deve ter pelo menos 6 caracteres.');return;}
+  if(nova!==conf){mostrarErro('A confirmação não confere com a nova senha.');return;}
+  er.classList.add('hidden');
+  try{
+    const h=await hashSenha(nova);
+    await updateDoc(doc(db,'usuarios',CU.id),{pass:h,forcarTrocaSenha:false});
+    CU.pass=h;CU.forcarTrocaSenha=false;
+    if(senhaForcada){
+      document.getElementById('modal-senha').classList.add('hidden');
+      senhaForcada=false;
+      toast('✓ Senha definida!');
+      CU.role==='admin'?iA():iF();
+    }else{
+      document.getElementById('sn-ok').classList.remove('hidden');
+      toast('✓ Senha alterada!');
+      setTimeout(()=>document.getElementById('modal-senha').classList.add('hidden'),1500);
+    }
+  }catch(e){mostrarErro('Erro ao salvar: '+e.message);}
 };
 window.logout=function(){
   // FIX #6: cancela listeners ao sair
@@ -1053,22 +1380,26 @@ function iA(){
   document.getElementById('fmes').value=mesAtual;
   document.getElementById('fdata').value='9999-12-31';
   document.getElementById('my-fst').value='pendente_andamento';
+  document.getElementById('my-fmes').value=mesAtual;
   document.getElementById('my-fdata').value=anoFim;
   const dFano=document.getElementById('d-fano');
   if(dFano){dFano.innerHTML='';for(let y=anoAtual;y>=anoAtual-2;y--){const o=document.createElement('option');o.value=y;o.textContent=y;dFano.appendChild(o);}}
   document.getElementById('d-fmes').value=mesAtual;
+  const fFano=document.getElementById('f-fano');
+  if(fFano){fFano.innerHTML='';for(let y=anoAtual;y>=anoAtual-2;y--){const o=document.createElement('option');o.value=y;o.textContent=y;fFano.appendChild(o);}}
+  document.getElementById('f-fmes').value=mesAtual;
   initSortHeaders();
   rAM();rAT();rAL();rMyTasks();resetarMensais();
   setTimeout(()=>verificarEEnviarEmails(),3000);
   show('sc-adm');
 }
 window.aTab=function(t,el){
-  ['t','m','e','n','d','h'].forEach(x=>{const el=document.getElementById('at-'+x);if(el)el.classList.add('hidden');});
+  ['t','m','e','n','d','f','h'].forEach(x=>{const el=document.getElementById('at-'+x);if(el)el.classList.add('hidden');});
   document.querySelectorAll('#sc-adm .tab-bar .tab').forEach(x=>x.classList.remove('active'));
   const abaEl=document.getElementById('at-'+t);
   abaEl.classList.remove('hidden');abaEl.classList.add('aba-fade');
   el.classList.add('active');
-  if(t==='e')rEq();if(t==='d')rDash();if(t==='m')rMyTasks();
+  if(t==='e')rEq();if(t==='d')rDash();if(t==='m'){drafts.clear();rMyTasks();}if(t==='f')rFech();
 };
 
 // ── MÉTRICAS ──────────────────────────────────────────────────────────────────
@@ -1113,8 +1444,10 @@ window.rAT=function(pg){
   const fm=document.getElementById('fmes')?.value||'';
   const fd=document.getElementById('fdata')?.value||'';
   const fb=(document.getElementById('fbusca')?.value||'').toLowerCase().trim(); // FIX #11: busca por texto
+  const feq=document.getElementById('fequipe')?.value||'';
   atList=tarefas;
   if(fi)atList=atList.filter(t=>t.resp===fi);
+  if(feq)atList=atList.filter(t=>userEquipe(t.resp)===feq);
   if(fst)atList=atList.filter(t=>t.status===fst);
   if(fr)atList=atList.filter(t=>t.recorrencia===fr);
   if(fm)atList=atList.filter(t=>t.mesReferencia===fm);
@@ -1125,7 +1458,7 @@ window.rAT=function(pg){
   const tb=document.getElementById('adm-tb');
   const frag=document.createDocumentFragment();
   const emAdm=document.getElementById('adm-em');
-  const temFiltro=fi||fst||fr||fm||fd||fb;
+  const temFiltro=fi||fst||fr||fm||fd||fb||feq;
   emAdm.innerHTML=atList.length===0?(temFiltro?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosAdm();return false;" style="color:var(--blue)">Limpar filtros</a>':'📋 Nenhuma tarefa cadastrada ainda.'):'';
   emAdm.classList.toggle('hidden',atList.length>0);
   const slice=atList.slice((atPage-1)*PAGE,atPage*PAGE);
@@ -1133,25 +1466,26 @@ window.rAT=function(pg){
     const d=dR(t.prazo); // FIX #1: calculado 1x por linha
     const u=userMap.get(t.resp); // FIX #8: O(1)
     const a=parseInt(t.alerta)||2;
+    const eqOut=userEquipe(t.resp)==='outros';
+    const cmTag=isCM(t)?' <span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span>':'';
     const tr=document.createElement('tr');tr.className=trClass(t);
     tr.innerHTML=`
-      <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
-      <td>${u?.name||t.resp}</td><td>${rBadge(t.recorrencia||'eventual')}</td>
+      <td style="font-weight:500"><span class="task-link" onclick="openLog('${t.id}','${escJs(t.nome)}')" title="Ver histórico">${t.nome}</span>${cmTag}</td>
+      <td>${u?.name||t.resp}${eqOut?' '+areaBadge(userArea(t.resp)):''}</td><td>${rBadge(t.recorrencia||'eventual')}</td>
       <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
       <td>${fD(t.prazo)}</td>
       <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
       <td>${sBadge(t.status,d,a)}</td>
       <td style="font-size:11px;color:var(--text2)">${fD(t.dataConclusao)}</td>
       <td style="font-size:11px;color:var(--text2);text-align:center">${a}d</td>
-      <td style="font-size:11px;color:var(--text2)" title="${t.obs||''}">${t.obs||'—'}</td>
+      <td style="font-size:11px;color:var(--text2)" title="${(t.obs||'').replace(/"/g,'&quot;')}">${t.obs||'—'}</td>
       <td style="text-align:center">${emailIconHtml(t.id,t)}</td>
       <td style="text-align:center">${(t.status==='pendente'||t.status==='andamento')&&(d<0||d<=a)
         ?`<button class="btn btn-sm" title="Notificar novamente" style="font-size:14px;padding:3px 7px" onclick="renotificar('${t.id}')">🔔</button>`
         :'<span title="Notificação não disponível neste momento" style="font-size:14px;opacity:0.25;filter:grayscale(1);cursor:not-allowed;display:inline-block">🔔</span>'
       }</td>
-      <td style="white-space:nowrap">
-        <button class="btn btn-sm" title="Histórico" style="font-size:12px;padding:3px 7px;margin-right:3px" onclick="openLog('${t.id}','${t.nome.replace(/'/g,"\\'")}')">📋</button>
-        <button class="btn btn-sm btn-d" onclick="rmT('${t.id}','${t.nome.replace(/'/g,"\\'")}')">🗑</button>
+      <td style="white-space:nowrap;text-align:center">
+        <button class="btn btn-sm btn-d" onclick="rmT('${t.id}','${escJs(t.nome)}')">🗑</button>
       </td>`;
     frag.appendChild(tr);
   });
@@ -1163,20 +1497,39 @@ window.rAT=function(pg){
 
 // ── AUTOSAVE OBS COM DEBOUNCE ─────────────────────────────────────────────────
 const obsTimers={};
-function makeObsTd(id,prefixo,valorAtual){
+function makeObsTd(t,prefixo){
+  const id=t.id;
+  const draft=drafts.get(id);
+  const effStatus=draft?draft.status:t.status;
+  const effObs=draft?draft.obs:(t.obs||'');
+  const hasDraft=!!draft;
+  const savedConcluida=t.status==='concluida';
+  const locked=savedConcluida&&effStatus==='concluida'; // concluída salva e sem reversão em rascunho
+  const fech=isFechamento(t);
   const td=document.createElement('td');td.style.overflow='visible';
   const ta=document.createElement('textarea');
-  ta.className='oi';ta.rows=1;ta.id=`obs-${prefixo}-${id}`;ta.placeholder='Observação...';ta.textContent=valorAtual||'';
-  ta.addEventListener('input',function(){
-    const val=this.value; // FIX #2: captura valor antes do setTimeout
-    clearTimeout(obsTimers[id]);
-    obsTimers[id]=setTimeout(async()=>{
-      try{await updateDoc(doc(db,'tarefas',id),{obs:val});ta.classList.add('salvo');toast('✓ Observação salva');setTimeout(()=>ta.classList.remove('salvo'),1500);}
-      catch(e){console.warn('Obs err:',e);}
-    },800);
-  });
-  ta.addEventListener('blur',function(){clearTimeout(obsTimers[id]);updateDoc(doc(db,'tarefas',id),{obs:this.value}).catch(()=>{});});
-  td.appendChild(ta);return td;
+  ta.rows=1;ta.id=`obs-${prefixo}-${id}`;
+  ta.value=effObs;
+  ta.placeholder=fech?'Justificativa...':'Observação...';
+  if(locked){
+    ta.readOnly=true;ta.className='oi obs-locked';ta.title='Tarefa concluída — bloqueada para edição';
+    ta.addEventListener('mousedown',e=>{e.preventDefault();ta.blur();toast('🔒 Para editar, mude o status para "Em andamento" ou "Pendente"');});
+  }else{
+    ta.className='oi'+(hasDraft?' obs-draft':'');
+    ta.addEventListener('input',function(){
+      atualizarDraft(id,prefixo);
+      const sw=document.getElementById('savewrap-'+prefixo+'-'+id);
+      if(sw)sw.style.display=drafts.has(id)?'flex':'none';
+      ta.classList.toggle('obs-draft',drafts.has(id));
+    });
+  }
+  td.appendChild(ta);
+  const sw=document.createElement('div');
+  sw.id=`savewrap-${prefixo}-${id}`;
+  sw.style.cssText='margin-top:6px;align-items:center;gap:8px;display:'+(hasDraft&&!locked?'flex':'none');
+  sw.innerHTML=`<button class="btn btn-sm btn-p" style="padding:3px 12px;font-size:12px" onclick="salvarLinha('${id}','${prefixo}')">💾 Salvar</button><span style="font-size:11px;color:var(--amber-text);font-weight:500">não salvo</span>`;
+  td.appendChild(sw);
+  return td;
 }
 
 // ── MINHAS TAREFAS ADM ────────────────────────────────────────────────────────
@@ -1185,10 +1538,12 @@ window.rMyTasks=function(){
   const fst=document.getElementById('my-fst')?.value;
   const fd=document.getElementById('my-fdata')?.value||'';
   const fb=(document.getElementById('my-fbusca')?.value||'').toLowerCase().trim();
+  const fm=document.getElementById('my-fmes')?.value||'';
   let m=tarefas.filter(t=>t.resp===CU.id);
   if(fst==='pendente_andamento')m=m.filter(t=>t.status==='pendente'||t.status==='andamento');
   else if(fst&&fst!=='')m=m.filter(t=>t.status===fst);
   // fst==='' significa 'Todos' — não aplica filtro de status
+  if(fm)m=m.filter(t=>t.mesReferencia===fm);
   if(fd)m=m.filter(t=>t.prazo<=fd);
   if(fb)m=m.filter(t=>t.nome.toLowerCase().includes(fb));
   const tot=tarefas.filter(t=>t.resp===CU.id);
@@ -1204,27 +1559,28 @@ window.rMyTasks=function(){
   const focoId=document.activeElement?.id?.startsWith('obs-adm-')?document.activeElement.id:null;
   const frag=document.createDocumentFragment();
   const emMy=document.getElementById('adm-my-em');
-  const temFiltroMy=fst!=='pendente_andamento'||fd||fb;
+  const temFiltroMy=fst!=='pendente_andamento'||fd||fb||fm;
   emMy.innerHTML=m.length===0?(temFiltroMy?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosMy();return false;" style="color:var(--blue)">Limpar filtros</a>':'🎉 Nenhuma tarefa pendente no momento!'):'';
   emMy.classList.toggle('hidden',m.length>0);
   m.forEach(t=>{
     const d=dR(t.prazo),a=parseInt(t.alerta)||2;
-    const tr=document.createElement('tr');tr.className=trClass(t);
+    const cmTag=isCM(t)?' <span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span>':'';
+    const draft=drafts.get(t.id);const effStatus=draft?draft.status:t.status;
+    const tr=document.createElement('tr');tr.className=trClass(t)+(draft?' row-draft':'');
     tr.innerHTML=`
-      <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
+      <td style="font-weight:500"><span class="task-link" onclick="openLog('${t.id}','${escJs(t.nome)}')" title="Ver histórico">${t.nome}</span>${cmTag}</td>
       <td>${rBadge(t.recorrencia||'eventual')}</td>
       <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
       <td>${fD(t.prazo)}</td>
       <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
-      <td><select class="ss" onchange="uSt('${t.id}',this.value)">
-        <option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option>
-        <option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option>
-        <option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option>
+      <td><select id="st-adm-${t.id}" class="ss" onchange="onStatusChange('${t.id}','adm')">
+        <option value="pendente" ${effStatus==='pendente'?'selected':''}>Pendente</option>
+        <option value="andamento" ${effStatus==='andamento'?'selected':''}>Em andamento</option>
+        <option value="concluida" ${effStatus==='concluida'?'selected':''}>Concluída</option>
       </select></td>
 `;
-    tr.appendChild(makeObsTd(t.id,'adm',t.obs));
-    const tl=document.createElement('td');tl.style.textAlign='center';tl.innerHTML=`<button class="btn btn-sm" title="Histórico" style="font-size:13px;padding:3px 7px" onclick="openLog('${t.id}','${t.nome.replace(/'/g,"\\'")}')">📋</button>`;tr.appendChild(tl);
-    const td2=document.createElement('td');td2.style.textAlign='center';td2.innerHTML=`<button class="btn btn-sm btn-d" title="Excluir tarefa" style="font-size:13px;padding:3px 7px" onclick="rmT('${t.id}','${t.nome.replace(/'/g,"\\'")}')">🗑</button>`;tr.appendChild(td2);
+    tr.appendChild(makeObsTd(t,'adm'));
+    const td2=document.createElement('td');td2.style.textAlign='center';td2.innerHTML=`<button class="btn btn-sm btn-d" title="Excluir tarefa" style="font-size:13px;padding:3px 7px" onclick="rmT('${t.id}','${escJs(t.nome)}')">🗑</button>`;tr.appendChild(td2);
     frag.appendChild(tr);
   });
   const tb=document.getElementById('adm-my-tb');tb.innerHTML='';tb.appendChild(frag);
@@ -1239,7 +1595,7 @@ function rEq(){
     const{ok,at}=calcStats(m);
     const p=m.length?Math.round(ok/m.length*100):0;
     const d=document.createElement('div');d.className='eq-card';
-    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${u.role==='admin'?'b-adm':'b-pend'}">${u.role==='admin'?'Admin':'Funcionário'}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${p}% concluído</div><div class="pw"><div class="pb" style="width:${p}%;background:${bC(p)}"></div></div>`;
+    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${u.role==='admin'?'b-adm':'b-pend'}">${u.role==='admin'?'Admin':'Usuário Padrão'}</span>${u.equipe==='outros'?' <span class="badge b-outros">'+(u.area||'Outros')+'</span>':''}</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${p}% concluído</div><div class="pw"><div class="pb" style="width:${p}%;background:${bC(p)}"></div></div>`;
     w.appendChild(d);
   });
 }
@@ -1249,16 +1605,19 @@ window.addT=async function(){
   const nm=document.getElementById('nt-nm').value.trim(),rp=document.getElementById('nt-rp').value,rec=document.getElementById('nt-rec').value,isMensal=rec==='mensal';
   if(!nm||!rp){document.getElementById('nt-er').classList.remove('hidden');return;}
   document.getElementById('nt-er').classList.add('hidden');
+  const tipoRotina=document.getElementById('nt-tipo').value;
+  const interfereCustoMedio=tipoRotina==='fechamento'&&document.getElementById('nt-cm').value==='sim';
   try{
     if(isMensal){
       const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
       const meses=checks.length?checks:[mesAtual],du=parseInt(document.getElementById('nt-du').value)||3,alerta=parseInt(document.getElementById('nt-alerta-m').value)||2,st=document.getElementById('nt-st-m').value;
-      for(const mes of meses){const prazo=calcPrazoMensal(mes,du);if(!prazo){alert('Não foi possível calcular o prazo para '+fMes(mes));continue;}await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo,recorrencia:'mensal',mesReferencia:mes,alerta,status:st,obs:'',dataConclusao:'',diaUtil:du});}
+      for(const mes of meses){const prazo=calcPrazoMensal(mes,du);if(!prazo){alert('Não foi possível calcular o prazo para '+fMes(mes));continue;}await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo,recorrencia:'mensal',mesReferencia:mes,alerta,status:st,obs:'',dataConclusao:'',diaUtil:du,tipoRotina,interfereCustoMedio});}
     }else{
       const pr=document.getElementById('nt-pr').value;if(!pr){document.getElementById('nt-er').classList.remove('hidden');return;}
-      await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:document.getElementById('nt-mes-ref').value,alerta:parseInt(document.getElementById('nt-alerta').value)||2,status:document.getElementById('nt-st').value,obs:'',dataConclusao:''});
+      await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:document.getElementById('nt-mes-ref').value,alerta:parseInt(document.getElementById('nt-alerta').value)||2,status:document.getElementById('nt-st').value,obs:'',dataConclusao:'',tipoRotina,interfereCustoMedio});
     }
     document.getElementById('nt-nm').value='';
+    document.getElementById('nt-tipo').value='comum';toggleTipoRotina();
     document.getElementById('nt-ok').classList.remove('hidden');
     setTimeout(()=>document.getElementById('nt-ok').classList.add('hidden'),3000);
     window.aTab('t',document.querySelectorAll('#sc-adm .tab-bar .tab')[0]);
@@ -1320,7 +1679,11 @@ function iF(){
   document.getElementById('func-av').textContent=ini(CU.name);
   document.getElementById('func-mes').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
   document.getElementById('func-fst').value='pendente_andamento';
+  document.getElementById('func-fmes').value=mesAtual;
   document.getElementById('func-fdata').value=anoFim;
+  const fdFano=document.getElementById('fd-fano');
+  if(fdFano){fdFano.innerHTML='';for(let y=anoAtual;y>=anoAtual-2;y--){const o=document.createElement('option');o.value=y;o.textContent=y;fdFano.appendChild(o);}}
+  document.getElementById('fd-fmes').value=mesAtual;
   rFunc();setTimeout(()=>verificarEEnviarEmails(),3000);show('sc-func');
 }
 window.fTab=function(t,el){
@@ -1329,6 +1692,7 @@ window.fTab=function(t,el){
   const ftEl=document.getElementById('ft-'+t);
   ftEl.classList.remove('hidden');ftEl.classList.add('aba-fade');
   el.classList.add('active');
+  if(t==='t'){drafts.clear();rFunc();}
   if(t==='d')rFuncDash();
 };
 
@@ -1337,9 +1701,11 @@ window.rFunc=function rFunc(){
   const fst=document.getElementById('func-fst')?.value;
   const fd=document.getElementById('func-fdata')?.value||'';
   const fb=(document.getElementById('func-fbusca')?.value||'').toLowerCase().trim();
+  const fm=document.getElementById('func-fmes')?.value||'';
   let m=tarefas.filter(t=>t.resp===CU.id);
   if(fst==='pendente_andamento')m=m.filter(t=>t.status==='pendente'||t.status==='andamento');
   else if(fst&&fst!=='')m=m.filter(t=>t.status===fst);
+  if(fm)m=m.filter(t=>t.mesReferencia===fm);
   // fst==='' significa 'Todos' — não aplica filtro de status
   if(fd)m=m.filter(t=>t.prazo<=fd);
   if(fb)m=m.filter(t=>t.nome.toLowerCase().includes(fb));
@@ -1356,42 +1722,46 @@ window.rFunc=function rFunc(){
   const focoId=document.activeElement?.id?.startsWith('obs-func-')?document.activeElement.id:null;
   const frag=document.createDocumentFragment();
   const emFunc=document.getElementById('func-em');
-  const temFiltroFunc=fst!=='pendente_andamento'||fd||fb;
+  const temFiltroFunc=fst!=='pendente_andamento'||fd||fb||fm;
   emFunc.innerHTML=m.length===0?(temFiltroFunc?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosFunc();return false;" style="color:var(--blue)">Limpar filtros</a>':'🎉 Nenhuma tarefa pendente no momento!'):'';
   emFunc.classList.toggle('hidden',m.length>0);
   m.forEach(t=>{
     const d=dR(t.prazo),a=parseInt(t.alerta)||2;
-    const tr=document.createElement('tr');tr.className=trClass(t);
+    const cmTag=isCM(t)?' <span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span>':'';
+    const draft=drafts.get(t.id);const effStatus=draft?draft.status:t.status;
+    const tr=document.createElement('tr');tr.className=trClass(t)+(draft?' row-draft':'');
     tr.innerHTML=`
-      <td style="font-weight:500" title="${t.nome}">${t.nome}</td>
+      <td style="font-weight:500"><span class="task-link" onclick="openLog('${t.id}','${escJs(t.nome)}')" title="Ver histórico">${t.nome}</span>${cmTag}</td>
       <td>${rBadge(t.recorrencia||'eventual')}</td>
       <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
       <td>${fD(t.prazo)}</td>
       <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
-      <td><select class="ss" onchange="uSt('${t.id}',this.value)">
-        <option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option>
-        <option value="andamento" ${t.status==='andamento'?'selected':''}>Em andamento</option>
-        <option value="concluida" ${t.status==='concluida'?'selected':''}>Concluída</option>
+      <td><select id="st-func-${t.id}" class="ss" onchange="onStatusChange('${t.id}','func')">
+        <option value="pendente" ${effStatus==='pendente'?'selected':''}>Pendente</option>
+        <option value="andamento" ${effStatus==='andamento'?'selected':''}>Em andamento</option>
+        <option value="concluida" ${effStatus==='concluida'?'selected':''}>Concluída</option>
       </select></td>
 `;
-    tr.appendChild(makeObsTd(t.id,'func',t.obs));
-    const tl=document.createElement('td');tl.style.textAlign='center';tl.innerHTML=`<button class="btn btn-sm" title="Histórico" style="font-size:13px;padding:3px 7px" onclick="openLog('${t.id}','${t.nome.replace(/'/g,"\\'")}')">📋</button>`;tr.appendChild(tl);
+    tr.appendChild(makeObsTd(t,'func'));
     frag.appendChild(tr);
   });
   const tb=document.getElementById('func-tb');tb.innerHTML='';tb.appendChild(frag);
   if(focoId){const el=document.getElementById(focoId);if(el)el.focus();}
 }
 
-function rFuncDash(){
+window.rFuncDash=function rFuncDash(){
   if(!CU)return;
-  const m=tarefas.filter(t=>t.resp===CU.id);
+  const fmes=document.getElementById('fd-fmes')?.value||'';
+  const fano=parseInt(document.getElementById('fd-fano')?.value||anoAtual);
+  let m=tarefas.filter(t=>t.resp===CU.id&&t.prazo&&parseInt(t.prazo.substring(0,4))===fano);
+  if(fmes)m=m.filter(t=>t.mesReferencia===fmes);
   const{ok,at,vc,tot}=calcStats(m);
   const an=m.filter(t=>t.status==='andamento').length,pe=m.filter(t=>t.status==='pendente').length;
   const p=tot?Math.round(ok/tot*100):0;
-  const titulo='Meu desempenho — '+CU.name;
-  document.getElementById('fd-titulo').textContent=titulo;
-  document.getElementById('fd-print-header').textContent=titulo;
-  document.getElementById('fd-sub').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const tituloMes=fmes?fMes(fmes)+' de '+fano:'Todos os meses — '+fano;
+  document.getElementById('fd-titulo').textContent='Meu desempenho — '+CU.name;
+  document.getElementById('fd-print-header').textContent='Meu desempenho — '+CU.name+' — '+tituloMes;
+  document.getElementById('fd-sub').textContent=tituloMes;
   document.getElementById('fd-kpi').innerHTML=
     metricHTML('Total',tot)+metricHTML('Concluídas',ok,'s',p+'%')+
     metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
@@ -1409,14 +1779,91 @@ function rFuncDash(){
   document.getElementById('fd-venc').innerHTML=vencendo.length?`<div class="card" style="padding:0.75rem 1.25rem">${vencendo.map(t=>`<div class="rr"><div style="flex:1;font-size:13px;font-weight:500">${t.nome}</div><div style="font-size:12px;color:var(--text2);margin-right:8px">${fD(t.prazo)}</div>${sBadge(t.status,dR(t.prazo),t.alerta||2)}</div>`).join('')}</div>`:`<div class="empty">Nenhuma tarefa vencendo nos próximos 7 dias 🎉</div>`;
 }
 
-// ── AÇÕES ─────────────────────────────────────────────────────────────────────
-window.uSt=async function(id,v){
-  const data={status:v};
-  if(v==='concluida'&&!tarefas.find(t=>t.id===id)?.dataConclusao)data.dataConclusao=new Date().toISOString().split('T')[0];
-  else if(v!=='concluida')data.dataConclusao='';
-  try{await updateDoc(doc(db,'tarefas',id),data);await registrarLog(id,v,CU?.name||'Sistema');toast('✓ Status atualizado');}
-  catch(e){alert('Erro: '+e.message);}
+// ── FECHAMENTO (Modelo C — duas colunas) ──────────────────────────────────────
+let fechFiltro='todas';
+window.setFechFiltro=function(f,el){
+  fechFiltro=f;
+  document.querySelectorAll('.fech-toggle button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  rFech();
 };
+window.rFech=function rFech(){
+  const fmes=document.getElementById('f-fmes')?.value||mesAtual;
+  const fano=parseInt(document.getElementById('f-fano')?.value||anoAtual);
+  const titulo=fMes(fmes)+' de '+fano;
+  document.getElementById('f-subtitulo').textContent='Referência: '+titulo+' · somente tarefas de fechamento';
+  const ph=document.getElementById('f-print-header');if(ph)ph.textContent='Orthocrin — Fechamento: '+titulo;
+  // Base: tarefas de fechamento no mês/ano selecionado
+  let base=tarefas.filter(t=>isFechamento(t)&&t.prazo&&parseInt(t.prazo.substring(0,4))===fano);
+  if(fmes)base=base.filter(t=>t.mesReferencia===fmes);
+  // KPIs
+  const total=base.length;
+  const noPrazo=base.filter(t=>t.status==='concluida'&&(!t.dataConclusao||t.dataConclusao<=t.prazo)).length;
+  const pctPrazo=total?Math.round(noPrazo/total*100):0;
+  const cmLate=base.filter(t=>isCM(t)&&t.status!=='concluida'&&dR(t.prazo)<0);
+  const diasCM=cmLate.reduce((s,t)=>s+Math.abs(dR(t.prazo)),0);
+  document.getElementById('f-kpi').innerHTML=
+    metricHTML('Entregas de fechamento',total)+
+    metricHTML('Entregues no prazo',noPrazo,'s',pctPrazo+'% do total')+
+    metricHTML('Críticas atrasadas',cmLate.length,'d','custo médio')+
+    metricHTML('Dias de atraso',diasCM,'d','nas críticas');
+  animarMetricas('f-kpi');
+  // Split por equipe do responsável
+  let contab=base.filter(t=>userEquipe(t.resp)==='contab');
+  let outros=base.filter(t=>userEquipe(t.resp)==='outros');
+  if(fechFiltro==='cm'){contab=contab.filter(isCM);outros=outros.filter(isCM);}
+  else if(fechFiltro==='naocm'){contab=contab.filter(t=>!isCM(t));outros=outros.filter(t=>!isCM(t));}
+  renderFechCol('fech-col-contab',contab,'contab');
+  renderFechCol('fech-col-outros',outros,'outros');
+};
+function renderFechCol(id,list,equipe){
+  const el=document.getElementById(id);if(!el)return;
+  // Ordena: custo médio primeiro, depois por prazo
+  const sorted=[...list].sort((a,b)=>{const ca=isCM(a)?0:1,cb=isCM(b)?0:1;if(ca!==cb)return ca-cb;return dR(a.prazo)-dR(b.prazo);});
+  const ok=sorted.filter(t=>t.status==='concluida').length;
+  const late=sorted.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+  const pend=sorted.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0).length;
+  const ic=equipe==='contab'?'🏢':'📦';
+  const icbg=equipe==='contab'?'var(--brand-lt)':'#fdf4ff';
+  const titulo=equipe==='contab'?'Contabilidade':'Outras áreas';
+  let html=`<div class="fech-col-h"><div class="fech-col-ic" style="background:${icbg}">${ic}</div><div class="fech-col-t">${titulo}</div><div class="fech-col-c">${sorted.length} tarefa(s)</div></div>`;
+  html+=`<div class="fech-minik"><div class="fech-mk"><div class="fech-mk-v" style="color:var(--green)">${ok}</div><div class="fech-mk-l">${equipe==='contab'?'Concluídas':'Entregues'}</div></div><div class="fech-mk"><div class="fech-mk-v" style="color:var(--red)">${late}</div><div class="fech-mk-l">Atrasadas</div></div><div class="fech-mk"><div class="fech-mk-v" style="color:var(--amber)">${pend}</div><div class="fech-mk-l">Pendentes</div></div></div>`;
+  if(!sorted.length)html+='<div class="empty" style="padding:1.5rem 1rem">Nenhuma entrega de fechamento neste período.</div>';
+  else html+=sorted.map(t=>fechItemHtml(t,equipe)).join('');
+  el.innerHTML=html;
+}
+function fechItemHtml(t,equipe){
+  const u=userMap.get(t.resp);const d=dR(t.prazo);const cm=isCM(t);
+  let dias='',cls='';
+  if(t.status==='concluida'){
+    if(t.dataConclusao){const diff=Math.round((new Date(t.prazo+'T00:00:00')-new Date(t.dataConclusao+'T00:00:00'))/86400000);
+      if(diff>0){dias=`✓ ${diff}d antes`;cls='ok';}else if(diff===0){dias='✓ no prazo';cls='ok';}else{dias=`✗ ${Math.abs(diff)}d de atraso`;cls='atr';}}
+    else{dias='✓ Entregue';cls='ok';}
+  }else if(d<0){dias=`⚠ ${Math.abs(d)}d de atraso`;cls='atr';}
+  else if(d===0){dias='⏱ vence hoje';cls='venc';}
+  else{dias=`${d}d restantes`;cls='pend';}
+  const cmb=cm?`<span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span>`:'';
+  const areaB=equipe==='outros'?areaBadge(userArea(t.resp))+' ':'';
+  let just='';
+  if(t.obs&&t.obs.trim())just=`<div class="fech-just">📝 ${t.obs.replace(/</g,'&lt;')}</div>`;
+  else if(d<0&&t.status!=='concluida')just=`<div class="fech-just pend">⚠ Justificativa pendente</div>`;
+  return`<div class="fech-item${cm?' cm':''}">
+    <div class="fech-item-top">
+      <div style="flex:1;min-width:0">
+        <div>${areaB}<span class="fech-item-nome" onclick="openLog('${t.id}','${escJs(t.nome)}')" title="Ver histórico">${t.nome}</span>${cmb}</div>
+        <div class="fech-item-sub">${u?.name||'—'} · Prazo ${fD(t.prazo)}${t.status==='concluida'&&t.dataConclusao?' · Entregue '+fD(t.dataConclusao):''}</div>
+        ${just}
+      </div>
+      <div style="flex-shrink:0;text-align:right">
+        <div>${sBadge(t.status,d,t.alerta||2)}</div>
+        <div class="fech-dias ${cls}">${dias}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── AÇÕES ─────────────────────────────────────────────────────────────────────
+// (uSt removida: status agora é alterado via rascunho + botão Salvar — ver onStatusChange/salvarLinha)
 window.uDC=async function(id,v){
   try{await updateDoc(doc(db,'tarefas',id),{dataConclusao:v});toast('✓ Data salva');}catch(e){alert('Erro: '+e.message);}
 };
@@ -1433,16 +1880,26 @@ window.renotificar=async function(id){
 window.openUsuarios=()=>{renderUsersList();document.getElementById('modal-users').classList.remove('hidden');};
 window.closeUsuarios=()=>document.getElementById('modal-users').classList.add('hidden');
 function renderUsersList(){
-  document.getElementById('users-list').innerHTML=usuarios.map(u=>`<div class="user-row"><div class="av" style="flex-shrink:0">${ini(u.name)}</div><div style="flex:1;min-width:0"><div style="font-weight:500;font-size:14px">${u.name}</div><div style="font-size:12px;color:var(--text2)">${u.role==='admin'?'Admin':'Funcionário'} · ${u.email||'—'}</div></div><button class="btn btn-sm" onclick="openEditUser('${u.id}')">✏️</button></div>`).join('');
+  document.getElementById('users-list').innerHTML=usuarios.map(u=>{
+    const perfil=u.role==='admin'?'Admin':'Usuário Padrão';
+    const eq=u.equipe==='outros'?` · <span style="color:#7e22ce">${u.area||'Outros'}</span>`:' · Contabilidade';
+    return`<div class="user-row"><div class="av" style="flex-shrink:0">${ini(u.name)}</div><div style="flex:1;min-width:0"><div style="font-weight:500;font-size:14px">${u.name}</div><div style="font-size:12px;color:var(--text2)">${perfil}${eq} · ${u.email||'—'}</div></div><button class="btn btn-sm" onclick="openEditUser('${u.id}')">✏️</button></div>`;
+  }).join('');
 }
 window.addUsuario=async function(){
   const nm=document.getElementById('nu-nm').value.trim(),em=document.getElementById('nu-em').value.trim(),role=document.getElementById('nu-role').value,pass=document.getElementById('nu-pass').value.trim()||'123456';
   if(!nm||!em){document.getElementById('nu-er').classList.remove('hidden');return;}
   document.getElementById('nu-er').classList.add('hidden');
+  const equipe=document.getElementById('nu-equipe').value;
+  const area=equipe==='outros'?document.getElementById('nu-area').value.trim():'';
+  const chefiaEmail=equipe==='outros'?document.getElementById('nu-chefia').value.trim():'';
+  const forcarTrocaSenha=document.getElementById('nu-forcar').checked;
   try{
     const passHash=await hashSenha(pass);
-    await addDoc(collection(db,'usuarios'),{name:nm,email:em,role,pass:passHash});
-    ['nu-nm','nu-em'].forEach(id=>document.getElementById(id).value='');document.getElementById('nu-pass').value='123456';
+    await addDoc(collection(db,'usuarios'),{name:nm,email:em,role,pass:passHash,equipe,area,chefiaEmail,forcarTrocaSenha});
+    ['nu-nm','nu-em','nu-area','nu-chefia'].forEach(id=>document.getElementById(id).value='');document.getElementById('nu-pass').value='123456';
+    document.getElementById('nu-forcar').checked=false;
+    document.getElementById('nu-equipe').value='contab';toggleEquipeField('nu');
     document.getElementById('nu-ok').classList.remove('hidden');setTimeout(()=>document.getElementById('nu-ok').classList.add('hidden'),3000);renderUsersList();
   }catch(e){alert('Erro: '+e.message);}
 };
@@ -1450,6 +1907,11 @@ window.openEditUser=function(id){
   const u=userMap.get(id);if(!u)return;
   document.getElementById('eu-id').value=id;document.getElementById('eu-nm').value=u.name;
   document.getElementById('eu-em').value=u.email;document.getElementById('eu-role').value=u.role;
+  document.getElementById('eu-equipe').value=u.equipe||'contab';
+  document.getElementById('eu-area').value=u.area||'';
+  document.getElementById('eu-chefia').value=u.chefiaEmail||'';
+  toggleEquipeField('eu');
+  document.getElementById('eu-forcar').checked=!!u.forcarTrocaSenha;
   document.getElementById('eu-pass').value='';
   ['eu-er','eu-ok'].forEach(i=>document.getElementById(i).classList.add('hidden'));
   document.getElementById('modal-edit-user').classList.remove('hidden');
@@ -1458,7 +1920,10 @@ window.closeEditUser=()=>document.getElementById('modal-edit-user').classList.ad
 window.saveEditUser=async function(){
   const id=document.getElementById('eu-id').value,nm=document.getElementById('eu-nm').value.trim(),em=document.getElementById('eu-em').value.trim(),role=document.getElementById('eu-role').value,pass=document.getElementById('eu-pass').value.trim();
   if(!nm||!em){document.getElementById('eu-er').classList.remove('hidden');return;}
-  const data={name:nm,email:em,role};
+  const equipe=document.getElementById('eu-equipe').value;
+  const area=equipe==='outros'?document.getElementById('eu-area').value.trim():'';
+  const chefiaEmail=equipe==='outros'?document.getElementById('eu-chefia').value.trim():'';
+  const data={name:nm,email:em,role,equipe,area,chefiaEmail,forcarTrocaSenha:document.getElementById('eu-forcar').checked};
   if(pass){data.pass=await hashSenha(pass);}
   try{
     await updateDoc(doc(db,'usuarios',id),data);
@@ -1478,12 +1943,16 @@ window.deleteUser=async function(){
   if(snap.empty){
     const h=await hashSenha('123456');
     const padrao=[
-      {name:'Guilherme',email:'fiscal3@orthocrin.com.br',role:'admin',pass:h},
-      {name:'Vanusa',email:'vanusa@orthocrin.com.br',role:'admin',pass:h},
-      {name:'Maurílio',email:'fiscal@orthocrin.com.br',role:'func',pass:h},
-      {name:'Samares',email:'fiscal2@orthocrin.com.br',role:'func',pass:h},
-      {name:'Camila',email:'fiscal1@orthocrin.com.br',role:'func',pass:h},
-      {name:'Luciano',email:'recebimento@orthocrin.com.br',role:'func',pass:h},
+      {name:'Guilherme',email:'fiscal3@orthocrin.com.br',role:'admin',pass:h,equipe:'contab',area:'',chefiaEmail:''},
+      {name:'Vanusa',email:'vanusa@orthocrin.com.br',role:'admin',pass:h,equipe:'contab',area:'',chefiaEmail:''},
+      {name:'Maurílio',email:'fiscal@orthocrin.com.br',role:'func',pass:h,equipe:'contab',area:'',chefiaEmail:''},
+      {name:'Samares',email:'fiscal2@orthocrin.com.br',role:'func',pass:h,equipe:'contab',area:'',chefiaEmail:''},
+      {name:'Camila',email:'fiscal1@orthocrin.com.br',role:'func',pass:h,equipe:'contab',area:'',chefiaEmail:''},
+      {name:'Luciano',email:'recebimento@orthocrin.com.br',role:'func',pass:h,equipe:'contab',area:'',chefiaEmail:''},
+      {name:'Thiago Lara',email:'pcp@orthocrin.com.br',role:'func',pass:h,equipe:'outros',area:'PCP',chefiaEmail:''},
+      {name:'Maria Heloisa',email:'financeiro@orthocrin.com.br',role:'func',pass:h,equipe:'outros',area:'Financeiro',chefiaEmail:''},
+      {name:'Katia',email:'rh@orthocrin.com.br',role:'func',pass:h,equipe:'outros',area:'RH',chefiaEmail:''},
+      {name:'Warley',email:'digital@orthocrin.com.br',role:'func',pass:h,equipe:'outros',area:'Digital',chefiaEmail:''},
     ];
     for(const u of padrao)await addDoc(collection(db,'usuarios'),u);
   }
