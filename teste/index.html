@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orthocrin — Controle de Tarefas</title>
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Orthocrin%20Tarefas%22%2C%22short_name%22%3A%22Orthocrin%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f5f4f1%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAA1BMVEX%2F%2F%2F%2BnxBvIAAAAI0lEQVR4nO3BMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAeAMBcAABHAABHQAAAABJRU5ErkJggg%3D%3D%22%2C%22sizes%22%3A%22192x192%22%7D%5D%7D">
+<meta name="theme-color" content="#6B1728">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Orthocrin">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* ── Orthocrin Brand ── */
+  --brand:#6B1728;--brand-dk:#4e1020;--brand-lt:#f9f0f2;--brand-mid:#e8c4cc;
+  /* ── Superfícies ── */
+  --bg:#faeef0;--surface:#ffffff;--surface2:#fdf7f8;
+  /* ── Bordas ── */
+  --border:#e8e4de;--border2:#d4cfc8;
+  /* ── Texto ── */
+  --text:#1c1917;--text2:#6b6460;--text3:#a09b96;
+  /* ── Ações (azul neutro — permanece funcional) ── */
+  --blue:#6B1728;--blue-bg:#f9f0f2;--blue-text:#6B1728;
+  /* ── Semânticas ── */
+  --green:#15803d;--green-bg:#f0fdf4;--green-text:#15803d;
+  --amber:#b45309;--amber-bg:#fffbeb;--amber-text:#92400e;
+  --red:#dc2626;--red-bg:#fef2f2;--red-text:#b91c1c;
+  /* ── Misc ── */
+  --gray-bg:#f1eeea;--radius:8px;--radius-lg:12px;--conc-bg:#dcfce7;
+  --shadow-sm:0 1px 3px rgba(107,23,40,.07),0 1px 2px rgba(107,23,40,.05);
+  --shadow:0 4px 12px rgba(107,23,40,.08),0 2px 4px rgba(107,23,40,.05);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:15px;min-height:100vh}
+.hidden{display:none!important}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:linear-gradient(135deg,var(--brand-dk) 0%,var(--brand) 55%,#9b2438 100%)}
+.login-box{background:var(--surface);border-radius:16px;padding:2.25rem 2rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.login-logo-mark{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.login-logo-mark svg{width:18px;height:18px;fill:#fff}
+.login-logo-text{font-size:20px;font-weight:600;color:var(--brand);letter-spacing:-.3px}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:2rem;margin-top:4px;padding-left:42px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-size:12px;color:var(--text2);font-weight:500;letter-spacing:.02em;text-transform:uppercase}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(107,23,40,.1)}
+textarea{resize:vertical;min-height:56px}
+.btn{padding:9px 16px;border:1.5px solid var(--border2);border-radius:var(--radius);background:var(--surface);font-family:inherit;font-size:14px;color:var(--text);cursor:pointer;transition:all .15s;font-weight:500}
+.btn:hover{background:var(--gray-bg);border-color:var(--border2)}
+.btn-p{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn-p:hover{background:var(--brand-dk);border-color:var(--brand-dk)}
+.btn-sm{padding:5px 12px;font-size:13px}
+.btn-d{color:var(--red);border-color:#fca5a5}
+.btn-d:hover{background:var(--red-bg)}
+.err{font-size:13px;color:var(--red);margin-top:8px}
+.suc{font-size:13px;color:var(--green);margin-top:8px}
+.hint{font-size:12px;color:var(--text3);margin-top:12px}
+.app{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
+.tl{display:flex;align-items:center;gap:12px}
+.av{width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;letter-spacing:.02em}
+.un{font-size:15px;font-weight:600;color:var(--text)}
+.badge{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;letter-spacing:.02em}
+.b-adm{background:var(--brand-lt);color:var(--brand)}
+.b-pend{background:var(--gray-bg);color:var(--text2)}
+.b-and{background:var(--brand-lt);color:var(--brand)}
+.b-conc{background:var(--green-bg);color:var(--green-text)}
+.b-atras{background:var(--red-bg);color:var(--red-text)}
+.b-venc{background:var(--amber-bg);color:var(--amber-text)}
+.b-ok{background:var(--green-bg);color:var(--green-text)}
+.b-warn{background:var(--amber-bg);color:var(--amber-text)}
+.b-mensal{background:#f3e8ff;color:#7c3aed}
+.b-anual{background:#fce7f3;color:#be185d}
+.b-eventual{background:var(--gray-bg);color:var(--text2)}
+.metrics{display:grid;gap:10px;margin-bottom:1.5rem}
+.m5{grid-template-columns:repeat(5,1fr)}
+.m4{grid-template-columns:repeat(4,1fr)}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-sm);transition:box-shadow .15s}
+.metric:hover{box-shadow:var(--shadow)}
+.ml{font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.mv{font-size:24px;font-weight:600;letter-spacing:-.5px}
+.mv.s{color:var(--green)}.mv.w{color:var(--amber)}.mv.d{color:var(--red)}.mv.i{color:var(--brand)}
+.ms{font-size:11px;color:var(--text3);margin-top:3px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow-sm)}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.ct{font-size:15px;font-weight:600;color:var(--text)}
+.tab-bar{display:flex;gap:3px;margin-bottom:1rem;flex-wrap:wrap;background:var(--surface);padding:4px;border-radius:var(--radius);border:1px solid var(--border);width:fit-content;box-shadow:var(--shadow-sm)}
+.tab{padding:6px 16px;border-radius:6px;font-size:13px;cursor:pointer;border:none;color:var(--text2);background:transparent;font-family:inherit;transition:all .15s;font-weight:500}
+.tab:hover{color:var(--text);background:var(--gray-bg)}
+.tab.active{background:var(--brand);color:#fff;font-weight:600;box-shadow:0 1px 4px rgba(107,23,40,.3)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.aba-fade{animation:fadeIn .18s ease}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+/* CABEÇALHOS ORDENÁVEIS */
+th{text-align:left;font-size:11px;font-weight:600;color:var(--text2);padding:7px 8px;border-bottom:2px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--brand)}
+th .sort-icon{margin-left:3px;opacity:.4;font-size:10px}
+th.sort-asc .sort-icon::after{content:'▲'}
+th.sort-desc .sort-icon::after{content:'▼'}
+th:not(.sort-asc):not(.sort-desc) .sort-icon::after{content:'⇅'}
+td{padding:8px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+tr.rv{background:var(--amber-bg)}
+tr.ra{background:var(--red-bg)}
+tr.rc{background:var(--conc-bg)}
+.empty{text-align:center;padding:2.5rem;color:var(--text3);font-size:14px}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:1rem;font-size:13px}
+.aw{background:var(--amber-bg);border:1px solid #fde68a;color:var(--amber-text)}
+.ad{background:var(--red-bg);border:1px solid #fca5a5;color:var(--red-text)}
+.mlink{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-right:6px;font-size:12px;padding:4px 10px;border:1px solid currentColor;border-radius:20px;color:inherit;text-decoration:none;opacity:.8}
+.mlink:hover{opacity:1}
+.eq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.eq-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;box-shadow:var(--shadow-sm)}
+.pw{height:5px;background:var(--gray-bg);border-radius:3px;overflow:hidden;margin-top:6px}
+.pb{height:5px;border-radius:3px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.ss{font-size:13px;padding:5px 8px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit}
+.oi{width:100%;font-size:12px;padding:5px 7px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;resize:none;transition:border-color .3s}
+.oi.salvo{border-color:var(--green)}
+.dr2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.li{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.rr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.rr:last-child{border-bottom:none}
+.rn{font-size:13px;font-weight:600;color:var(--text3);width:18px;text-align:center}
+.rbw{flex:1;height:6px;background:var(--gray-bg);border-radius:3px;overflow:hidden}
+.rb{height:6px;border-radius:3px}
+.rp{font-size:13px;font-weight:600;min-width:36px;text-align:right}
+.pg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.pg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;box-shadow:var(--shadow-sm)}
+.spin{display:inline-block;width:28px;height:28px;border:3px solid var(--border-mid,#e8c4cc);border-top-color:var(--brand);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* MODAIS */
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(28,25,23,0.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;backdrop-filter:blur(2px)}
+.modal{background:var(--surface);border-radius:var(--radius-lg);padding:1.5rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow)}
+.modal-lg{max-width:680px}
+/* Modal de confirmação */
+.confirm-modal{max-width:380px;text-align:center}
+.confirm-modal .confirm-msg{font-size:15px;margin-bottom:1.5rem;line-height:1.5}
+.confirm-modal .confirm-btns{display:flex;gap:10px;justify-content:center}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.user-row:last-child{border-bottom:none}
+.divider{height:1px;background:var(--border);margin:1rem 0}
+.info-box{background:var(--brand-lt);border:1px solid var(--brand-mid);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--brand);margin-bottom:14px}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius)}
+.filter-bar label{font-size:11px;color:var(--text2);white-space:nowrap;font-weight:500;text-transform:uppercase;letter-spacing:.03em}
+/* Busca por texto */
+.search-wrap{position:relative;display:flex;align-items:center}
+.search-wrap input{padding-left:28px;font-size:13px;padding-top:5px;padding-bottom:5px}
+.search-wrap .search-ico{position:absolute;left:8px;font-size:13px;color:var(--text3);pointer-events:none}
+.prazo-preview{font-size:12px;color:var(--brand);background:var(--brand-lt);border:1px solid var(--brand-mid);border-radius:var(--radius);padding:8px 12px;margin-bottom:14px}
+/* PAGINAÇÃO */
+.pg-bar{display:flex;align-items:center;gap:6px;padding:10px 0;font-size:13px;color:var(--text2);flex-wrap:wrap}
+.pg-bar button{padding:4px 10px;border:1.5px solid var(--border2);border-radius:var(--radius);background:var(--surface);font-size:12px;cursor:pointer;font-weight:500;transition:all .15s}
+.pg-bar button:hover{background:var(--gray-bg)}
+.pg-bar button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.pg-bar button:disabled{opacity:.4;cursor:default}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;font-size:13px;padding:10px 18px;border-radius:var(--radius);z-index:9999;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;max-width:320px;transform:translateY(8px);display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);font-weight:500}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.t-ok{background:#166534;color:#fff}
+.toast.t-err{background:#991b1b;color:#fff}
+.toast.t-warn{background:#92400e;color:#fff}
+.toast.t-info{background:var(--brand-dk);color:#fff}
+/* BANNER LIMITE EMAIL */
+.email-limit-banner{display:none;background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--radius);padding:10px 16px;margin-bottom:1rem;font-size:13px;color:#92400e;align-items:center;gap:10px}
+.email-limit-banner.show{display:flex}
+/* LOG */
+.log-entry{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.log-entry:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+/* PRINT */
+@media print{
+  body{background:#fff;font-size:12px}
+  .topbar,.tab-bar,.filter-bar,.btn,.btn-sm,#adm-al,#func-al,.pg-bar,.d-no-print,.fech-no-print,.fech-filtro-bar,.app-title,.email-limit-banner{display:none!important}
+  .app{padding:0;max-width:100%}
+  .card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}
+  .dr2{grid-template-columns:1fr 1fr}
+  .pg-grid{grid-template-columns:repeat(3,1fr)}
+  .fech-split{grid-template-columns:1fr 1fr}
+  .fech-item.cm{background:#f9f0f2!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  canvas{max-height:180px!important}
+  .d-print-header{display:block!important}
+}
+.d-print-header{display:none;font-size:18px;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--brand)}
+.m3{grid-template-columns:repeat(3,1fr)}
+/* ── TÍTULO DO SISTEMA ── */
+.app-title{font-size:15px;font-weight:600;color:var(--brand);letter-spacing:.05em;margin-bottom:10px;padding-left:2px}
+/* ── BADGES EQUIPE / ÁREA ── */
+.b-outros{background:#fdf4ff;color:#7e22ce}
+.b-contab{background:var(--brand-lt);color:var(--brand)}
+.area-badge{display:inline-flex;align-items:center;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:600;white-space:nowrap;vertical-align:middle}
+/* ── TIPO DE ROTINA / CUSTO MÉDIO (cadastro) ── */
+.cm-box{background:var(--surface2);border:1.5px solid var(--brand-mid);border-radius:var(--radius);padding:10px 12px;margin-bottom:14px}
+.cm-box label{color:var(--brand)}
+/* ── JUSTIFICATIVA OBRIGATÓRIA ── */
+.oi.just-required{border-color:var(--red)!important;background:var(--red-bg)}
+/* ── BOTÃO SALVAR / RASCUNHO / TRAVA ── */
+.oi.obs-draft{border-color:var(--amber-text)!important;background:var(--amber-bg)}
+.oi.obs-locked{background:var(--gray-bg);color:var(--text3);cursor:not-allowed;opacity:.8}
+.row-draft>td{background:#fffdf5}
+.row-draft>td:first-child{box-shadow:inset 3px 0 0 var(--amber-text)}
+/* ── MODELO C — FECHAMENTO ── */
+.fech-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
+.fech-filtro-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:1.25rem;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius)}
+.fech-toggle{display:flex;background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius);overflow:hidden}
+.fech-toggle button{padding:5px 14px;font-size:12px;font-weight:500;border:none;cursor:pointer;color:var(--text2);background:transparent;font-family:inherit}
+.fech-toggle button.active{background:var(--brand);color:#fff}
+.fech-split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fech-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;box-shadow:var(--shadow-sm)}
+.fech-col-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+.fech-col-ic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.fech-col-t{font-size:14px;font-weight:600;color:var(--text)}
+.fech-col-c{font-size:11px;color:var(--text3);margin-left:auto}
+.fech-minik{display:flex;gap:8px;margin-bottom:12px}
+.fech-mk{flex:1;background:var(--surface2);border:1px solid var(--brand-mid);border-radius:var(--radius);padding:8px;text-align:center}
+.fech-mk-v{font-size:18px;font-weight:600}
+.fech-mk-l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.03em;margin-top:2px}
+.fech-item{padding:10px 0;border-bottom:1px solid var(--border)}
+.fech-item:last-child{border-bottom:none}
+.fech-item.cm{background:var(--surface2);margin:0 -1rem;padding:10px 1rem;border-left:3px solid var(--brand)}
+.fech-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.fech-item-nome{font-size:13px;font-weight:500;color:var(--text);cursor:pointer;border-bottom:1px dotted var(--brand-mid)}
+.fech-item-nome:hover{color:var(--brand);border-bottom-color:var(--brand)}
+.fech-item-sub{font-size:11px;color:var(--text2);margin-top:3px}
+.fech-cm-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:600;background:var(--brand);color:#fff;padding:2px 7px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.fech-cm-dot{width:4px;height:4px;border-radius:50%;background:#fff}
+.fech-just{font-size:11px;color:var(--red-text);margin-top:4px;background:var(--red-bg);padding:3px 8px;border-radius:5px;border-left:2px solid var(--red);display:inline-block}
+.fech-just.pend{color:var(--amber-text);background:var(--amber-bg);border-left-color:var(--amber)}
+.fech-dias{font-size:11px;font-weight:600;white-space:nowrap;margin-top:4px}
+.fech-dias.ok{color:var(--green)}.fech-dias.atr{color:var(--red)}.fech-dias.venc{color:var(--amber)}.fech-dias.pend{color:var(--text3)}
+.fech-leg{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:11px;color:var(--text2);flex-wrap:wrap}
+/* ── TAREFA CLICÁVEL (histórico) ── */
+.task-link{cursor:pointer;border-bottom:1px dotted var(--brand-mid);color:var(--text)}
+.task-link:hover{color:var(--brand);border-bottom-color:var(--brand)}
+/* ── min-width para evitar cabeçalhos sobrepostos ── */
+.tw>table{min-width:780px}
+#tbl-at{min-width:1120px}
+@media(max-width:640px){.m5,.m4,.m3{grid-template-columns:1fr 1fr}.f2,.f3,.dr2{grid-template-columns:1fr}.tab-bar{width:100%}.fech-split{grid-template-columns:1fr}.fech-toggle{flex-wrap:wrap;border:none;gap:6px;background:transparent}.fech-toggle button{border:1.5px solid var(--border2);border-radius:var(--radius)}.fech-toggle button.active{border-color:var(--brand)}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- MODAL DE CONFIRMAÇÃO GENÉRICO -->
+<div id="modal-confirm" class="modal-bg hidden">
+  <div class="modal confirm-modal">
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="confirm-btns">
+      <button class="btn btn-d" id="confirm-yes">Confirmar</button>
+      <button class="btn" id="confirm-no">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="sc-load" class="login-page">
+  <div style="text-align:center"><div class="spin"></div><div style="font-size:14px;color:var(--text2)">Conectando...</div></div>
+</div>
+
+<div id="sc-login" class="login-page hidden">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      </div>
+      <span class="login-logo-text">Orthocrin</span>
+    </div>
+    <div class="login-sub">Controle de tarefas da equipe</div>
+    <div class="fg"><label>Usuário</label><input type="text" id="lu" placeholder="Seu nome (ou e-mail)" autocomplete="username"></div>
+    <div class="fg"><label>Senha</label><input type="password" id="lp" placeholder="sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')dL()"></div>
+    <button class="btn btn-p" id="btn-login" style="width:100%" onclick="dL()">Entrar</button>
+    <div class="err hidden" id="le">E-mail ou senha incorretos.</div>
+    <button type="button" onclick="esqueciSenha()" style="background:none;border:none;color:var(--brand);cursor:pointer;font-size:12.5px;margin-top:12px;width:100%;text-decoration:underline;text-underline-offset:2px">Esqueci minha senha</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="sc-adm" class="hidden">
+  <div class="app">
+    <div class="app-title">CONTROLE ROTINAS · CONTABILIDADE</div>
+    <div class="topbar">
+      <div class="tl">
+        <div class="av" id="adm-av"></div>
+        <div><div class="un" id="adm-nm"></div><span class="badge b-adm">Administrador</span></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" onclick="openUsuarios()">👥 Usuários</button>
+        <button class="btn btn-sm" onclick="abrirTrocaSenha(false)">🔑 Alterar senha</button>
+        <button class="btn btn-sm" onclick="logout()">Sair</button>
+      </div>
+    </div>
+    <div id="adm-al"></div>
+    <div class="email-limit-banner" id="email-limit-banner">
+      <span style="font-size:18px">⚠️</span>
+      <div>
+        <strong>Limite de e-mails atingido.</strong>
+        <span id="email-limit-msg"> O serviço de notificações está temporariamente indisponível.</span>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab active" onclick="aTab('t',this)">Tarefas da equipe</button>
+      <button class="tab" onclick="aTab('m',this)">Minhas tarefas</button>
+      <button class="tab" onclick="aTab('e',this)">Equipe</button>
+      <button class="tab" onclick="aTab('n',this)">Nova tarefa</button>
+      <button class="tab" onclick="aTab('d',this)">📊 Dashboard</button>
+      <button class="tab" onclick="aTab('f',this)">📋 Fechamento</button>
+    </div>
+
+    <!-- ABA: TAREFAS DA EQUIPE -->
+    <div id="at-t">
+      <div class="metrics m4" id="adm-met"></div>
+      <div class="card">
+        <div class="ch"><span class="ct">Tarefas da equipe</span><span style="font-size:12px;color:var(--text2)" id="at-count"></span></div>
+        <div class="filter-bar">
+          <div class="search-wrap"><span class="search-ico">🔍</span><input type="text" id="fbusca" placeholder="Buscar tarefa..." oninput="debSearch('rAT')" style="width:160px"></div>
+          <label>Responsável:</label>
+          <select id="ff" onchange="rAT()" class="ss" style="width:auto"><option value="">Todos</option></select>
+          <label>Equipe:</label>
+          <select id="fequipe" onchange="rAT()" class="ss" style="width:auto">
+            <option value="">Todas</option><option value="contab">Contabilidade</option><option value="outros">Outros</option>
+          </select>
+          <label>Status:</label>
+          <select id="fst" onchange="rAT()" class="ss" style="width:auto">
+            <option value="">Todos</option><option value="pendente">Pendente</option>
+            <option value="andamento">Em andamento</option><option value="concluida">Concluída</option>
+          </select>
+          <label>Recorrência:</label>
+          <select id="fr" onchange="rAT()" class="ss" style="width:auto">
+            <option value="">Todas</option><option value="mensal">Mensal</option>
+            <option value="anual">Anual</option><option value="eventual">Eventual</option>
+          </select>
+          <label>Mês ref.:</label>
+          <select id="fmes" onchange="rAT()" class="ss" style="width:auto"><option value="">Todos</option></select>
+          <label>Prazo até:</label>
+          <input type="date" id="fdata" onchange="rAT()" style="width:140px;padding:5px 8px;font-size:13px">
+          <button class="btn btn-sm" onclick="limparFiltrosAdm()">✕ Limpar</button>
+        </div>
+        <div class="tw"><table id="tbl-at">
+          <thead><tr>
+            <th class="sortable" data-col="nome" style="width:15%">Tarefa <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="resp" style="width:8%">Responsável <span class="sort-icon"></span></th>
+            <th style="width:7%">Recorrência</th>
+            <th class="sortable" data-col="mesReferencia" style="width:6%">Mês ref. <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="prazo" style="width:7%">Prazo <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="dias" style="width:5%">Dias <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="status" style="width:9%">Status <span class="sort-icon"></span></th>
+            <th style="width:7%">Conclusão</th>
+            <th style="width:4%">Alerta</th>
+            <th style="width:10%">Observação</th>
+            <th style="width:4%" title="Status da notificação">✉</th>
+            <th style="width:4%" title="Notificar novamente">🔔</th>
+            <th style="width:9%"></th>
+          </tr></thead>
+          <tbody id="adm-tb"></tbody>
+        </table></div>
+        <div id="adm-em" class="empty hidden"></div>
+        <div class="pg-bar" id="at-pg"></div>
+      </div>
+    </div>
+
+    <!-- ABA: MINHAS TAREFAS ADM -->
+    <div id="at-m" class="hidden">
+      <div class="metrics m4" id="adm-my-met"></div>
+      <div id="adm-my-al"></div>
+      <div class="card">
+        <div class="ch"><span class="ct">Minhas tarefas</span><span style="font-size:13px;color:var(--text2)" id="adm-my-mes"></span></div>
+        <div class="filter-bar">
+          <div class="search-wrap"><span class="search-ico">🔍</span><input type="text" id="my-fbusca" placeholder="Buscar..." oninput="debSearch('rMyTasks')" style="width:140px"></div>
+          <label>Status:</label>
+          <select id="my-fst" onchange="rMyTasks()" class="ss" style="width:auto">
+            <option value="pendente_andamento">Pendentes e Em andamento</option>
+            <option value="">Todos</option><option value="pendente">Pendente</option>
+            <option value="andamento">Em andamento</option><option value="concluida">Concluída</option>
+          </select>
+          <label>Mês ref.:</label>
+          <select id="my-fmes" onchange="rMyTasks()" class="ss" style="width:auto">
+            <option value="">Todos</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <label>Prazo até:</label>
+          <input type="date" id="my-fdata" onchange="rMyTasks()" style="width:140px;padding:5px 8px;font-size:13px">
+          <button class="btn btn-sm" onclick="limparFiltrosMy()">✕ Limpar</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr>
+            <th style="width:17%">Tarefa</th><th style="width:8%">Recorrência</th>
+            <th style="width:7%">Mês ref.</th><th style="width:9%">Prazo</th>
+            <th style="width:6%">Dias</th><th style="width:12%">Status</th>
+            <th style="width:33%">Observação / Justificativa</th>
+            <th style="width:5%" title="Excluir tarefa">🗑</th>
+          </tr></thead>
+          <tbody id="adm-my-tb"></tbody>
+        </table></div>
+        <div id="adm-my-em" class="empty hidden"></div>
+      </div>
+    </div>
+
+    <!-- ABA: EQUIPE -->
+    <div id="at-e" class="hidden"><div class="eq-grid" id="eq-cards"></div></div>
+
+    <!-- ABA: NOVA TAREFA -->
+    <div id="at-n" class="hidden">
+      <div class="card">
+        <div class="ch"><span class="ct">Cadastrar nova tarefa</span></div>
+        <div class="f2">
+          <div class="fg"><label>Nome da tarefa</label><input type="text" id="nt-nm" placeholder="ex: Fechar DRE"></div>
+          <div class="fg"><label>Responsável</label><select id="nt-rp"></select></div>
+        </div>
+        <div class="f2">
+          <div class="fg">
+            <label>Tipo de rotina</label>
+            <select id="nt-tipo" onchange="toggleTipoRotina()">
+              <option value="comum">Rotina comum</option>
+              <option value="fechamento">Fechamento</option>
+            </select>
+          </div>
+          <div class="fg" id="fg-cm" style="display:none">
+            <label>Interfere no cálculo do custo médio?</label>
+            <select id="nt-cm" class="ss">
+              <option value="sim">Sim, interfere</option>
+              <option value="nao">Não interfere</option>
+            </select>
+          </div>
+        </div>
+        <div class="f3">
+          <div class="fg">
+            <label>Periodicidade</label>
+            <select id="nt-rec" onchange="toggleRecFields()">
+              <option value="eventual">Eventual (não repete)</option>
+              <option value="mensal">Mensal (repete todo mês)</option>
+              <option value="anual">Anual (repete todo ano)</option>
+            </select>
+          </div>
+          <div class="fg" id="fg-meses" style="display:none">
+            <label>Meses de execução</label>
+            <div id="meses-check" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)"></div>
+          </div>
+          <div class="fg" id="fg-mes-ref">
+            <label>Mês de referência</label>
+            <select id="nt-mes-ref" class="ss">
+              <option value="">Selecione</option>
+              <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+              <option value="03">Março</option><option value="04">Abril</option>
+              <option value="05">Maio</option><option value="06">Junho</option>
+              <option value="07">Julho</option><option value="08">Agosto</option>
+              <option value="09">Setembro</option><option value="10">Outubro</option>
+              <option value="11">Novembro</option><option value="12">Dezembro</option>
+            </select>
+          </div>
+        </div>
+        <div id="fg-du" class="f3" style="display:none">
+          <div class="fg">
+            <label>Nº dia útil do mês seguinte</label>
+            <select id="nt-du" class="ss" onchange="atualizarPreviewPrazos()">
+              <option value="1">1º dia útil</option><option value="2">2º dia útil</option>
+              <option value="3" selected>3º dia útil</option><option value="4">4º dia útil</option>
+              <option value="5">5º dia útil</option><option value="6">6º dia útil</option>
+              <option value="7">7º dia útil</option><option value="8">8º dia útil</option>
+              <option value="9">9º dia útil</option><option value="10">10º dia útil</option>
+            </select>
+          </div>
+          <div class="fg" id="fg-preview" style="grid-column:span 2">
+            <label>Preview dos prazos calculados</label>
+            <div id="prazo-preview" class="prazo-preview">Selecione os meses para visualizar os prazos.</div>
+          </div>
+        </div>
+        <div class="f3" id="fg-prazo-manual">
+          <div class="fg"><label>Prazo</label><input type="date" id="nt-pr"></div>
+          <div class="fg">
+            <label>Notificar quantos dias antes?</label>
+            <select id="nt-alerta" class="ss">
+              <option value="1">1 dia antes</option><option value="2" selected>2 dias antes</option>
+              <option value="3">3 dias antes</option><option value="5">5 dias antes</option>
+              <option value="7">7 dias antes</option><option value="10">10 dias antes</option>
+              <option value="15">15 dias antes</option>
+            </select>
+          </div>
+          <div class="fg"><label>Status inicial</label>
+            <select id="nt-st"><option value="pendente">Pendente</option><option value="andamento">Em andamento</option></select>
+          </div>
+        </div>
+        <div class="f2" id="fg-mensal-extra" style="display:none">
+          <div class="fg">
+            <label>Notificar quantos dias antes?</label>
+            <select id="nt-alerta-m" class="ss">
+              <option value="1">1 dia antes</option><option value="2" selected>2 dias antes</option>
+              <option value="3">3 dias antes</option><option value="5">5 dias antes</option>
+              <option value="7">7 dias antes</option><option value="10">10 dias antes</option>
+              <option value="15">15 dias antes</option>
+            </select>
+          </div>
+          <div class="fg"><label>Status inicial</label>
+            <select id="nt-st-m"><option value="pendente">Pendente</option><option value="andamento">Em andamento</option></select>
+          </div>
+        </div>
+        <div id="info-mensal" class="info-box hidden">💡 Prazo calculado automaticamente (dia útil do mês seguinte). Feriados nacionais e MG incluídos.</div>
+        <button class="btn btn-p" onclick="addT()">+ Cadastrar tarefa</button>
+        <div class="err hidden" id="nt-er">Preencha todos os campos obrigatórios.</div>
+        <div class="suc hidden" id="nt-ok">✓ Tarefa(s) cadastrada(s) com sucesso!</div>
+      </div>
+    </div>
+
+    <!-- ABA: DASHBOARD -->
+    <div id="at-d" class="hidden">
+      <div class="d-print-header" id="d-print-header">Orthocrin — Dashboard de Produtividade</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px">
+        <div><div style="font-size:18px;font-weight:500">Dashboard de produtividade</div><div style="font-size:13px;color:var(--text2)" id="d-mes"></div></div>
+        <div class="d-no-print" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:12px;color:var(--text2)">Mês:</label>
+          <select id="d-fmes" onchange="rDash()" class="ss" style="width:auto">
+            <option value="">Todos</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <label style="font-size:12px;color:var(--text2)">Ano:</label>
+          <select id="d-fano" onchange="rDash()" class="ss" style="width:auto"></select>
+          <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        </div>
+      </div>
+      <div class="metrics m5" id="d-kpi"></div>
+      <div class="dr2">
+        <div class="card"><div class="ct" style="margin-bottom:10px">Distribuição por status</div><div class="legend" id="d-leg"></div><div style="position:relative;width:100%;height:210px"><canvas id="d-chart"></canvas></div></div>
+        <div class="card"><div class="ct" style="margin-bottom:10px">Ranking de conclusão</div><div id="d-rank"></div></div>
+      </div>
+      <div style="font-size:15px;font-weight:500;margin-bottom:12px">Produtividade individual</div>
+      <div class="pg-grid" id="d-prod"></div>
+    </div>
+
+    <!-- ABA: FECHAMENTO (Modelo C) -->
+    <div id="at-f" class="hidden">
+      <div class="d-print-header" id="f-print-header">Orthocrin — Relatório de Fechamento Mensal</div>
+      <div class="fech-head">
+        <div>
+          <div style="font-size:18px;font-weight:500">Fechamento mensal</div>
+          <div style="font-size:13px;color:var(--text2)" id="f-subtitulo"></div>
+        </div>
+        <div class="fech-no-print" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:12px;color:var(--text2)">Mês:</label>
+          <select id="f-fmes" onchange="rFech()" class="ss" style="width:auto">
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <label style="font-size:12px;color:var(--text2)">Ano:</label>
+          <select id="f-fano" onchange="rFech()" class="ss" style="width:auto"></select>
+          <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        </div>
+      </div>
+      <div class="metrics m4" id="f-kpi" style="margin-bottom:1.25rem"></div>
+      <div class="fech-filtro-bar fech-no-print">
+        <label style="font-size:11px;color:var(--text2);font-weight:500;text-transform:uppercase;letter-spacing:.03em">Exibir:</label>
+        <div class="fech-toggle">
+          <button class="active" onclick="setFechFiltro('todas',this)">Todas</button>
+          <button onclick="setFechFiltro('cm',this)">Interferem no custo médio</button>
+          <button onclick="setFechFiltro('naocm',this)">Não interferem no custo médio</button>
+        </div>
+      </div>
+      <div class="fech-split">
+        <div class="fech-col" id="fech-col-contab"></div>
+        <div class="fech-col" id="fech-col-outros"></div>
+      </div>
+      <div class="fech-leg"><span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span> = tarefas que interferem no início do cálculo do custo médio — o caminho crítico do resultado mensal</div>
+    </div>
+  </div>
+</div>
+
+<!-- FUNCIONÁRIO -->
+<div id="sc-func" class="hidden">
+  <div class="app">
+    <div class="app-title">CONTROLE ROTINAS · CONTABILIDADE</div>
+    <div class="topbar">
+      <div class="tl">
+        <div class="av" id="func-av"></div>
+        <div><div class="un" id="func-nm"></div><div style="font-size:13px;color:var(--text2)">Minhas tarefas</div></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" onclick="abrirTrocaSenha(false)">🔑 Alterar senha</button>
+        <button class="btn btn-sm" onclick="logout()">Sair</button>
+      </div>
+    </div>
+    <div id="func-al"></div>
+    <div class="tab-bar">
+      <button class="tab active" onclick="fTab('t',this)">Minhas tarefas</button>
+      <button class="tab" onclick="fTab('d',this)">📊 Meu desempenho</button>
+    </div>
+    <div id="ft-t">
+      <div class="metrics m4" id="func-met"></div>
+      <div class="card">
+        <div class="ch"><span class="ct">Minhas tarefas</span><span style="font-size:13px;color:var(--text2)" id="func-mes"></span></div>
+        <div class="filter-bar">
+          <div class="search-wrap"><span class="search-ico">🔍</span><input type="text" id="func-fbusca" placeholder="Buscar..." oninput="debSearch('rFunc')" style="width:140px"></div>
+          <label>Status:</label>
+          <select id="func-fst" onchange="rFunc()" class="ss" style="width:auto">
+            <option value="pendente_andamento">Pendentes e Em andamento</option>
+            <option value="">Todos</option><option value="pendente">Pendente</option>
+            <option value="andamento">Em andamento</option><option value="concluida">Concluída</option>
+          </select>
+          <label>Mês ref.:</label>
+          <select id="func-fmes" onchange="rFunc()" class="ss" style="width:auto">
+            <option value="">Todos</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <label>Prazo até:</label>
+          <input type="date" id="func-fdata" onchange="rFunc()" style="width:140px;padding:5px 8px;font-size:13px">
+          <button class="btn btn-sm" onclick="limparFiltrosFunc()">✕ Limpar</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr>
+            <th style="width:18%">Tarefa</th><th style="width:9%">Recorrência</th>
+            <th style="width:7%">Mês ref.</th><th style="width:9%">Prazo</th>
+            <th style="width:6%">Dias</th><th style="width:11%">Status</th>
+            <th style="width:37%">Observação / Justificativa</th>
+          </tr></thead>
+          <tbody id="func-tb"></tbody>
+        </table></div>
+        <div id="func-em" class="empty hidden"></div>
+      </div>
+    </div>
+    <div id="ft-d" class="hidden">
+      <div class="d-print-header" id="fd-print-header"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px">
+        <div><div style="font-size:18px;font-weight:500" id="fd-titulo"></div><div style="font-size:13px;color:var(--text2)" id="fd-sub"></div></div>
+        <div class="d-no-print" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:12px;color:var(--text2)">Mês:</label>
+          <select id="fd-fmes" onchange="rFuncDash()" class="ss" style="width:auto">
+            <option value="">Todos</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <label style="font-size:12px;color:var(--text2)">Ano:</label>
+          <select id="fd-fano" onchange="rFuncDash()" class="ss" style="width:auto"></select>
+          <button class="btn btn-sm" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        </div>
+      </div>
+      <div class="metrics m4" id="fd-kpi"></div>
+      <div class="dr2">
+        <div class="card"><div class="ct" style="margin-bottom:10px">Meu status atual</div><div class="legend" id="fd-leg"></div><div style="position:relative;width:100%;height:200px"><canvas id="fd-chart"></canvas></div></div>
+        <div class="card"><div class="ct" style="margin-bottom:10px">Por recorrência</div><div id="fd-rec"></div></div>
+      </div>
+      <div style="font-size:15px;font-weight:500;margin-bottom:12px">Vencendo nos próximos 7 dias</div>
+      <div id="fd-venc"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL USUÁRIOS -->
+<div id="modal-users" class="modal-bg hidden">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div style="font-size:16px;font-weight:500">Gerenciar usuários</div>
+      <button class="btn btn-sm" onclick="closeUsuarios()">✕</button>
+    </div>
+    <div id="users-list"></div>
+    <div class="divider"></div>
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px">Adicionar novo usuário</div>
+    <div class="f2">
+      <div class="fg"><label>Nome</label><input type="text" id="nu-nm" placeholder="Nome completo"></div>
+      <div class="fg"><label>E-mail</label><input type="email" id="nu-em" placeholder="email@orthocrin.com.br"></div>
+      <div class="fg"><label>Perfil</label><select id="nu-role"><option value="func">Usuário Padrão</option><option value="admin">Administrador</option></select></div>
+      <div class="fg"><label>Equipe</label><select id="nu-equipe" onchange="toggleEquipeField('nu')"><option value="contab">Contabilidade</option><option value="outros">Outros</option></select></div>
+      <div class="fg" id="nu-area-fg" style="display:none"><label>Área (digite)</label><input type="text" id="nu-area" placeholder="ex: RH, PCP, Financeiro"></div>
+      <div class="fg" id="nu-chefia-fg" style="display:none"><label>E-mail da chefia (opcional)</label><input type="email" id="nu-chefia" placeholder="chefia@orthocrin.com.br"></div>
+      <div class="fg"><label>Senha inicial</label><input type="text" id="nu-pass" value="123456"></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);margin:4px 0 12px;cursor:pointer"><input type="checkbox" id="nu-forcar" style="width:auto;margin:0"> Exigir troca de senha no próximo login</label>
+    <button class="btn btn-p" id="btn-add-user" onclick="addUsuario()">+ Adicionar</button>
+    <div class="err hidden" id="nu-er">Preencha nome e e-mail.</div>
+    <div class="suc hidden" id="nu-ok">✓ Usuário adicionado!</div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR USUÁRIO -->
+<div id="modal-edit-user" class="modal-bg hidden">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div style="font-size:16px;font-weight:500">Editar usuário</div>
+      <button class="btn btn-sm" onclick="closeEditUser()">✕</button>
+    </div>
+    <input type="hidden" id="eu-id">
+    <div class="f2">
+      <div class="fg"><label>Nome</label><input type="text" id="eu-nm"></div>
+      <div class="fg"><label>E-mail (login — não editável aqui)</label><input type="email" id="eu-em" readonly style="background:var(--gray-bg);color:var(--text2)"></div>
+      <div class="fg"><label>Perfil</label><select id="eu-role"><option value="func">Usuário Padrão</option><option value="admin">Administrador</option></select></div>
+      <div class="fg"><label>Equipe</label><select id="eu-equipe" onchange="toggleEquipeField('eu')"><option value="contab">Contabilidade</option><option value="outros">Outros</option></select></div>
+      <div class="fg" id="eu-area-fg" style="display:none"><label>Área (digite)</label><input type="text" id="eu-area" placeholder="ex: RH, PCP, Financeiro"></div>
+      <div class="fg" id="eu-chefia-fg" style="display:none"><label>E-mail da chefia (opcional)</label><input type="email" id="eu-chefia" placeholder="chefia@orthocrin.com.br"></div>
+      <div class="fg"><label>Senha</label><button type="button" class="btn btn-sm" onclick="resetarSenhaUsuario()" style="width:100%">🔑 Enviar redefinição de senha por e-mail</button></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);margin:4px 0 12px;cursor:pointer"><input type="checkbox" id="eu-forcar" style="width:auto;margin:0"> Exigir troca de senha no próximo login</label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="saveEditUser()">Salvar</button>
+      <button class="btn btn-d" onclick="deleteUser()">Remover</button>
+    </div>
+    <div class="err hidden" id="eu-er">Preencha nome e e-mail.</div>
+    <div class="suc hidden" id="eu-ok">✓ Salvo!</div>
+  </div>
+</div>
+
+<!-- MODAL LOG -->
+<div id="modal-log" class="modal-bg hidden">
+  <div class="modal modal-lg">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div>
+        <div style="font-size:16px;font-weight:500">📋 Histórico de status</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-top:2px" id="log-sub"></div>
+      </div>
+      <button class="btn btn-sm" onclick="closeLog()">✕</button>
+    </div>
+    <div id="log-lista"><div class="empty">Carregando...</div></div>
+  </div>
+</div>
+
+<!-- MODAL JUSTIFICATIVA OBRIGATÓRIA -->
+<div id="modal-just" class="modal-bg hidden">
+  <div class="modal confirm-modal">
+    <div style="font-size:22px;margin-bottom:.5rem">⚠️</div>
+    <div class="confirm-msg" id="just-msg" style="margin-bottom:1rem">Esta tarefa de fechamento está atrasada. Informe a justificativa antes de salvar.</div>
+    <textarea id="just-input" class="oi" rows="3" placeholder="Descreva o motivo do atraso..." style="width:100%;font-size:13px;margin-bottom:1rem;min-height:64px"></textarea>
+    <div class="confirm-btns">
+      <button class="btn btn-p" id="just-yes">Salvar justificativa</button>
+      <button class="btn" id="just-no">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TROCAR SENHA -->
+<div id="modal-senha" class="modal-bg hidden">
+  <div class="modal" style="max-width:420px">
+    <div style="font-size:16px;font-weight:500;margin-bottom:.25rem" id="sn-titulo">Alterar minha senha</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem" id="sn-msg">Defina uma nova senha de acesso.</div>
+    <div class="fg" id="sn-atual-fg"><label>Senha atual</label><input type="password" id="sn-atual" placeholder="Sua senha atual" autocomplete="current-password"></div>
+    <div class="fg"><label>Nova senha</label><input type="password" id="sn-nova" placeholder="Mínimo de 6 caracteres" autocomplete="new-password"></div>
+    <div class="fg"><label>Confirmar nova senha</label><input type="password" id="sn-conf" placeholder="Repita a nova senha" autocomplete="new-password" onkeydown="if(event.key==='Enter')salvarNovaSenha()"></div>
+    <div class="err hidden" id="sn-er"></div>
+    <div class="suc hidden" id="sn-ok">✓ Senha alterada com sucesso!</div>
+    <div style="display:flex;gap:8px;margin-top:1rem">
+      <button class="btn btn-p" onclick="salvarNovaSenha()">Salvar senha</button>
+      <button class="btn" id="sn-cancel" onclick="fecharTrocaSenha()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import{initializeApp,deleteApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,updatePassword,EmailAuthProvider,reauthenticateWithCredential,sendPasswordResetEmail,createUserWithEmailAndPassword,setPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,getDocs,query,where,orderBy,limit}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ── PWA ──────────────────────────────────────────────────────────────────────
+if('serviceWorker'in navigator){
+  const blob=new Blob(['self.addEventListener("fetch",e=>{});'],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+
+// ── EMAIL ────────────────────────────────────────────────────────────────────
+const EJS_SERVICE='service_scwkrr6',EJS_TEMPLATE='template_qj1mwhr',EJS_KEY='1MrGSi7Cjrz_48AMO';
+emailjs.init(EJS_KEY);
+const emailStatus={};
+
+// ── LIMPEZA PERIÓDICA DO LOCALSTORAGE ────────────────────────────────────────
+(function limparLocalStorageAntigo(){
+  const hoje=new Date();
+  const limite=60; // dias
+  const keysParaRemover=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k||!k.startsWith('oc_notif_'))continue;
+    // formato: oc_notif_{id}_{YYYY-MM-DD}
+    const partes=k.split('_');
+    const dataStr=partes[partes.length-1];
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(dataStr))continue;
+    const dias=Math.round((hoje-new Date(dataStr))/86400000);
+    if(dias>limite)keysParaRemover.push(k);
+  }
+  keysParaRemover.forEach(k=>localStorage.removeItem(k));
+})();
+
+// ── TOAST ────────────────────────────────────────────────────────────────────
+let _toastTimer=null;
+function toast(msg,tipo='info',dur=2500){
+  const el=document.getElementById('toast');
+  el.className='toast'; // reset
+  // detecta tipo pela mensagem se não informado
+  if(tipo==='info'){
+    if(msg.startsWith('✓')||msg.startsWith('✉'))tipo='ok';
+    else if(msg.startsWith('❌')||msg.startsWith('⚠'))tipo='err';
+  }
+  el.classList.add('t-'+tipo);
+  // ícone automático
+  const icones={ok:'✓',err:'✗',warn:'⚠',info:'ℹ'};
+  el.innerHTML=`<span style="font-weight:700;font-size:15px">${icones[tipo]||''}</span><span>${msg.replace(/^[✓✉❌⚠ℹ]\s*/,'')}</span>`;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>{el.classList.remove('show');},dur);
+}
+
+// ── HASH DE SENHA (Web Crypto API nativa) ────────────────────────────────────
+async function hashSenha(senha){
+  const enc=new TextEncoder();
+  const buf=await crypto.subtle.digest('SHA-256',enc.encode(senha));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── CONFIRMAÇÃO INLINE (substitui confirm() nativo) ──────────────────────────
+function confirmDialog(msg){
+  return new Promise(res=>{
+    document.getElementById('confirm-msg').textContent=msg;
+    document.getElementById('modal-confirm').classList.remove('hidden');
+    const yes=document.getElementById('confirm-yes');
+    const no=document.getElementById('confirm-no');
+    const close=v=>{
+      document.getElementById('modal-confirm').classList.add('hidden');
+      yes.replaceWith(yes.cloneNode(true));no.replaceWith(no.cloneNode(true));
+      res(v);
+    };
+    document.getElementById('confirm-yes').onclick=()=>close(true);
+    document.getElementById('confirm-no').onclick=()=>close(false);
+  });
+}
+
+// ── TECLA ESCAPE FECHA MODAIS ────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  ['modal-users','modal-edit-user','modal-log','modal-confirm','modal-just'].forEach(id=>{
+    document.getElementById(id).classList.add('hidden');
+  });
+});
+
+// ── FERIADOS NACIONAIS + MG ──────────────────────────────────────────────────
+function getFeriados(ano){
+  const f=new Set();
+  [`${ano}-01-01`,`${ano}-04-21`,`${ano}-05-01`,`${ano}-09-07`,
+   `${ano}-10-12`,`${ano}-11-02`,`${ano}-11-15`,`${ano}-12-25`,
+   `${ano}-12-08`].forEach(d=>f.add(d));
+  const a=ano%19,b=Math.floor(ano/100),c=ano%100;
+  const d2=Math.floor(b/4),e=b%4,g=Math.floor((8*b+13)/25);
+  const h=(19*a+b-d2-g+15)%30,i=Math.floor(c/4),k=c%4;
+  const l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+19*l)/433);
+  const mes=Math.floor((h+l-7*m+90)/25),dia=(h+l-7*m+33*mes+19)%32;
+  const pascoa=new Date(ano,mes-1,dia);
+  const adj=(base,d)=>{const dt=new Date(base);dt.setDate(base.getDate()+d);return toISO(dt);};
+  [adj(pascoa,-48),adj(pascoa,-47),adj(pascoa,-2),toISO(pascoa),adj(pascoa,60)].forEach(d=>f.add(d));
+  return f;
+}
+const _fCache={};
+const getFeriadosCached=ano=>_fCache[ano]||(_fCache[ano]=getFeriados(ano));
+const isDiaUtil=dt=>{const d=dt.getDay();return d!==0&&d!==6&&!getFeriadosCached(dt.getFullYear()).has(toISO(dt));};
+function calcDiaUtil(ano,mes0,n){
+  let c=0;
+  for(let d=1;d<=31;d++){const dt=new Date(ano,mes0,d);if(dt.getMonth()!==mes0)break;if(isDiaUtil(dt)&&++c===n)return dt;}
+  return null;
+}
+const toISO=dt=>dt?dt.toISOString().split('T')[0]:'';
+function calcPrazoMensal(mesExec,nDu,anoBase){
+  const base=anoBase||(typeof anoAtual!=='undefined'?anoAtual:new Date().getFullYear());
+  const m=parseInt(mesExec)-1,ms=(m+1)%12,as=m===11?base+1:base;
+  return toISO(calcDiaUtil(as,ms,nDu));
+}
+window.atualizarPreviewPrazos=function(){
+  const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
+  const du=parseInt(document.getElementById('nt-du').value)||3;
+  const prev=document.getElementById('prazo-preview');
+  if(!checks.length){prev.textContent='Selecione os meses para visualizar os prazos.';return;}
+  prev.innerHTML='<strong>Prazos (feriados nacionais + MG):</strong><br>'+
+    checks.map(mes=>{const p=calcPrazoMensal(mes,du);return`${fMes(mes)} → ${p?fD(p):'—'}`;}).join('<br>');
+};
+
+// ── ANIMAÇÃO DE CONTAGEM ──────────────────────────────────────────────────────
+function animCount(el,target,dur=500){
+  const start=performance.now();
+  const from=parseInt(el.textContent)||0;
+  if(from===target){el.textContent=target;return;}
+  function step(now){
+    const p=Math.min((now-start)/dur,1);
+    const ease=1-Math.pow(1-p,3); // ease-out cubic
+    el.textContent=Math.round(from+(target-from)*ease);
+    if(p<1)requestAnimationFrame(step);
+    else el.textContent=target;
+  }
+  requestAnimationFrame(step);
+}
+function metricHTML(label,value,cls,sub){
+  return`<div class="metric"><div class="ml">${label}</div><div class="mv${cls?' '+cls:''}" data-val="${value}">0</div>${sub?`<div class="ms">${sub}</div>`:''}</div>`;
+}
+function animarMetricas(containerId){
+  document.querySelectorAll('#'+containerId+' .mv[data-val]').forEach(el=>{
+    animCount(el,parseInt(el.dataset.val)||0);
+  });
+}
+
+// ── DEBOUNCE DE BUSCA ─────────────────────────────────────────────────────────
+const _debTimers={};
+window.debSearch=function(fn){
+  clearTimeout(_debTimers[fn]);
+  _debTimers[fn]=setTimeout(()=>window[fn]&&window[fn](),200);
+};
+
+// ── FIREBASE ─────────────────────────────────────────────────────────────────
+const cfg={apiKey:"AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",authDomain:"orthocrin-3cbae.firebaseapp.com",projectId:"orthocrin-3cbae",storageBucket:"orthocrin-3cbae.firebasestorage.app",messagingSenderId:"592799072147",appId:"1:592799072147:web:27d84faf3116fc7e4c3266"};
+const _fbApp=initializeApp(cfg);
+const db=getFirestore(_fbApp);
+const auth=getAuth(_fbApp);
+// Traduz os códigos de erro do Firebase para mensagens simples em português
+function msgErroFirebase(code){
+  const m={
+    'auth/invalid-email':'E-mail inválido.',
+    'auth/user-disabled':'Este acesso está desativado.',
+    'auth/user-not-found':'E-mail ou senha incorretos.',
+    'auth/wrong-password':'E-mail ou senha incorretos.',
+    'auth/invalid-credential':'E-mail ou senha incorretos.',
+    'auth/missing-password':'Informe a senha.',
+    'auth/email-already-in-use':'Já existe um acesso com este e-mail.',
+    'auth/weak-password':'A senha deve ter pelo menos 6 caracteres.',
+    'auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+    'auth/network-request-failed':'Sem conexão. Verifique sua internet.',
+    'auth/requires-recent-login':'Por segurança, saia e entre novamente para alterar a senha.'
+  };
+  return m[code]||'Não foi possível concluir. Tente novamente.';
+}
+
+let tarefas=[],usuarios=[],CU=null,DC=null,FDC=null,iniciado=false;
+let _unsub1=null,_unsub2=null; // FIX #6: guardar refs dos listeners
+// Paginação e ordenação
+let atPage=1,atList=[];
+const PAGE=15;
+let sortCol='prazo',sortDir='asc';
+
+const hj=new Date();hj.setHours(0,0,0,0);
+const anoAtual=hj.getFullYear();
+const mesAtual=String(hj.getMonth()+1).padStart(2,'0');
+const mesAnteriorNum=hj.getMonth()===0?12:hj.getMonth();
+const mesAnterior=String(mesAnteriorNum).padStart(2,'0');
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const anoFim=`${anoAtual}-12-31`;
+
+const fD=s=>s?new Date(s+'T00:00:00').toLocaleDateString('pt-BR'):'—';
+// FIX #1: dR memoizado — não recria Date a cada chamada dentro de loops
+const _dRCache=new Map();
+function dR(s){
+  if(!s)return 9999;
+  if(_dRCache.has(s))return _dRCache.get(s);
+  const v=Math.round((new Date(s+'T00:00:00')-hj)/86400000);
+  _dRCache.set(s,v);return v;
+}
+const fDias=(d,st)=>{
+  if(st==='concluida')return'—';
+  if(d<0)return`<span style="color:var(--red);font-weight:500">${Math.abs(d)} d. atraso</span>`;
+  if(d===0)return'<span style="color:var(--amber);font-weight:500">hoje</span>';
+  return d+' dias';
+};
+const ini=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+const bC=p=>p>=80?'#16a34a':p>=50?'#2563eb':'#d97706';
+const fMes=m=>m?MESES[parseInt(m)-1]||m:'—';
+const fTS=ts=>{if(!ts)return'—';const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
+
+// ── HELPERS EQUIPE / ÁREA / CUSTO MÉDIO (v4.0) ───────────────────────────────
+const escJs=s=>(s||'').replace(/'/g,"\\'");
+const isFechamento=t=>t.tipoRotina==='fechamento';
+const isCM=t=>isFechamento(t)&&(t.interfereCustoMedio===true||t.interfereCustoMedio==='sim');
+const userEquipe=uid=>userMap.get(uid)?.equipe||'contab';
+const userArea=uid=>userMap.get(uid)?.area||'';
+function areaBadge(area){
+  if(!area)return'';
+  const m={PCP:['#166534','#f0fdf4'],Financeiro:['#1d4ed8','#eff6ff'],RH:['#be185d','#fce7f3'],Digital:['#7e22ce','#fdf4ff']};
+  const c=m[area]||['#334155','#f1f5f9'];
+  return`<span class="area-badge" style="color:${c[0]};background:${c[1]}">${area}</span>`;
+}
+// Diálogo de justificativa obrigatória — retorna o texto, ou null se cancelado
+function justDialog(msg,optional){
+  return new Promise(res=>{
+    document.getElementById('just-msg').textContent=msg||'Esta tarefa está atrasada.';
+    const inp=document.getElementById('just-input');inp.value='';inp.classList.remove('just-required');
+    const yes=document.getElementById('just-yes'),no=document.getElementById('just-no');
+    yes.textContent=optional?'Salvar com justificativa':'Salvar justificativa';
+    no.textContent=optional?'Salvar sem justificar':'Cancelar';
+    document.getElementById('modal-just').classList.remove('hidden');
+    setTimeout(()=>inp.focus(),50);
+    const close=v=>{document.getElementById('modal-just').classList.add('hidden');yes.replaceWith(yes.cloneNode(true));no.replaceWith(no.cloneNode(true));res(v);};
+    yes.onclick=()=>{const val=inp.value.trim();if(!val){inp.classList.add('just-required');return;}close(val);};
+    no.onclick=()=>close(optional?'':null);
+  });
+}
+
+// Opção B: tarefas recém-concluídas continuam visíveis na sessão (para poder editar a observação)
+// Botão Salvar: alterações de status/observação ficam em rascunho até o usuário clicar em Salvar
+let drafts=new Map();
+function atualizarDraft(id,prefixo){
+  const st=document.getElementById('st-'+prefixo+'-'+id);
+  const ob=document.getElementById('obs-'+prefixo+'-'+id);
+  if(!st)return;
+  const t=tarefas.find(x=>x.id===id);
+  const novoSt=st.value, novaOb=ob?ob.value:'';
+  if(t&&novoSt===t.status&&novaOb===(t.obs||''))drafts.delete(id); // sem alteração real
+  else drafts.set(id,{status:novoSt,obs:novaOb});
+}
+window.onStatusChange=function(id,prefixo){
+  atualizarDraft(id,prefixo);
+  (prefixo==='adm'?rMyTasks:rFunc)(); // re-renderiza para atualizar trava/observação/botão
+};
+window.salvarLinha=async function(id,prefixo){
+  const draft=drafts.get(id);if(!draft)return;
+  const t=tarefas.find(x=>x.id===id);if(!t)return;
+  let novoStatus=draft.status, novaObs=(draft.obs||'').trim();
+  const late=dR(t.prazo)<0, eq=userEquipe(t.resp);
+  // Justificativa de atraso no momento do Salvar
+  if(late&&novoStatus!=='pendente'&&!novaObs){
+    if(eq==='outros'&&isFechamento(t)){
+      const r=await justDialog(`A tarefa "${t.nome}" é de fechamento e está atrasada. Informe a justificativa para registrar a mudança de status.`,false);
+      if(r===null)return; // cancelou: mantém o rascunho
+      novaObs=r;
+    }else if(eq==='contab'){
+      const r=await justDialog(`A tarefa "${t.nome}" está atrasada. Deseja registrar uma justificativa para o atraso? (opcional)`,true);
+      if(r===null)return;
+      if(r)novaObs=r;
+    }
+  }
+  const data={status:novoStatus,obs:novaObs};
+  if(novoStatus==='concluida'&&!t.dataConclusao)data.dataConclusao=new Date().toISOString().split('T')[0];
+  else if(novoStatus!=='concluida')data.dataConclusao='';
+  try{
+    await updateDoc(doc(db,'tarefas',id),data);
+    if(novoStatus!==t.status)await registrarLog(id,novoStatus,CU?.name||'Sistema');
+    drafts.delete(id);
+    toast('💾 Alterações salvas');
+    (prefixo==='adm'?rMyTasks:rFunc)();
+  }catch(e){alert('Erro: '+e.message);}
+};
+
+function show(id){['sc-load','sc-login','sc-adm','sc-func'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
+
+function sBadge(st,d,alerta){
+  const a=parseInt(alerta)||2;
+  if(st==='concluida')return'<span class="badge b-conc">Concluída</span>';
+  if(d<0)return'<span class="badge b-atras">Atrasada</span>';
+  if(d<=a)return'<span class="badge b-venc">Vencendo</span>';
+  if(st==='andamento')return'<span class="badge b-and">Em andamento</span>';
+  return'<span class="badge b-pend">Pendente</span>';
+}
+const rBadge=rec=>rec==='mensal'?'<span class="badge b-mensal">Mensal</span>':rec==='anual'?'<span class="badge b-anual">Anual</span>':'<span class="badge b-eventual">Eventual</span>';
+function trClass(t){
+  if(t.status==='concluida')return'rc';
+  const d=dR(t.prazo),a=parseInt(t.alerta)||2;
+  if(d<0)return'ra';if(d<=a)return'rv';return'';
+}
+
+// FIX #7: memoizar contadores para evitar múltiplos .filter() no mesmo render
+function calcStats(list){
+  let ok=0,at=0,vc=0;
+  for(const t of list){
+    const d=dR(t.prazo),a=parseInt(t.alerta)||2;
+    if(t.status==='concluida')ok++;
+    else if(d<0)at++;
+    else if(d<=a)vc++;
+  }
+  return{ok,at,vc,tot:list.length};
+}
+
+// FIX #8: Map de usuários por id — O(1) lookup em vez de O(n)
+let userMap=new Map();
+
+// ── LOG ───────────────────────────────────────────────────────────────────────
+async function registrarLog(tarefaId,novoStatus,nomeUsuario){
+  try{await addDoc(collection(db,'tarefas',tarefaId,'logs'),{status:novoStatus,usuario:nomeUsuario,ts:new Date()});}
+  catch(e){console.warn('Log err:',e);}
+}
+const corStatus={pendente:'#9c9a94',andamento:'#2563eb',concluida:'#16a34a'};
+window.openLog=async function(id,nome){
+  document.getElementById('log-sub').textContent=nome;
+  document.getElementById('log-lista').innerHTML='<div class="empty">Carregando...</div>';
+  document.getElementById('modal-log').classList.remove('hidden');
+  try{
+    const snap=await getDocs(query(collection(db,'tarefas',id,'logs'),orderBy('ts','desc'),limit(50)));
+    if(snap.empty){document.getElementById('log-lista').innerHTML='<div class="empty">Nenhuma alteração registrada.</div>';return;}
+    document.getElementById('log-lista').innerHTML=snap.docs.map(d=>{
+      const l=d.data(),cor=corStatus[l.status]||'#9c9a94';
+      const lbl=l.status==='pendente'?'Pendente':l.status==='andamento'?'Em andamento':'Concluída';
+      return`<div class="log-entry"><div class="log-dot" style="background:${cor}"></div><div><div style="font-weight:500">${lbl}</div><div style="color:var(--text2)">${l.usuario||'—'} · ${fTS(l.ts)}</div></div></div>`;
+    }).join('');
+  }catch(e){document.getElementById('log-lista').innerHTML='<div class="empty">Erro ao carregar.</div>';}
+};
+window.closeLog=()=>document.getElementById('modal-log').classList.add('hidden');
+
+// ── RESET MENSAIS ─────────────────────────────────────────────────────────────
+async function resetarMensais(){
+  const chave='reset_'+anoAtual+'_'+mesAtual;
+  const resetados=JSON.parse(localStorage.getItem('oc_reset')||'[]');
+  if(resetados.includes(chave))return;
+  for(const t of tarefas){
+    if(t.recorrencia!=='mensal'||t.status!=='concluida')continue;
+    const tMes=t.mesReferencia||'';
+    if(tMes&&tMes!==mesAnterior)continue;
+    const jaExiste=tarefas.some(x=>x.id!==t.id&&x.recorrencia==='mensal'&&x.nome===t.nome&&x.resp===t.resp&&x.mesReferencia===mesAtual&&x.status!=='concluida');
+    if(jaExiste)continue;
+    const du=parseInt(t.diaUtil)||3;
+    await addDoc(collection(db,'tarefas'),{nome:t.nome,resp:t.resp,prazo:calcPrazoMensal(mesAtual,du)||t.prazo,recorrencia:'mensal',mesReferencia:mesAtual,alerta:t.alerta||2,status:'pendente',obs:'',dataConclusao:'',diaUtil:du,tipoRotina:t.tipoRotina||'comum',interfereCustoMedio:t.interfereCustoMedio||false});
+  }
+  resetados.push(chave);localStorage.setItem('oc_reset',JSON.stringify(resetados));
+}
+
+// ── EMAIL ─────────────────────────────────────────────────────────────────────
+async function enviarEmailLembrete(tarefa,usuario,admins){
+  const d=dR(tarefa.prazo);
+  const diasTxt=d<0?Math.abs(d)+' dia(s) de atraso':d===0?'vence hoje':d+' dia(s) restante(s)';
+  const params={tarefa_nome:tarefa.nome,destinatario_nome:usuario.name,destinatario_email:usuario.email,responsavel:usuario.name,prazo:fD(tarefa.prazo),status:tarefa.status==='pendente'?'Pendente':tarefa.status==='andamento'?'Em andamento':'Concluída',dias_restantes:diasTxt};
+  try{
+    await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,params);
+    for(const adm of admins)if(adm.email&&adm.email!==usuario.email)await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{...params,destinatario_nome:adm.name,destinatario_email:adm.email});
+    if(usuario.equipe==='outros'&&usuario.chefiaEmail&&usuario.chefiaEmail!==usuario.email)await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{...params,destinatario_nome:'Chefia',destinatario_email:usuario.chefiaEmail});
+    emailStatus[tarefa.id]='enviado';
+    // Esconde banner se estava visível (limite resolvido)
+    document.getElementById('email-limit-banner')?.classList.remove('show');
+    return true;
+  }catch(e){
+    console.warn('EmailJS:',e);
+    emailStatus[tarefa.id]='erro';
+    // Detecta erro de limite (status 402, 429 ou mensagem "quota")
+    const msg=JSON.stringify(e).toLowerCase();
+    const isLimite=msg.includes('402')||msg.includes('429')||msg.includes('quota')||msg.includes('limit')||msg.includes('exceeded');
+    if(isLimite){
+      const banner=document.getElementById('email-limit-banner');
+      if(banner){
+        // Tenta descobrir data de reset pelo localStorage ou usa mensagem genérica
+        const reset=localStorage.getItem('oc_email_reset');
+        const resetTxt=reset?` Renovação prevista para ${reset}.`:' Verifique o painel do EmailJS para a data de renovação.';
+        document.getElementById('email-limit-msg').textContent=resetTxt;
+        banner.classList.add('show');
+      }
+    }
+    return false;
+  }
+}
+async function verificarEEnviarEmails(){
+  const hoje=new Date().toISOString().split('T')[0];
+  const admins=usuarios.filter(u=>u.role==='admin');
+  tarefas.forEach(t=>{if(!emailStatus[t.id])emailStatus[t.id]='nao_enviado';});
+  // Monta lista de tarefas que precisam de notificação hoje
+  const pendentes=tarefas.filter(t=>{
+    if(t.status==='concluida')return false;
+    const d=dR(t.prazo),alerta=parseInt(t.alerta)||2;
+    if(d>alerta)return false;
+    if(localStorage.getItem('oc_notif_'+t.id+'_'+hoje))return false;
+    return !!userMap.get(t.resp)?.email;
+  });
+  // Envia todos em paralelo (Promise.all) em vez de um por um
+  await Promise.all(pendentes.map(async t=>{
+    const u=userMap.get(t.resp);
+    const ok=await enviarEmailLembrete(t,u,admins);
+    if(ok)localStorage.setItem('oc_notif_'+t.id+'_'+hoje,'1');
+  }));
+  if(CU?.role==='admin'){rAL();rMyTasks();}else if(CU){rFunc();}
+}
+
+// ── LISTENERS FIRESTORE ───────────────────────────────────────────────────────
+const anoInicio=`${anoAtual}-01-01`,anoFimISO=`${anoAtual}-12-31`;
+const qTarefas=query(collection(db,'tarefas'),where('prazo','>=',anoInicio),where('prazo','<=',anoFimISO));
+
+// Anti-piscar
+function capturarFoco(){const el=document.activeElement;if(!el?.id)return null;return{elId:el.id,ss:el.selectionStart,se:el.selectionEnd};}
+function restaurarFoco(f){if(!f)return;const el=document.getElementById(f.elId);if(!el)return;el.focus();try{el.setSelectionRange(f.ss,f.se);}catch(e){}}
+
+// Controle da primeira carga: só entra no app depois que tarefas E usuários chegaram
+let cargaTarefasOk=false,cargaUsuariosOk=false,jaEntrou=false;
+function startListeners(){
+  // FIX #6: guardar refs para cancelar no logout
+  _unsub1=onSnapshot(qTarefas,snap=>{
+    _dRCache.clear(); // limpa cache de dias pois "hoje" é o mesmo mas tarefas mudaram
+    tarefas=snap.docs.map(d=>({id:d.id,...d.data()}));
+    cargaTarefasOk=true;
+    if(!jaEntrou){talvezEntrar();return;}
+    // FIX #3: só re-renderiza a aba que está visível
+    const foco=capturarFoco();
+    if(CU){
+      if(CU.role==='admin'){
+        const abaAt=document.getElementById('at-t');
+        if(!abaAt.classList.contains('hidden'))rAT();
+        const abaM=document.getElementById('at-m');
+        if(!abaM.classList.contains('hidden'))rMyTasks();
+        const abaF=document.getElementById('at-f');
+        if(abaF&&!abaF.classList.contains('hidden'))rFech();
+        rAL(); // alertas sempre atualizados
+      }else rFunc();
+    }
+    restaurarFoco(foco);
+  });
+  _unsub2=onSnapshot(collection(db,'usuarios'),snap=>{
+    usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
+    // FIX #8: recria o Map a cada update
+    userMap=new Map(usuarios.map(u=>[u.id,u]));
+    cargaUsuariosOk=true;
+    if(!jaEntrou){talvezEntrar();return;}
+    if(CU?.role==='admin')populateRespSelect();
+  });
+}
+// Só mostra a tela do app quando os dois conjuntos de dados já chegaram
+function talvezEntrar(){
+  if(cargaTarefasOk&&cargaUsuariosOk&&CU&&!jaEntrou){
+    jaEntrou=true;iniciado=true;
+    CU.role==='admin'?iA():iF();
+  }
+}
+// Chamada após o login (ou após a troca obrigatória de senha)
+function entrarNoApp(){
+  cargaTarefasOk=false;cargaUsuariosOk=false;jaEntrou=false;iniciado=false;
+  show('sc-load'); // mostra "Conectando..." enquanto os dados chegam
+  startListeners();
+}
+// Cancela os listeners do Firestore (ao sair)
+function pararListeners(){
+  if(_unsub1){_unsub1();_unsub1=null;}
+  if(_unsub2){_unsub2();_unsub2=null;}
+}
+// NÃO inicia mais os listeners ao abrir a página: só depois do login (ver onAuthStateChanged no fim do arquivo).
+
+// ── PAGINAÇÃO ─────────────────────────────────────────────────────────────────
+function renderPagBar(containerId,page,total,onPage){
+  const pages=Math.ceil(total/PAGE)||1;
+  const el=document.getElementById(containerId);
+  if(pages<=1){el.innerHTML=`<span>${total} resultado(s)</span>`;return;}
+  let html=`<button ${page===1?'disabled':''} onclick="${onPage}(${page-1})">‹</button>`;
+  for(let p=1;p<=pages;p++){
+    if(pages>7&&Math.abs(p-page)>2&&p!==1&&p!==pages){if(p===page-3||p===page+3)html+='<span style="padding:0 4px">…</span>';continue;}
+    html+=`<button class="${p===page?'active':''}" onclick="${onPage}(${p})">${p}</button>`;
+  }
+  html+=`<button ${page===pages?'disabled':''} onclick="${onPage}(${page+1})">›</button><span style="margin-left:4px">${total} resultado(s)</span>`;
+  el.innerHTML=html;
+}
+
+// ── ORDENAÇÃO ─────────────────────────────────────────────────────────────────
+function initSortHeaders(){
+  document.querySelectorAll('#tbl-at th.sortable').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const col=th.dataset.col;
+      if(sortCol===col)sortDir=sortDir==='asc'?'desc':'asc';
+      else{sortCol=col;sortDir='asc';}
+      document.querySelectorAll('#tbl-at th.sortable').forEach(h=>{h.classList.remove('sort-asc','sort-desc');});
+      th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');
+      atPage=1;rAT();
+    });
+  });
+}
+function sortList(list){
+  return [...list].sort((a,b)=>{
+    let va,vb;
+    if(sortCol==='dias'){va=dR(a.prazo);vb=dR(b.prazo);}
+    else if(sortCol==='resp'){va=(userMap.get(a.resp)?.name||'').toLowerCase();vb=(userMap.get(b.resp)?.name||'').toLowerCase();}
+    else{va=(a[sortCol]||'').toLowerCase?.()??a[sortCol]??'';vb=(b[sortCol]||'').toLowerCase?.()??b[sortCol]??'';}
+    if(va<vb)return sortDir==='asc'?-1:1;
+    if(va>vb)return sortDir==='asc'?1:-1;
+    return 0;
+  });
+}
+
+// ── SELECTS ───────────────────────────────────────────────────────────────────
+function populateRespSelect(){
+  const ff=document.getElementById('ff'),cur=ff?.value||'';
+  if(ff){ff.innerHTML='<option value="">Todos</option>';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name;if(u.id===cur)o.selected=true;ff.appendChild(o)});}
+  const rp=document.getElementById('nt-rp');
+  if(rp){rp.innerHTML='';usuarios.forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=u.name+(u.role==='admin'?' (Admin)':u.equipe==='outros'&&u.area?' ('+u.area+')':'');rp.appendChild(o)});}
+}
+function populateMesFiltro(){
+  const sel=document.getElementById('fmes');if(!sel)return;
+  sel.innerHTML='<option value="">Todos</option>';
+  MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;sel.appendChild(o);});
+}
+function populateMesesCheck(){
+  document.getElementById('meses-check').innerHTML=MESES.map((m,i)=>{
+    const v=String(i+1).padStart(2,'0');
+    return`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" value="${v}" onchange="atualizarPreviewPrazos()" style="width:auto;padding:0"> ${m}</label>`;
+  }).join('');
+}
+
+window.toggleRecFields=function(){
+  const rec=document.getElementById('nt-rec').value,isMensal=rec==='mensal';
+  document.getElementById('fg-meses').style.display=isMensal?'block':'none';
+  document.getElementById('fg-mes-ref').style.display=isMensal?'none':'block';
+  document.getElementById('fg-du').style.display=isMensal?'grid':'none';
+  document.getElementById('fg-prazo-manual').style.display=isMensal?'none':'grid';
+  document.getElementById('fg-mensal-extra').style.display=isMensal?'grid':'none';
+  document.getElementById('info-mensal').classList.toggle('hidden',!isMensal);
+  if(isMensal)atualizarPreviewPrazos();
+};
+window.toggleTipoRotina=function(){
+  const fech=document.getElementById('nt-tipo').value==='fechamento';
+  document.getElementById('fg-cm').style.display=fech?'block':'none';
+};
+window.toggleEquipeField=function(prefix){
+  const outros=document.getElementById(prefix+'-equipe').value==='outros';
+  document.getElementById(prefix+'-area-fg').style.display=outros?'block':'none';
+  document.getElementById(prefix+'-chefia-fg').style.display=outros?'block':'none';
+};
+window.limparFiltrosAdm=function(){
+  ['ff','fst','fr','fequipe'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('fmes').value=mesAtual;
+  document.getElementById('fdata').value='9999-12-31';
+  document.getElementById('fbusca').value='';
+  atPage=1;rAT();
+};
+window.limparFiltrosMy=function(){
+  document.getElementById('my-fst').value='pendente_andamento';
+  document.getElementById('my-fmes').value=mesAtual;
+  document.getElementById('my-fdata').value=anoFim;
+  document.getElementById('my-fbusca').value='';
+  rMyTasks();
+};
+window.limparFiltrosFunc=function(){
+  document.getElementById('func-fst').value='pendente_andamento';
+  document.getElementById('func-fmes').value=mesAtual;
+  document.getElementById('func-fdata').value=anoFim;
+  document.getElementById('func-fbusca').value='';
+  rFunc();
+};
+
+// ── LOGIN / LOGOUT ────────────────────────────────────────────────────────────
+// Deixa a comparação de nomes "tolerante": ignora maiúsculas, acentos e espaços extras.
+function normalizarNome(s){
+  return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
+}
+// Descobre o e-mail a partir do nome, consultando a "lista de nomes" (coleção diretorio).
+async function emailPorNome(nome){
+  const alvo=normalizarNome(nome);
+  if(!alvo)return null;
+  const snap=await getDocs(collection(db,'diretorio'));
+  for(const d of snap.docs){
+    const dados=d.data();
+    if(normalizarNome(dados.name)===alvo)return (dados.email||'').toLowerCase();
+  }
+  return null;
+}
+window.dL=async function(){
+  const entrada=document.getElementById('lu').value.trim();
+  const senha=document.getElementById('lp').value;
+  const le=document.getElementById('le');
+  le.classList.add('hidden');
+  if(!entrada||!senha){le.textContent='Informe o usuário e a senha.';le.classList.remove('hidden');return;}
+  const btn=document.getElementById('btn-login');
+  if(btn){btn.disabled=true;btn.dataset.txt=btn.textContent;btn.textContent='Entrando...';}
+  try{
+    // Se digitou um e-mail (tem @), usa direto. Senão, traduz o nome para o e-mail.
+    let email=entrada.toLowerCase();
+    if(!entrada.includes('@')){
+      email=await emailPorNome(entrada);
+      if(!email){le.textContent='Usuário ou senha incorretos.';le.classList.remove('hidden');return;}
+    }
+    // Não mantém a pessoa logada "para sempre": a sessão acaba ao fechar o navegador,
+    // então a senha é pedida toda vez que o sistema é aberto.
+    await setPersistence(auth,browserSessionPersistence);
+    await signInWithEmailAndPassword(auth,email,senha);
+    // O restante (buscar perfil e abrir o app) é feito por onAuthStateChanged, no fim do arquivo.
+  }catch(e){
+    le.textContent=msgErroFirebase(e.code);
+    le.classList.remove('hidden');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=btn.dataset.txt||'Entrar';}
+  }
+};
+window.esqueciSenha=async function(){
+  const entrada=document.getElementById('lu').value.trim();
+  const le=document.getElementById('le');
+  if(!entrada){le.textContent='Digite seu nome (ou e-mail) no campo acima para receber o link de redefinição.';le.classList.remove('hidden');return;}
+  try{
+    let email=entrada.toLowerCase();
+    if(!entrada.includes('@')){
+      email=await emailPorNome(entrada);
+      if(!email){le.textContent='Usuário não encontrado.';le.classList.remove('hidden');return;}
+    }
+    await sendPasswordResetEmail(auth,email);
+    le.classList.add('hidden');
+    toast('✉ Link de redefinição enviado para o seu e-mail.');
+  }catch(e){
+    le.textContent=msgErroFirebase(e.code);
+    le.classList.remove('hidden');
+  }
+};
+
+// ── TROCAR SENHA ──────────────────────────────────────────────────────────────
+let senhaForcada=false;
+window.abrirTrocaSenha=function(forced){
+  senhaForcada=!!forced;
+  document.getElementById('sn-atual-fg').style.display=forced?'none':'block';
+  document.getElementById('sn-cancel').style.display=forced?'none':'inline-flex';
+  document.getElementById('sn-titulo').textContent=forced?'Defina sua nova senha':'Alterar minha senha';
+  document.getElementById('sn-msg').textContent=forced?'Por segurança, você precisa definir uma nova senha para continuar.':'Informe a senha atual e escolha uma nova.';
+  ['sn-atual','sn-nova','sn-conf'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sn-er').classList.add('hidden');
+  document.getElementById('sn-ok').classList.add('hidden');
+  document.getElementById('modal-senha').classList.remove('hidden');
+  setTimeout(()=>document.getElementById(forced?'sn-nova':'sn-atual').focus(),60);
+};
+window.fecharTrocaSenha=function(){
+  if(senhaForcada)return; // no modo obrigatório não pode cancelar
+  document.getElementById('modal-senha').classList.add('hidden');
+};
+window.salvarNovaSenha=async function(){
+  const er=document.getElementById('sn-er');
+  const nova=document.getElementById('sn-nova').value;
+  const conf=document.getElementById('sn-conf').value;
+  const mostrarErro=msg=>{er.textContent=msg;er.classList.remove('hidden');};
+  if(nova.length<6){mostrarErro('A nova senha deve ter pelo menos 6 caracteres.');return;}
+  if(nova!==conf){mostrarErro('A confirmação não confere com a nova senha.');return;}
+  er.classList.add('hidden');
+  const user=auth.currentUser;
+  if(!user){mostrarErro('Sessão expirada. Faça login novamente.');return;}
+  try{
+    // Na troca voluntária, confirmamos a senha atual antes (re-autenticação)
+    if(!senhaForcada){
+      const atual=document.getElementById('sn-atual').value;
+      if(!atual){mostrarErro('Informe a senha atual.');return;}
+      const cred=EmailAuthProvider.credential(user.email,atual);
+      await reauthenticateWithCredential(user,cred);
+    }
+    await updatePassword(user,nova);
+    await updateDoc(doc(db,'usuarios',user.uid),{forcarTrocaSenha:false});
+    if(CU)CU.forcarTrocaSenha=false;
+    if(senhaForcada){
+      document.getElementById('modal-senha').classList.add('hidden');
+      senhaForcada=false;
+      toast('✓ Senha definida!');
+      entrarNoApp();
+    }else{
+      document.getElementById('sn-ok').classList.remove('hidden');
+      toast('✓ Senha alterada!');
+      setTimeout(()=>document.getElementById('modal-senha').classList.add('hidden'),1500);
+    }
+  }catch(e){mostrarErro(msgErroFirebase(e.code));}
+};
+window.logout=async function(){
+  pararListeners();
+  try{await signOut(auth);}catch(e){console.error(e);}
+  // A limpeza dos dados e o retorno à tela de login são feitos por onAuthStateChanged.
+};
+
+// ── ADMIN INIT ────────────────────────────────────────────────────────────────
+function iA(){
+  document.getElementById('adm-nm').textContent=CU.name;
+  document.getElementById('adm-av').textContent=ini(CU.name);
+  document.getElementById('adm-my-mes').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  populateRespSelect();populateMesFiltro();populateMesesCheck();toggleRecFields();
+  const pd=new Date(hj);pd.setDate(pd.getDate()+7);
+  document.getElementById('nt-pr').value=pd.toISOString().split('T')[0];
+  document.getElementById('fmes').value=mesAtual;
+  document.getElementById('fdata').value='9999-12-31';
+  document.getElementById('my-fst').value='pendente_andamento';
+  document.getElementById('my-fmes').value=mesAtual;
+  document.getElementById('my-fdata').value=anoFim;
+  const dFano=document.getElementById('d-fano');
+  if(dFano){dFano.innerHTML='';for(let y=anoAtual;y>=anoAtual-2;y--){const o=document.createElement('option');o.value=y;o.textContent=y;dFano.appendChild(o);}}
+  document.getElementById('d-fmes').value=mesAtual;
+  const fFano=document.getElementById('f-fano');
+  if(fFano){fFano.innerHTML='';for(let y=anoAtual;y>=anoAtual-2;y--){const o=document.createElement('option');o.value=y;o.textContent=y;fFano.appendChild(o);}}
+  document.getElementById('f-fmes').value=mesAtual;
+  initSortHeaders();
+  rAM();rAT();rAL();rMyTasks();resetarMensais();
+  setTimeout(()=>verificarEEnviarEmails(),3000);
+  show('sc-adm');
+}
+window.aTab=function(t,el){
+  ['t','m','e','n','d','f','h'].forEach(x=>{const el=document.getElementById('at-'+x);if(el)el.classList.add('hidden');});
+  document.querySelectorAll('#sc-adm .tab-bar .tab').forEach(x=>x.classList.remove('active'));
+  const abaEl=document.getElementById('at-'+t);
+  abaEl.classList.remove('hidden');abaEl.classList.add('aba-fade');
+  el.classList.add('active');
+  if(t==='e')rEq();if(t==='d')rDash();if(t==='m'){drafts.clear();rMyTasks();}if(t==='f')rFech();
+};
+
+// ── MÉTRICAS ──────────────────────────────────────────────────────────────────
+function rAM(){
+  const{ok,at,vc,tot}=calcStats(tarefas);
+  document.getElementById('adm-met').innerHTML=
+    metricHTML('Total',tot)+metricHTML('Concluídas',ok,'s')+
+    metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('adm-met');
+}
+
+const emailIconHtml=(id,tarefa)=>{
+  const st=emailStatus[id]||'nao_enviado';
+  if(st==='enviado')
+    return'<span title="Notificação enviada" style="color:#16a34a;font-size:15px;font-weight:700">✔</span>';
+  if(st==='erro')
+    return'<span title="Falha no envio" style="color:#dc2626;font-size:15px;font-weight:700">✗</span>';
+  // Concluída sem ter sido notificada → mostra "—"
+  if(tarefa?.status==='concluida')
+    return'<span title="Concluída sem necessidade de notificação" style="color:#9c9a94;font-size:15px;font-weight:500">—</span>';
+  // Pendente/andamento ainda fora do período de alerta → traço cinza claro
+  return'<span title="Fora do período de alerta" style="color:#d0cec6;font-size:15px">—</span>';
+};
+// emailBadge removida (não utilizada)
+
+function rAL(){
+  const at=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0);
+  const vc=tarefas.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=(parseInt(t.alerta)||2));
+  const adm=usuarios.filter(u=>u.role==='admin');let h='';
+  const makeRow=t=>{const u=userMap.get(t.resp);const d=dR(t.prazo);const diasTxt=d<0?Math.abs(d)+' dia(s) de atraso':d===0?'vence hoje':d+' dia(s)';const mesComp=t.mesReferencia?`<span style="font-size:11px;background:var(--gray-bg);color:var(--text2);padding:1px 6px;border-radius:10px;border:1px solid var(--border)">${fMes(t.mesReferencia)}</span>`:'';return`<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px"><span style="font-size:13px;font-weight:500">${t.nome} (${u?.name||t.resp})</span>${mesComp}<span style="font-size:11px;color:var(--text2)">${diasTxt}</span></div>`;};
+  if(at.length)h+=`<div class="alert ad"><strong>${at.length} tarefa(s) atrasada(s):</strong>${at.map(makeRow).join('')}</div>`;
+  if(vc.length)h+=`<div class="alert aw"><strong>${vc.length} tarefa(s) vencendo em breve:</strong>${vc.map(makeRow).join('')}</div>`;
+  document.getElementById('adm-al').innerHTML=h;
+}
+
+// ── TAREFAS DA EQUIPE (com busca + ordenação + paginação + DocumentFragment) ──
+window.rAT=function(pg){
+  if(typeof pg==='number')atPage=pg;
+  const fi=document.getElementById('ff')?.value||'';
+  const fst=document.getElementById('fst')?.value||'';
+  const fr=document.getElementById('fr')?.value||'';
+  const fm=document.getElementById('fmes')?.value||'';
+  const fd=document.getElementById('fdata')?.value||'';
+  const fb=(document.getElementById('fbusca')?.value||'').toLowerCase().trim(); // FIX #11: busca por texto
+  const feq=document.getElementById('fequipe')?.value||'';
+  atList=tarefas;
+  if(fi)atList=atList.filter(t=>t.resp===fi);
+  if(feq)atList=atList.filter(t=>userEquipe(t.resp)===feq);
+  if(fst)atList=atList.filter(t=>t.status===fst);
+  if(fr)atList=atList.filter(t=>t.recorrencia===fr);
+  if(fm)atList=atList.filter(t=>t.mesReferencia===fm);
+  if(fd)atList=atList.filter(t=>t.prazo&&t.prazo<=fd);
+  if(fb)atList=atList.filter(t=>t.nome.toLowerCase().includes(fb)||(userMap.get(t.resp)?.name||'').toLowerCase().includes(fb));
+  atList=sortList(atList); // FIX #10: ordenação
+  document.getElementById('at-count').textContent=atList.length+' tarefa(s)';
+  const tb=document.getElementById('adm-tb');
+  const frag=document.createDocumentFragment();
+  const emAdm=document.getElementById('adm-em');
+  const temFiltro=fi||fst||fr||fm||fd||fb||feq;
+  emAdm.innerHTML=atList.length===0?(temFiltro?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosAdm();return false;" style="color:var(--blue)">Limpar filtros</a>':'📋 Nenhuma tarefa cadastrada ainda.'):'';
+  emAdm.classList.toggle('hidden',atList.length>0);
+  const slice=atList.slice((atPage-1)*PAGE,atPage*PAGE);
+  slice.forEach(t=>{
+    const d=dR(t.prazo); // FIX #1: calculado 1x por linha
+    const u=userMap.get(t.resp); // FIX #8: O(1)
+    const a=parseInt(t.alerta)||2;
+    const eqOut=userEquipe(t.resp)==='outros';
+    const cmTag=isCM(t)?' <span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span>':'';
+    const tr=document.createElement('tr');tr.className=trClass(t);
+    tr.innerHTML=`
+      <td style="font-weight:500"><span class="task-link" onclick="openLog('${t.id}','${escJs(t.nome)}')" title="Ver histórico">${t.nome}</span>${cmTag}</td>
+      <td>${u?.name||t.resp}${eqOut?' '+areaBadge(userArea(t.resp)):''}</td><td>${rBadge(t.recorrencia||'eventual')}</td>
+      <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
+      <td>${fD(t.prazo)}</td>
+      <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
+      <td>${sBadge(t.status,d,a)}</td>
+      <td style="font-size:11px;color:var(--text2)">${fD(t.dataConclusao)}</td>
+      <td style="font-size:11px;color:var(--text2);text-align:center">${a}d</td>
+      <td style="font-size:11px;color:var(--text2)" title="${(t.obs||'').replace(/"/g,'&quot;')}">${t.obs||'—'}</td>
+      <td style="text-align:center">${emailIconHtml(t.id,t)}</td>
+      <td style="text-align:center">${(t.status==='pendente'||t.status==='andamento')&&(d<0||d<=a)
+        ?`<button class="btn btn-sm" title="Notificar novamente" style="font-size:14px;padding:3px 7px" onclick="renotificar('${t.id}')">🔔</button>`
+        :'<span title="Notificação não disponível neste momento" style="font-size:14px;opacity:0.25;filter:grayscale(1);cursor:not-allowed;display:inline-block">🔔</span>'
+      }</td>
+      <td style="white-space:nowrap;text-align:center">
+        <button class="btn btn-sm btn-d" onclick="rmT('${t.id}','${escJs(t.nome)}')">🗑</button>
+      </td>`;
+    frag.appendChild(tr);
+  });
+  tb.innerHTML=''; // limpa só depois de montar o fragment
+  tb.appendChild(frag);
+  renderPagBar('at-pg',atPage,atList.length,'rAT');
+  rAM();rAL();
+};
+
+// ── AUTOSAVE OBS COM DEBOUNCE ─────────────────────────────────────────────────
+const obsTimers={};
+function makeObsTd(t,prefixo){
+  const id=t.id;
+  const draft=drafts.get(id);
+  const effStatus=draft?draft.status:t.status;
+  const effObs=draft?draft.obs:(t.obs||'');
+  const hasDraft=!!draft;
+  const savedConcluida=t.status==='concluida';
+  const locked=savedConcluida&&effStatus==='concluida'; // concluída salva e sem reversão em rascunho
+  const fech=isFechamento(t);
+  const td=document.createElement('td');td.style.overflow='visible';
+  const ta=document.createElement('textarea');
+  ta.rows=1;ta.id=`obs-${prefixo}-${id}`;
+  ta.value=effObs;
+  ta.placeholder=fech?'Justificativa...':'Observação...';
+  if(locked){
+    ta.readOnly=true;ta.className='oi obs-locked';ta.title='Tarefa concluída — bloqueada para edição';
+    ta.addEventListener('mousedown',e=>{e.preventDefault();ta.blur();toast('🔒 Para editar, mude o status para "Em andamento" ou "Pendente"');});
+  }else{
+    ta.className='oi'+(hasDraft?' obs-draft':'');
+    ta.addEventListener('input',function(){
+      atualizarDraft(id,prefixo);
+      const sw=document.getElementById('savewrap-'+prefixo+'-'+id);
+      if(sw)sw.style.display=drafts.has(id)?'flex':'none';
+      ta.classList.toggle('obs-draft',drafts.has(id));
+    });
+  }
+  td.appendChild(ta);
+  const sw=document.createElement('div');
+  sw.id=`savewrap-${prefixo}-${id}`;
+  sw.style.cssText='margin-top:6px;align-items:center;gap:8px;display:'+(hasDraft&&!locked?'flex':'none');
+  sw.innerHTML=`<button class="btn btn-sm btn-p" style="padding:3px 12px;font-size:12px" onclick="salvarLinha('${id}','${prefixo}')">💾 Salvar</button><span style="font-size:11px;color:var(--amber-text);font-weight:500">não salvo</span>`;
+  td.appendChild(sw);
+  return td;
+}
+
+// ── MINHAS TAREFAS ADM ────────────────────────────────────────────────────────
+window.rMyTasks=function(){
+  if(!CU)return;
+  const fst=document.getElementById('my-fst')?.value;
+  const fd=document.getElementById('my-fdata')?.value||'';
+  const fb=(document.getElementById('my-fbusca')?.value||'').toLowerCase().trim();
+  const fm=document.getElementById('my-fmes')?.value||'';
+  let m=tarefas.filter(t=>t.resp===CU.id);
+  if(fst==='pendente_andamento')m=m.filter(t=>t.status==='pendente'||t.status==='andamento');
+  else if(fst&&fst!=='')m=m.filter(t=>t.status===fst);
+  // fst==='' significa 'Todos' — não aplica filtro de status
+  if(fm)m=m.filter(t=>t.mesReferencia===fm);
+  if(fd)m=m.filter(t=>t.prazo<=fd);
+  if(fb)m=m.filter(t=>t.nome.toLowerCase().includes(fb));
+  const tot=tarefas.filter(t=>t.resp===CU.id);
+  const{ok,at,vc}=calcStats(tot); // FIX #7
+  document.getElementById('adm-my-met').innerHTML=
+    metricHTML('Total',tot.length)+metricHTML('Concluídas',ok,'s')+
+    metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('adm-my-met');
+  let ah='';
+  if(at)ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.</div>`;
+  if(vc)ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em breve.</div>`;
+  document.getElementById('adm-my-al').innerHTML=ah;
+  const focoId=document.activeElement?.id?.startsWith('obs-adm-')?document.activeElement.id:null;
+  const frag=document.createDocumentFragment();
+  const emMy=document.getElementById('adm-my-em');
+  const temFiltroMy=fst!=='pendente_andamento'||fd||fb||fm;
+  emMy.innerHTML=m.length===0?(temFiltroMy?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosMy();return false;" style="color:var(--blue)">Limpar filtros</a>':'🎉 Nenhuma tarefa pendente no momento!'):'';
+  emMy.classList.toggle('hidden',m.length>0);
+  m.forEach(t=>{
+    const d=dR(t.prazo),a=parseInt(t.alerta)||2;
+    const cmTag=isCM(t)?' <span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span>':'';
+    const draft=drafts.get(t.id);const effStatus=draft?draft.status:t.status;
+    const tr=document.createElement('tr');tr.className=trClass(t)+(draft?' row-draft':'');
+    tr.innerHTML=`
+      <td style="font-weight:500"><span class="task-link" onclick="openLog('${t.id}','${escJs(t.nome)}')" title="Ver histórico">${t.nome}</span>${cmTag}</td>
+      <td>${rBadge(t.recorrencia||'eventual')}</td>
+      <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
+      <td>${fD(t.prazo)}</td>
+      <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
+      <td><select id="st-adm-${t.id}" class="ss" onchange="onStatusChange('${t.id}','adm')">
+        <option value="pendente" ${effStatus==='pendente'?'selected':''}>Pendente</option>
+        <option value="andamento" ${effStatus==='andamento'?'selected':''}>Em andamento</option>
+        <option value="concluida" ${effStatus==='concluida'?'selected':''}>Concluída</option>
+      </select></td>
+`;
+    tr.appendChild(makeObsTd(t,'adm'));
+    const td2=document.createElement('td');td2.style.textAlign='center';td2.innerHTML=`<button class="btn btn-sm btn-d" title="Excluir tarefa" style="font-size:13px;padding:3px 7px" onclick="rmT('${t.id}','${escJs(t.nome)}')">🗑</button>`;tr.appendChild(td2);
+    frag.appendChild(tr);
+  });
+  const tb=document.getElementById('adm-my-tb');tb.innerHTML='';tb.appendChild(frag);
+  if(focoId){const el=document.getElementById(focoId);if(el)el.focus();}
+};
+
+// ── EQUIPE ────────────────────────────────────────────────────────────────────
+function rEq(){
+  const w=document.getElementById('eq-cards');w.innerHTML='';
+  usuarios.forEach(u=>{
+    const m=tarefas.filter(t=>t.resp===u.id);
+    const{ok,at}=calcStats(m);
+    const p=m.length?Math.round(ok/m.length*100):0;
+    const d=document.createElement('div');d.className='eq-card';
+    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${u.role==='admin'?'b-adm':'b-pend'}">${u.role==='admin'?'Admin':'Usuário Padrão'}</span>${u.equipe==='outros'?' <span class="badge b-outros">'+(u.area||'Outros')+'</span>':''}</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;margin-bottom:12px"><div><div style="font-size:20px;font-weight:500">${m.length}</div><div style="font-size:11px;color:var(--text2)">tarefas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--green)">${ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div><div style="font-size:20px;font-weight:500;color:var(--red)">${at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">${p}% concluído</div><div class="pw"><div class="pb" style="width:${p}%;background:${bC(p)}"></div></div>`;
+    w.appendChild(d);
+  });
+}
+
+// ── NOVA TAREFA ───────────────────────────────────────────────────────────────
+window.addT=async function(){
+  const nm=document.getElementById('nt-nm').value.trim(),rp=document.getElementById('nt-rp').value,rec=document.getElementById('nt-rec').value,isMensal=rec==='mensal';
+  if(!nm||!rp){document.getElementById('nt-er').classList.remove('hidden');return;}
+  document.getElementById('nt-er').classList.add('hidden');
+  const tipoRotina=document.getElementById('nt-tipo').value;
+  const interfereCustoMedio=tipoRotina==='fechamento'&&document.getElementById('nt-cm').value==='sim';
+  try{
+    if(isMensal){
+      const checks=[...document.querySelectorAll('#meses-check input:checked')].map(c=>c.value);
+      const meses=checks.length?checks:[mesAtual],du=parseInt(document.getElementById('nt-du').value)||3,alerta=parseInt(document.getElementById('nt-alerta-m').value)||2,st=document.getElementById('nt-st-m').value;
+      for(const mes of meses){const prazo=calcPrazoMensal(mes,du);if(!prazo){alert('Não foi possível calcular o prazo para '+fMes(mes));continue;}await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo,recorrencia:'mensal',mesReferencia:mes,alerta,status:st,obs:'',dataConclusao:'',diaUtil:du,tipoRotina,interfereCustoMedio});}
+    }else{
+      const pr=document.getElementById('nt-pr').value;if(!pr){document.getElementById('nt-er').classList.remove('hidden');return;}
+      await addDoc(collection(db,'tarefas'),{nome:nm,resp:rp,prazo:pr,recorrencia:rec,mesReferencia:document.getElementById('nt-mes-ref').value,alerta:parseInt(document.getElementById('nt-alerta').value)||2,status:document.getElementById('nt-st').value,obs:'',dataConclusao:'',tipoRotina,interfereCustoMedio});
+    }
+    document.getElementById('nt-nm').value='';
+    document.getElementById('nt-tipo').value='comum';toggleTipoRotina();
+    document.getElementById('nt-ok').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('nt-ok').classList.add('hidden'),3000);
+    window.aTab('t',document.querySelectorAll('#sc-adm .tab-bar .tab')[0]);
+  }catch(e){alert('Erro ao salvar: '+e.message);}
+};
+
+// FIX #12: rmT usa confirmDialog em vez de confirm() nativo
+window.rmT=async function(id,nome){
+  const ok=await confirmDialog(`Remover a tarefa "${nome||id}"?`);
+  if(!ok)return;
+  try{await deleteDoc(doc(db,'tarefas',id));toast('🗑 Tarefa removida');}catch(e){alert('Erro: '+e.message);}
+};
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+window.rDash=function rDash(){
+  const fmes=document.getElementById('d-fmes')?.value||'';
+  const fano=parseInt(document.getElementById('d-fano')?.value||anoAtual);
+  let base=tarefas.filter(t=>t.prazo&&parseInt(t.prazo.substring(0,4))===fano);
+  if(fmes)base=base.filter(t=>t.mesReferencia===fmes);
+  const{ok,at,vc,tot}=calcStats(base);
+  const an=base.filter(t=>t.status==='andamento').length,pe=base.filter(t=>t.status==='pendente').length;
+  const p=tot?Math.round(ok/tot*100):0;
+  const tituloMes=fmes?fMes(fmes)+' de '+fano:'Todos os meses — '+fano;
+  document.getElementById('d-mes').textContent='Orthocrin — '+tituloMes;
+  const ph=document.getElementById('d-print-header');if(ph)ph.textContent='Orthocrin — Dashboard: '+tituloMes;
+  const subLabel=fmes?'no mês':'no ano';
+  document.getElementById('d-kpi').innerHTML=
+    metricHTML('Total',tot,'',subLabel)+metricHTML('Concluídas',ok,'s',p+'%')+
+    metricHTML('Em andamento',an,'i')+metricHTML('Pendentes',pe,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('d-kpi');
+  const clr=['#16a34a','#2563eb','#d97706','#dc2626'],lbs=['Concluídas','Em andamento','Pendentes','Atrasadas'],dat=[ok,an,pe,at];
+  document.getElementById('d-leg').innerHTML=lbs.map((l,i)=>`<div class="li"><div class="ld" style="background:${clr[i]}"></div>${l}: ${dat[i]}</div>`).join('');
+  if(DC){DC.data.datasets[0].data=dat;DC.update();}
+  else{
+    const chartOpts={
+      type:'doughnut',
+      data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},
+      options:{
+        responsive:true,maintainAspectRatio:false,cutout:'65%',
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:function(c){
+            const pct=Math.round(c.parsed/(tot||1)*100);
+            return ' '+c.label+': '+c.parsed+' ('+pct+'%)';
+          }}}
+        }
+      }
+    };
+    DC=new Chart(document.getElementById('d-chart'),chartOpts);
+  }
+  const ud=usuarios.map(u=>{const m=base.filter(t=>t.resp===u.id);const{ok,at}=calcStats(m);const p=m.length?Math.round(ok/m.length*100):0;return{...u,tot:m.length,ok,at,p};}).sort((a,b)=>b.p-a.p);
+  document.getElementById('d-rank').innerHTML=ud.map((u,i)=>`<div class="rr"><div class="rn">${i+1}</div><div class="av" style="width:28px;height:28px;font-size:11px">${ini(u.name)}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;margin-bottom:3px">${u.name}</div><div class="rbw"><div class="rb" style="width:${u.p}%;background:${bC(u.p)}"></div></div></div><div class="rp">${u.p}%</div></div>`).join('');
+  document.getElementById('d-prod').innerHTML=ud.map(u=>{const bc=bC(u.p),bclass=u.at>0?'b-atras':u.p>=80?'b-ok':'b-warn',bt=u.at>0?u.at+' atrasada(s)':u.p>=80?'Em dia':'Atenção';return`<div class="pg-card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="av">${ini(u.name)}</div><div><div style="font-weight:500">${u.name}</div><span class="badge ${bclass}">${bt}</span></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--green)">${u.ok}</div><div style="font-size:11px;color:var(--text2)">concluídas</div></div><div style="text-align:center;padding:8px;background:var(--gray-bg);border-radius:var(--radius)"><div style="font-size:20px;font-weight:500;color:var(--red)">${u.at}</div><div style="font-size:11px;color:var(--text2)">atrasadas</div></div></div><div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>${u.p}%</span><span>${u.ok}/${u.tot}</span></div><div class="pw"><div class="pb" style="width:${u.p}%;background:${bc}"></div></div></div>`;}).join('');
+}
+
+// ── FUNCIONÁRIO ───────────────────────────────────────────────────────────────
+function iF(){
+  document.getElementById('func-nm').textContent=CU.name;
+  document.getElementById('func-av').textContent=ini(CU.name);
+  document.getElementById('func-mes').textContent=hj.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  document.getElementById('func-fst').value='pendente_andamento';
+  document.getElementById('func-fmes').value=mesAtual;
+  document.getElementById('func-fdata').value=anoFim;
+  const fdFano=document.getElementById('fd-fano');
+  if(fdFano){fdFano.innerHTML='';for(let y=anoAtual;y>=anoAtual-2;y--){const o=document.createElement('option');o.value=y;o.textContent=y;fdFano.appendChild(o);}}
+  document.getElementById('fd-fmes').value=mesAtual;
+  rFunc();setTimeout(()=>verificarEEnviarEmails(),3000);show('sc-func');
+}
+window.fTab=function(t,el){
+  ['t','d'].forEach(x=>document.getElementById('ft-'+x).classList.add('hidden'));
+  document.querySelectorAll('#sc-func .tab-bar .tab').forEach(x=>x.classList.remove('active'));
+  const ftEl=document.getElementById('ft-'+t);
+  ftEl.classList.remove('hidden');ftEl.classList.add('aba-fade');
+  el.classList.add('active');
+  if(t==='t'){drafts.clear();rFunc();}
+  if(t==='d')rFuncDash();
+};
+
+window.rFunc=function rFunc(){
+  if(!CU)return;
+  const fst=document.getElementById('func-fst')?.value;
+  const fd=document.getElementById('func-fdata')?.value||'';
+  const fb=(document.getElementById('func-fbusca')?.value||'').toLowerCase().trim();
+  const fm=document.getElementById('func-fmes')?.value||'';
+  let m=tarefas.filter(t=>t.resp===CU.id);
+  if(fst==='pendente_andamento')m=m.filter(t=>t.status==='pendente'||t.status==='andamento');
+  else if(fst&&fst!=='')m=m.filter(t=>t.status===fst);
+  if(fm)m=m.filter(t=>t.mesReferencia===fm);
+  // fst==='' significa 'Todos' — não aplica filtro de status
+  if(fd)m=m.filter(t=>t.prazo<=fd);
+  if(fb)m=m.filter(t=>t.nome.toLowerCase().includes(fb));
+  const tot=tarefas.filter(t=>t.resp===CU.id);
+  const{ok,at,vc}=calcStats(tot);
+  document.getElementById('func-met').innerHTML=
+    metricHTML('Minhas tarefas',tot.length)+metricHTML('Concluídas',ok,'s')+
+    metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('func-met');
+  const adm=usuarios.filter(x=>x.role==='admin');let ah='';
+  if(at)ah+=`<div class="alert ad">Você tem <strong>${at} tarefa(s) atrasada(s)</strong>.</div>`;
+  if(vc)ah+=`<div class="alert aw">Você tem <strong>${vc} tarefa(s)</strong> vencendo em breve.</div>`;
+  document.getElementById('func-al').innerHTML=ah;
+  const focoId=document.activeElement?.id?.startsWith('obs-func-')?document.activeElement.id:null;
+  const frag=document.createDocumentFragment();
+  const emFunc=document.getElementById('func-em');
+  const temFiltroFunc=fst!=='pendente_andamento'||fd||fb||fm;
+  emFunc.innerHTML=m.length===0?(temFiltroFunc?'🔍 Nenhum resultado para os filtros aplicados. <a href="#" onclick="limparFiltrosFunc();return false;" style="color:var(--blue)">Limpar filtros</a>':'🎉 Nenhuma tarefa pendente no momento!'):'';
+  emFunc.classList.toggle('hidden',m.length>0);
+  m.forEach(t=>{
+    const d=dR(t.prazo),a=parseInt(t.alerta)||2;
+    const cmTag=isCM(t)?' <span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span>':'';
+    const draft=drafts.get(t.id);const effStatus=draft?draft.status:t.status;
+    const tr=document.createElement('tr');tr.className=trClass(t)+(draft?' row-draft':'');
+    tr.innerHTML=`
+      <td style="font-weight:500"><span class="task-link" onclick="openLog('${t.id}','${escJs(t.nome)}')" title="Ver histórico">${t.nome}</span>${cmTag}</td>
+      <td>${rBadge(t.recorrencia||'eventual')}</td>
+      <td style="font-size:11px;color:var(--text2)">${fMes(t.mesReferencia)}</td>
+      <td>${fD(t.prazo)}</td>
+      <td style="font-size:11px;color:var(--text2)">${fDias(d,t.status)}</td>
+      <td><select id="st-func-${t.id}" class="ss" onchange="onStatusChange('${t.id}','func')">
+        <option value="pendente" ${effStatus==='pendente'?'selected':''}>Pendente</option>
+        <option value="andamento" ${effStatus==='andamento'?'selected':''}>Em andamento</option>
+        <option value="concluida" ${effStatus==='concluida'?'selected':''}>Concluída</option>
+      </select></td>
+`;
+    tr.appendChild(makeObsTd(t,'func'));
+    frag.appendChild(tr);
+  });
+  const tb=document.getElementById('func-tb');tb.innerHTML='';tb.appendChild(frag);
+  if(focoId){const el=document.getElementById(focoId);if(el)el.focus();}
+}
+
+window.rFuncDash=function rFuncDash(){
+  if(!CU)return;
+  const fmes=document.getElementById('fd-fmes')?.value||'';
+  const fano=parseInt(document.getElementById('fd-fano')?.value||anoAtual);
+  let m=tarefas.filter(t=>t.resp===CU.id&&t.prazo&&parseInt(t.prazo.substring(0,4))===fano);
+  if(fmes)m=m.filter(t=>t.mesReferencia===fmes);
+  const{ok,at,vc,tot}=calcStats(m);
+  const an=m.filter(t=>t.status==='andamento').length,pe=m.filter(t=>t.status==='pendente').length;
+  const p=tot?Math.round(ok/tot*100):0;
+  const tituloMes=fmes?fMes(fmes)+' de '+fano:'Todos os meses — '+fano;
+  document.getElementById('fd-titulo').textContent='Meu desempenho — '+CU.name;
+  document.getElementById('fd-print-header').textContent='Meu desempenho — '+CU.name+' — '+tituloMes;
+  document.getElementById('fd-sub').textContent=tituloMes;
+  document.getElementById('fd-kpi').innerHTML=
+    metricHTML('Total',tot)+metricHTML('Concluídas',ok,'s',p+'%')+
+    metricHTML('Vencendo',vc,'w')+metricHTML('Atrasadas',at,'d');
+  animarMetricas('fd-kpi');
+  const clr=['#16a34a','#2563eb','#d97706','#dc2626'],lbs=['Concluídas','Em andamento','Pendentes','Atrasadas'],dat=[ok,an,pe,at];
+  document.getElementById('fd-leg').innerHTML=lbs.map((l,i)=>`<div class="li"><div class="ld" style="background:${clr[i]}"></div>${l}: ${dat[i]}</div>`).join('');
+  if(FDC){FDC.data.datasets[0].data=dat;FDC.update();}
+  else FDC=new Chart(document.getElementById('fd-chart'),{type:'doughnut',data:{labels:lbs,datasets:[{data:dat,backgroundColor:clr,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed}}}}});
+  const rec={mensal:m.filter(t=>t.recorrencia==='mensal').length,anual:m.filter(t=>t.recorrencia==='anual').length,eventual:m.filter(t=>!t.recorrencia||t.recorrencia==='eventual').length};
+  document.getElementById('fd-rec').innerHTML=`
+    <div class="rr"><div style="flex:1"><span class="badge b-mensal">Mensal</span></div><div class="rp">${rec.mensal}</div></div>
+    <div class="rr"><div style="flex:1"><span class="badge b-anual">Anual</span></div><div class="rp">${rec.anual}</div></div>
+    <div class="rr"><div style="flex:1"><span class="badge b-eventual">Eventual</span></div><div class="rp">${rec.eventual}</div></div>`;
+  const vencendo=m.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0&&dR(t.prazo)<=7).sort((a,b)=>dR(a.prazo)-dR(b.prazo));
+  document.getElementById('fd-venc').innerHTML=vencendo.length?`<div class="card" style="padding:0.75rem 1.25rem">${vencendo.map(t=>`<div class="rr"><div style="flex:1;font-size:13px;font-weight:500">${t.nome}</div><div style="font-size:12px;color:var(--text2);margin-right:8px">${fD(t.prazo)}</div>${sBadge(t.status,dR(t.prazo),t.alerta||2)}</div>`).join('')}</div>`:`<div class="empty">Nenhuma tarefa vencendo nos próximos 7 dias 🎉</div>`;
+}
+
+// ── FECHAMENTO (Modelo C — duas colunas) ──────────────────────────────────────
+let fechFiltro='todas';
+window.setFechFiltro=function(f,el){
+  fechFiltro=f;
+  document.querySelectorAll('.fech-toggle button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  rFech();
+};
+window.rFech=function rFech(){
+  const fmes=document.getElementById('f-fmes')?.value||mesAtual;
+  const fano=parseInt(document.getElementById('f-fano')?.value||anoAtual);
+  const titulo=fMes(fmes)+' de '+fano;
+  document.getElementById('f-subtitulo').textContent='Referência: '+titulo+' · somente tarefas de fechamento';
+  const ph=document.getElementById('f-print-header');if(ph)ph.textContent='Orthocrin — Fechamento: '+titulo;
+  // Base: tarefas de fechamento no mês/ano selecionado
+  let base=tarefas.filter(t=>isFechamento(t)&&t.prazo&&parseInt(t.prazo.substring(0,4))===fano);
+  if(fmes)base=base.filter(t=>t.mesReferencia===fmes);
+  // KPIs
+  const total=base.length;
+  const noPrazo=base.filter(t=>t.status==='concluida'&&(!t.dataConclusao||t.dataConclusao<=t.prazo)).length;
+  const pctPrazo=total?Math.round(noPrazo/total*100):0;
+  const cmLate=base.filter(t=>isCM(t)&&t.status!=='concluida'&&dR(t.prazo)<0);
+  const diasCM=cmLate.reduce((s,t)=>s+Math.abs(dR(t.prazo)),0);
+  document.getElementById('f-kpi').innerHTML=
+    metricHTML('Entregas de fechamento',total)+
+    metricHTML('Entregues no prazo',noPrazo,'s',pctPrazo+'% do total')+
+    metricHTML('Críticas atrasadas',cmLate.length,'d','custo médio')+
+    metricHTML('Dias de atraso',diasCM,'d','nas críticas');
+  animarMetricas('f-kpi');
+  // Split por equipe do responsável
+  let contab=base.filter(t=>userEquipe(t.resp)==='contab');
+  let outros=base.filter(t=>userEquipe(t.resp)==='outros');
+  if(fechFiltro==='cm'){contab=contab.filter(isCM);outros=outros.filter(isCM);}
+  else if(fechFiltro==='naocm'){contab=contab.filter(t=>!isCM(t));outros=outros.filter(t=>!isCM(t));}
+  renderFechCol('fech-col-contab',contab,'contab');
+  renderFechCol('fech-col-outros',outros,'outros');
+};
+function renderFechCol(id,list,equipe){
+  const el=document.getElementById(id);if(!el)return;
+  // Ordena: custo médio primeiro, depois por prazo
+  const sorted=[...list].sort((a,b)=>{const ca=isCM(a)?0:1,cb=isCM(b)?0:1;if(ca!==cb)return ca-cb;return dR(a.prazo)-dR(b.prazo);});
+  const ok=sorted.filter(t=>t.status==='concluida').length;
+  const late=sorted.filter(t=>t.status!=='concluida'&&dR(t.prazo)<0).length;
+  const pend=sorted.filter(t=>t.status!=='concluida'&&dR(t.prazo)>=0).length;
+  const ic=equipe==='contab'?'🏢':'📦';
+  const icbg=equipe==='contab'?'var(--brand-lt)':'#fdf4ff';
+  const titulo=equipe==='contab'?'Contabilidade':'Outras áreas';
+  let html=`<div class="fech-col-h"><div class="fech-col-ic" style="background:${icbg}">${ic}</div><div class="fech-col-t">${titulo}</div><div class="fech-col-c">${sorted.length} tarefa(s)</div></div>`;
+  html+=`<div class="fech-minik"><div class="fech-mk"><div class="fech-mk-v" style="color:var(--green)">${ok}</div><div class="fech-mk-l">${equipe==='contab'?'Concluídas':'Entregues'}</div></div><div class="fech-mk"><div class="fech-mk-v" style="color:var(--red)">${late}</div><div class="fech-mk-l">Atrasadas</div></div><div class="fech-mk"><div class="fech-mk-v" style="color:var(--amber)">${pend}</div><div class="fech-mk-l">Pendentes</div></div></div>`;
+  if(!sorted.length)html+='<div class="empty" style="padding:1.5rem 1rem">Nenhuma entrega de fechamento neste período.</div>';
+  else html+=sorted.map(t=>fechItemHtml(t,equipe)).join('');
+  el.innerHTML=html;
+}
+function fechItemHtml(t,equipe){
+  const u=userMap.get(t.resp);const d=dR(t.prazo);const cm=isCM(t);
+  let dias='',cls='';
+  if(t.status==='concluida'){
+    if(t.dataConclusao){const diff=Math.round((new Date(t.prazo+'T00:00:00')-new Date(t.dataConclusao+'T00:00:00'))/86400000);
+      if(diff>0){dias=`✓ ${diff}d antes`;cls='ok';}else if(diff===0){dias='✓ no prazo';cls='ok';}else{dias=`✗ ${Math.abs(diff)}d de atraso`;cls='atr';}}
+    else{dias='✓ Entregue';cls='ok';}
+  }else if(d<0){dias=`⚠ ${Math.abs(d)}d de atraso`;cls='atr';}
+  else if(d===0){dias='⏱ vence hoje';cls='venc';}
+  else{dias=`${d}d restantes`;cls='pend';}
+  const cmb=cm?`<span class="fech-cm-badge"><span class="fech-cm-dot"></span>Custo médio</span>`:'';
+  const areaB=equipe==='outros'?areaBadge(userArea(t.resp))+' ':'';
+  let just='';
+  if(t.obs&&t.obs.trim())just=`<div class="fech-just">📝 ${t.obs.replace(/</g,'&lt;')}</div>`;
+  else if(d<0&&t.status!=='concluida')just=`<div class="fech-just pend">⚠ Justificativa pendente</div>`;
+  return`<div class="fech-item${cm?' cm':''}">
+    <div class="fech-item-top">
+      <div style="flex:1;min-width:0">
+        <div>${areaB}<span class="fech-item-nome" onclick="openLog('${t.id}','${escJs(t.nome)}')" title="Ver histórico">${t.nome}</span>${cmb}</div>
+        <div class="fech-item-sub">${u?.name||'—'} · Prazo ${fD(t.prazo)}${t.status==='concluida'&&t.dataConclusao?' · Entregue '+fD(t.dataConclusao):''}</div>
+        ${just}
+      </div>
+      <div style="flex-shrink:0;text-align:right">
+        <div>${sBadge(t.status,d,t.alerta||2)}</div>
+        <div class="fech-dias ${cls}">${dias}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── AÇÕES ─────────────────────────────────────────────────────────────────────
+// (uSt removida: status agora é alterado via rascunho + botão Salvar — ver onStatusChange/salvarLinha)
+window.uDC=async function(id,v){
+  try{await updateDoc(doc(db,'tarefas',id),{dataConclusao:v});toast('✓ Data salva');}catch(e){alert('Erro: '+e.message);}
+};
+window.renotificar=async function(id){
+  if(!await confirmDialog('Notificar novamente por e-mail?'))return;
+  const t=tarefas.find(x=>x.id===id),u=userMap.get(t?.resp);
+  if(!t||!u){toast('❌ Tarefa ou usuário não encontrado.');return;}
+  const ok=await enviarEmailLembrete(t,u,usuarios.filter(x=>x.role==='admin'));
+  toast(ok?'✉ E-mail enviado com sucesso!':'❌ Falha no envio. Verifique o EmailJS.');
+  if(CU?.role==='admin')rMyTasks();else rFunc();
+};
+
+// ── USUÁRIOS ──────────────────────────────────────────────────────────────────
+window.openUsuarios=()=>{renderUsersList();document.getElementById('modal-users').classList.remove('hidden');};
+window.closeUsuarios=()=>document.getElementById('modal-users').classList.add('hidden');
+function renderUsersList(){
+  document.getElementById('users-list').innerHTML=usuarios.map(u=>{
+    const perfil=u.role==='admin'?'Admin':'Usuário Padrão';
+    const eq=u.equipe==='outros'?` · <span style="color:#7e22ce">${u.area||'Outros'}</span>`:' · Contabilidade';
+    return`<div class="user-row"><div class="av" style="flex-shrink:0">${ini(u.name)}</div><div style="flex:1;min-width:0"><div style="font-weight:500;font-size:14px">${u.name}</div><div style="font-size:12px;color:var(--text2)">${perfil}${eq} · ${u.email||'—'}</div></div><button class="btn btn-sm" onclick="openEditUser('${u.id}')">✏️</button></div>`;
+  }).join('');
+}
+window.addUsuario=async function(){
+  const nm=document.getElementById('nu-nm').value.trim(),em=document.getElementById('nu-em').value.trim().toLowerCase(),role=document.getElementById('nu-role').value,pass=document.getElementById('nu-pass').value.trim()||'123456';
+  const er=document.getElementById('nu-er');
+  if(!nm||!em){er.textContent='Preencha nome e e-mail.';er.classList.remove('hidden');return;}
+  if(pass.length<6){er.textContent='A senha inicial deve ter pelo menos 6 caracteres.';er.classList.remove('hidden');return;}
+  er.classList.add('hidden');
+  const equipe=document.getElementById('nu-equipe').value;
+  const area=equipe==='outros'?document.getElementById('nu-area').value.trim():'';
+  const chefiaEmail=equipe==='outros'?document.getElementById('nu-chefia').value.trim():'';
+  const forcarTrocaSenha=document.getElementById('nu-forcar').checked;
+  const btn=document.getElementById('btn-add-user');
+  if(btn){btn.disabled=true;}
+  let secApp=null;
+  try{
+    // Cria o login no Firebase Authentication usando um "app secundário",
+    // assim a sessão do administrador NÃO é trocada para o novo usuário.
+    secApp=initializeApp(cfg,'criarUsuario_'+Date.now());
+    const secAuth=getAuth(secApp);
+    const cred=await createUserWithEmailAndPassword(secAuth,em,pass);
+    const novoUid=cred.user.uid;
+    await signOut(secAuth);
+    // Grava o perfil no Firestore usando o UID como ID do documento (usuarios/{uid})
+    await setDoc(doc(db,'usuarios',novoUid),{name:nm,email:em,role,equipe,area,chefiaEmail,forcarTrocaSenha});
+    // Registra o nome na "lista de nomes" para permitir login pelo nome
+    await setDoc(doc(db,'diretorio',novoUid),{name:nm,email:em});
+    ['nu-nm','nu-em','nu-area','nu-chefia'].forEach(id=>document.getElementById(id).value='');document.getElementById('nu-pass').value='123456';
+    document.getElementById('nu-forcar').checked=false;
+    document.getElementById('nu-equipe').value='contab';toggleEquipeField('nu');
+    document.getElementById('nu-ok').classList.remove('hidden');setTimeout(()=>document.getElementById('nu-ok').classList.add('hidden'),3000);renderUsersList();
+  }catch(e){
+    er.textContent=msgErroFirebase(e.code);er.classList.remove('hidden');
+  }finally{
+    if(secApp){try{await deleteApp(secApp);}catch(_){}}
+    if(btn){btn.disabled=false;}
+  }
+};
+window.openEditUser=function(id){
+  const u=userMap.get(id);if(!u)return;
+  document.getElementById('eu-id').value=id;document.getElementById('eu-nm').value=u.name;
+  document.getElementById('eu-em').value=u.email;document.getElementById('eu-role').value=u.role;
+  document.getElementById('eu-equipe').value=u.equipe||'contab';
+  document.getElementById('eu-area').value=u.area||'';
+  document.getElementById('eu-chefia').value=u.chefiaEmail||'';
+  toggleEquipeField('eu');
+  document.getElementById('eu-forcar').checked=!!u.forcarTrocaSenha;
+  ['eu-er','eu-ok'].forEach(i=>document.getElementById(i).classList.add('hidden'));
+  document.getElementById('modal-edit-user').classList.remove('hidden');
+};
+window.closeEditUser=()=>document.getElementById('modal-edit-user').classList.add('hidden');
+window.saveEditUser=async function(){
+  const id=document.getElementById('eu-id').value,nm=document.getElementById('eu-nm').value.trim(),role=document.getElementById('eu-role').value;
+  if(!nm){document.getElementById('eu-er').textContent='Preencha o nome.';document.getElementById('eu-er').classList.remove('hidden');return;}
+  document.getElementById('eu-er').classList.add('hidden');
+  const equipe=document.getElementById('eu-equipe').value;
+  const area=equipe==='outros'?document.getElementById('eu-area').value.trim():'';
+  const chefiaEmail=equipe==='outros'?document.getElementById('eu-chefia').value.trim():'';
+  // Observação: o e-mail é o login (fica no Firebase Authentication) e não é alterado por aqui.
+  const data={name:nm,role,equipe,area,chefiaEmail,forcarTrocaSenha:document.getElementById('eu-forcar').checked};
+  try{
+    await updateDoc(doc(db,'usuarios',id),data);
+    // Mantém o nome na "lista de nomes" sincronizado (caso o nome tenha mudado)
+    try{await setDoc(doc(db,'diretorio',id),{name:nm},{merge:true});}catch(_){}
+    document.getElementById('eu-ok').classList.remove('hidden');
+    setTimeout(()=>{document.getElementById('eu-ok').classList.add('hidden');closeEditUser();renderUsersList();},2000);
+  }catch(e){document.getElementById('eu-er').textContent=msgErroFirebase(e.code);document.getElementById('eu-er').classList.remove('hidden');}
+};
+// Admin redefine a senha de outra pessoa: envia link de redefinição para o e-mail dela.
+window.resetarSenhaUsuario=async function(){
+  const email=(document.getElementById('eu-em').value||'').trim().toLowerCase();
+  if(!email){toast('❌ Usuário sem e-mail cadastrado.');return;}
+  if(!await confirmDialog('Enviar um e-mail de redefinição de senha para '+email+'?'))return;
+  try{await sendPasswordResetEmail(auth,email);toast('✉ E-mail de redefinição enviado para '+email+'.');}
+  catch(e){toast('❌ '+msgErroFirebase(e.code));}
+};
+window.deleteUser=async function(){
+  const id=document.getElementById('eu-id').value;
+  if(!await confirmDialog('Remover o perfil deste usuário? Ele perde o acesso ao sistema imediatamente. (O login no Firebase continua existindo e pode ser apagado pelo painel, se desejar.)'))return;
+  try{await deleteDoc(doc(db,'usuarios',id));try{await deleteDoc(doc(db,'diretorio',id));}catch(_){}closeEditUser();renderUsersList();toast('Usuário removido');}catch(e){toast('❌ '+msgErroFirebase(e.code));}
+};
+
+// ── PORTEIRO DE ACESSO (Firebase Authentication) ──────────────────────────────
+// Roda ao abrir a página e sempre que o login muda. É quem decide entre
+// mostrar a tela de login ou já abrir o sistema (buscando o perfil no Firestore).
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){
+    // Ninguém logado: limpa tudo e mostra o login (sem baixar dado nenhum).
+    pararListeners();
+    CU=null;DC=null;FDC=null;
+    tarefas=[];usuarios=[];userMap.clear();
+    iniciado=false;jaEntrou=false;cargaTarefasOk=false;cargaUsuariosOk=false;
+    document.getElementById('lu').value='';document.getElementById('lp').value='';
+    show('sc-login');
+    return;
+  }
+  // Logou no Firebase. Buscamos o perfil dele no Firestore (usuarios/{uid}).
+  try{
+    const snap=await getDoc(doc(db,'usuarios',user.uid));
+    if(!snap.exists()){
+      // Tem login, mas não há perfil cadastrado: bloqueia por segurança.
+      await signOut(auth);
+      const le=document.getElementById('le');
+      le.textContent='Seu acesso existe, mas não há um perfil cadastrado. Avise o administrador.';
+      le.classList.remove('hidden');
+      return;
+    }
+    CU={id:user.uid,uid:user.uid,email:user.email,...snap.data()};
+    // Mantém a "lista de nomes" (diretorio) atualizada para o login por nome funcionar.
+    try{await setDoc(doc(db,'diretorio',user.uid),{name:CU.name,email:CU.email},{merge:true});}catch(_){}
+    if(CU.forcarTrocaSenha){abrirTrocaSenha(true);return;} // troca obrigatória antes de entrar
+    entrarNoApp();
+  }catch(e){
+    console.error('Erro ao carregar perfil:',e);
+    await signOut(auth);
+    const le=document.getElementById('le');
+    le.textContent='Erro ao carregar seu perfil. Tente novamente.';
+    le.classList.remove('hidden');
+  }
+});
+</script>
+</body>
+</html>
