@@ -140,6 +140,7 @@ tr.rc{background:var(--conc-bg)}
 /* MODAIS */
 .modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(28,25,23,0.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;backdrop-filter:blur(2px)}
 .modal{background:var(--surface);border-radius:var(--radius-lg);padding:1.5rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow)}
+#modal-confirm{z-index:200}
 .modal-lg{max-width:680px}
 /* Modal de confirmação */
 .confirm-modal{max-width:380px;text-align:center}
@@ -273,10 +274,11 @@ tr.rc{background:var(--conc-bg)}
       <span class="login-logo-text">Orthocrin</span>
     </div>
     <div class="login-sub">Controle de tarefas da equipe</div>
-    <div class="fg"><label>Usuário</label><input type="text" id="lu" placeholder="seu nome" autocomplete="username"></div>
-    <div class="fg"><label>Senha</label><input type="password" id="lp" placeholder="senha" onkeydown="if(event.key==='Enter')dL()"></div>
-    <button class="btn btn-p" style="width:100%" onclick="dL()">Entrar</button>
-    <div class="err hidden" id="le">Usuário ou senha incorretos.</div>
+    <div class="fg"><label>Usuário</label><input type="text" id="lu" placeholder="Seu nome (ou e-mail)" autocomplete="username"></div>
+    <div class="fg"><label>Senha</label><input type="password" id="lp" placeholder="sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')dL()"></div>
+    <button class="btn btn-p" id="btn-login" style="width:100%" onclick="dL()">Entrar</button>
+    <div class="err hidden" id="le">E-mail ou senha incorretos.</div>
+    <button type="button" onclick="esqueciSenha()" style="background:none;border:none;color:var(--brand);cursor:pointer;font-size:12.5px;margin-top:12px;width:100%;text-decoration:underline;text-underline-offset:2px">Esqueci minha senha</button>
   </div>
 </div>
 
@@ -690,7 +692,7 @@ tr.rc{background:var(--conc-bg)}
       <div class="fg"><label>Senha inicial</label><input type="text" id="nu-pass" value="123456"></div>
     </div>
     <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);margin:4px 0 12px;cursor:pointer"><input type="checkbox" id="nu-forcar" style="width:auto;margin:0"> Exigir troca de senha no próximo login</label>
-    <button class="btn btn-p" onclick="addUsuario()">+ Adicionar</button>
+    <button class="btn btn-p" id="btn-add-user" onclick="addUsuario()">+ Adicionar</button>
     <div class="err hidden" id="nu-er">Preencha nome e e-mail.</div>
     <div class="suc hidden" id="nu-ok">✓ Usuário adicionado!</div>
   </div>
@@ -706,12 +708,12 @@ tr.rc{background:var(--conc-bg)}
     <input type="hidden" id="eu-id">
     <div class="f2">
       <div class="fg"><label>Nome</label><input type="text" id="eu-nm"></div>
-      <div class="fg"><label>E-mail</label><input type="email" id="eu-em"></div>
+      <div class="fg"><label>E-mail (login — não editável aqui)</label><input type="email" id="eu-em" readonly style="background:var(--gray-bg);color:var(--text2)"></div>
       <div class="fg"><label>Perfil</label><select id="eu-role"><option value="func">Usuário Padrão</option><option value="admin">Administrador</option></select></div>
       <div class="fg"><label>Equipe</label><select id="eu-equipe" onchange="toggleEquipeField('eu')"><option value="contab">Contabilidade</option><option value="outros">Outros</option></select></div>
       <div class="fg" id="eu-area-fg" style="display:none"><label>Área (digite)</label><input type="text" id="eu-area" placeholder="ex: RH, PCP, Financeiro"></div>
       <div class="fg" id="eu-chefia-fg" style="display:none"><label>E-mail da chefia (opcional)</label><input type="email" id="eu-chefia" placeholder="chefia@orthocrin.com.br"></div>
-      <div class="fg"><label>Nova senha</label><input type="text" id="eu-pass" placeholder="Deixe em branco para manter"></div>
+      <div class="fg"><label>Senha</label><button type="button" class="btn btn-sm" onclick="resetarSenhaUsuario()" style="width:100%">🔑 Enviar redefinição de senha por e-mail</button></div>
     </div>
     <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);margin:4px 0 12px;cursor:pointer"><input type="checkbox" id="eu-forcar" style="width:auto;margin:0"> Exigir troca de senha no próximo login</label>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -768,8 +770,9 @@ tr.rc{background:var(--conc-bg)}
 </div>
 
 <script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getFirestore,collection,doc,addDoc,updateDoc,deleteDoc,onSnapshot,getDocs,query,where,orderBy,limit}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{initializeApp,deleteApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,updatePassword,EmailAuthProvider,reauthenticateWithCredential,sendPasswordResetEmail,createUserWithEmailAndPassword,setPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,getDocs,query,where,orderBy,limit}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ── PWA ──────────────────────────────────────────────────────────────────────
 if('serviceWorker'in navigator){
@@ -922,7 +925,26 @@ window.debSearch=function(fn){
 
 // ── FIREBASE ─────────────────────────────────────────────────────────────────
 const cfg={apiKey:"AIzaSyCY9A4MDsHBAZt-pmj7jlh80llXlup-814",authDomain:"orthocrin-3cbae.firebaseapp.com",projectId:"orthocrin-3cbae",storageBucket:"orthocrin-3cbae.firebasestorage.app",messagingSenderId:"592799072147",appId:"1:592799072147:web:27d84faf3116fc7e4c3266"};
-const db=getFirestore(initializeApp(cfg));
+const _fbApp=initializeApp(cfg);
+const db=getFirestore(_fbApp);
+const auth=getAuth(_fbApp);
+// Traduz os códigos de erro do Firebase para mensagens simples em português
+function msgErroFirebase(code){
+  const m={
+    'auth/invalid-email':'E-mail inválido.',
+    'auth/user-disabled':'Este acesso está desativado.',
+    'auth/user-not-found':'E-mail ou senha incorretos.',
+    'auth/wrong-password':'E-mail ou senha incorretos.',
+    'auth/invalid-credential':'E-mail ou senha incorretos.',
+    'auth/missing-password':'Informe a senha.',
+    'auth/email-already-in-use':'Já existe um acesso com este e-mail.',
+    'auth/weak-password':'A senha deve ter pelo menos 6 caracteres.',
+    'auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+    'auth/network-request-failed':'Sem conexão. Verifique sua internet.',
+    'auth/requires-recent-login':'Por segurança, saia e entre novamente para alterar a senha.'
+  };
+  return m[code]||'Não foi possível concluir. Tente novamente.';
+}
 
 let tarefas=[],usuarios=[],CU=null,DC=null,FDC=null,iniciado=false;
 let _unsub1=null,_unsub2=null; // FIX #6: guardar refs dos listeners
@@ -1164,12 +1186,15 @@ const qTarefas=query(collection(db,'tarefas'),where('prazo','>=',anoInicio),wher
 function capturarFoco(){const el=document.activeElement;if(!el?.id)return null;return{elId:el.id,ss:el.selectionStart,se:el.selectionEnd};}
 function restaurarFoco(f){if(!f)return;const el=document.getElementById(f.elId);if(!el)return;el.focus();try{el.setSelectionRange(f.ss,f.se);}catch(e){}}
 
+// Controle da primeira carga: só entra no app depois que tarefas E usuários chegaram
+let cargaTarefasOk=false,cargaUsuariosOk=false,jaEntrou=false;
 function startListeners(){
   // FIX #6: guardar refs para cancelar no logout
   _unsub1=onSnapshot(qTarefas,snap=>{
     _dRCache.clear(); // limpa cache de dias pois "hoje" é o mesmo mas tarefas mudaram
     tarefas=snap.docs.map(d=>({id:d.id,...d.data()}));
-    if(!iniciado)return;
+    cargaTarefasOk=true;
+    if(!jaEntrou){talvezEntrar();return;}
     // FIX #3: só re-renderiza a aba que está visível
     const foco=capturarFoco();
     if(CU){
@@ -1189,11 +1214,30 @@ function startListeners(){
     usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
     // FIX #8: recria o Map a cada update
     userMap=new Map(usuarios.map(u=>[u.id,u]));
-    if(!iniciado){iniciado=true;show('sc-login');}
+    cargaUsuariosOk=true;
+    if(!jaEntrou){talvezEntrar();return;}
     if(CU?.role==='admin')populateRespSelect();
   });
 }
-startListeners();
+// Só mostra a tela do app quando os dois conjuntos de dados já chegaram
+function talvezEntrar(){
+  if(cargaTarefasOk&&cargaUsuariosOk&&CU&&!jaEntrou){
+    jaEntrou=true;iniciado=true;
+    CU.role==='admin'?iA():iF();
+  }
+}
+// Chamada após o login (ou após a troca obrigatória de senha)
+function entrarNoApp(){
+  cargaTarefasOk=false;cargaUsuariosOk=false;jaEntrou=false;iniciado=false;
+  show('sc-load'); // mostra "Conectando..." enquanto os dados chegam
+  startListeners();
+}
+// Cancela os listeners do Firestore (ao sair)
+function pararListeners(){
+  if(_unsub1){_unsub1();_unsub1=null;}
+  if(_unsub2){_unsub2();_unsub2=null;}
+}
+// NÃO inicia mais os listeners ao abrir a página: só depois do login (ver onAuthStateChanged no fim do arquivo).
 
 // ── PAGINAÇÃO ─────────────────────────────────────────────────────────────────
 function renderPagBar(containerId,page,total,onPage){
@@ -1295,19 +1339,65 @@ window.limparFiltrosFunc=function(){
 };
 
 // ── LOGIN / LOGOUT ────────────────────────────────────────────────────────────
+// Deixa a comparação de nomes "tolerante": ignora maiúsculas, acentos e espaços extras.
+function normalizarNome(s){
+  return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
+}
+// Descobre o e-mail a partir do nome, consultando a "lista de nomes" (coleção diretorio).
+async function emailPorNome(nome){
+  const alvo=normalizarNome(nome);
+  if(!alvo)return null;
+  const snap=await getDocs(collection(db,'diretorio'));
+  for(const d of snap.docs){
+    const dados=d.data();
+    if(normalizarNome(dados.name)===alvo)return (dados.email||'').toLowerCase();
+  }
+  return null;
+}
 window.dL=async function(){
-  const u=document.getElementById('lu').value.trim().toLowerCase();
-  const p=document.getElementById('lp').value;
-  const usr=usuarios.find(x=>x.id===u||x.name.toLowerCase()===u||x.name.toLowerCase().split(' ')[0]===u);
-  if(!usr){document.getElementById('le').classList.remove('hidden');return;}
-  // Suporta senhas em texto puro (legado) e em hash (novo)
-  const hashed=await hashSenha(p);
-  const senhaOk=(usr.pass===p||usr.pass===hashed);
-  if(!senhaOk){document.getElementById('le').classList.remove('hidden');return;}
-  document.getElementById('le').classList.add('hidden');
-  CU=usr;
-  if(usr.forcarTrocaSenha){abrirTrocaSenha(true);return;} // troca obrigatória antes de entrar
-  usr.role==='admin'?iA():iF();
+  const entrada=document.getElementById('lu').value.trim();
+  const senha=document.getElementById('lp').value;
+  const le=document.getElementById('le');
+  le.classList.add('hidden');
+  if(!entrada||!senha){le.textContent='Informe o usuário e a senha.';le.classList.remove('hidden');return;}
+  const btn=document.getElementById('btn-login');
+  if(btn){btn.disabled=true;btn.dataset.txt=btn.textContent;btn.textContent='Entrando...';}
+  try{
+    // Se digitou um e-mail (tem @), usa direto. Senão, traduz o nome para o e-mail.
+    let email=entrada.toLowerCase();
+    if(!entrada.includes('@')){
+      email=await emailPorNome(entrada);
+      if(!email){le.textContent='Usuário ou senha incorretos.';le.classList.remove('hidden');return;}
+    }
+    // Não mantém a pessoa logada "para sempre": a sessão acaba ao fechar o navegador,
+    // então a senha é pedida toda vez que o sistema é aberto.
+    await setPersistence(auth,browserSessionPersistence);
+    await signInWithEmailAndPassword(auth,email,senha);
+    // O restante (buscar perfil e abrir o app) é feito por onAuthStateChanged, no fim do arquivo.
+  }catch(e){
+    le.textContent=msgErroFirebase(e.code);
+    le.classList.remove('hidden');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=btn.dataset.txt||'Entrar';}
+  }
+};
+window.esqueciSenha=async function(){
+  const entrada=document.getElementById('lu').value.trim();
+  const le=document.getElementById('le');
+  if(!entrada){le.textContent='Digite seu nome (ou e-mail) no campo acima para receber o link de redefinição.';le.classList.remove('hidden');return;}
+  try{
+    let email=entrada.toLowerCase();
+    if(!entrada.includes('@')){
+      email=await emailPorNome(entrada);
+      if(!email){le.textContent='Usuário não encontrado.';le.classList.remove('hidden');return;}
+    }
+    await sendPasswordResetEmail(auth,email);
+    le.classList.add('hidden');
+    toast('✉ Link de redefinição enviado para o seu e-mail.');
+  }catch(e){
+    le.textContent=msgErroFirebase(e.code);
+    le.classList.remove('hidden');
+  }
 };
 
 // ── TROCAR SENHA ──────────────────────────────────────────────────────────────
@@ -1333,40 +1423,38 @@ window.salvarNovaSenha=async function(){
   const nova=document.getElementById('sn-nova').value;
   const conf=document.getElementById('sn-conf').value;
   const mostrarErro=msg=>{er.textContent=msg;er.classList.remove('hidden');};
-  if(!senhaForcada){
-    const atual=document.getElementById('sn-atual').value;
-    const hAtual=await hashSenha(atual);
-    if(!(CU.pass===atual||CU.pass===hAtual)){mostrarErro('Senha atual incorreta.');return;}
-  }
   if(nova.length<6){mostrarErro('A nova senha deve ter pelo menos 6 caracteres.');return;}
   if(nova!==conf){mostrarErro('A confirmação não confere com a nova senha.');return;}
   er.classList.add('hidden');
+  const user=auth.currentUser;
+  if(!user){mostrarErro('Sessão expirada. Faça login novamente.');return;}
   try{
-    const h=await hashSenha(nova);
-    await updateDoc(doc(db,'usuarios',CU.id),{pass:h,forcarTrocaSenha:false});
-    CU.pass=h;CU.forcarTrocaSenha=false;
+    // Na troca voluntária, confirmamos a senha atual antes (re-autenticação)
+    if(!senhaForcada){
+      const atual=document.getElementById('sn-atual').value;
+      if(!atual){mostrarErro('Informe a senha atual.');return;}
+      const cred=EmailAuthProvider.credential(user.email,atual);
+      await reauthenticateWithCredential(user,cred);
+    }
+    await updatePassword(user,nova);
+    await updateDoc(doc(db,'usuarios',user.uid),{forcarTrocaSenha:false});
+    if(CU)CU.forcarTrocaSenha=false;
     if(senhaForcada){
       document.getElementById('modal-senha').classList.add('hidden');
       senhaForcada=false;
       toast('✓ Senha definida!');
-      CU.role==='admin'?iA():iF();
+      entrarNoApp();
     }else{
       document.getElementById('sn-ok').classList.remove('hidden');
       toast('✓ Senha alterada!');
       setTimeout(()=>document.getElementById('modal-senha').classList.add('hidden'),1500);
     }
-  }catch(e){mostrarErro('Erro ao salvar: '+e.message);}
+  }catch(e){mostrarErro(msgErroFirebase(e.code));}
 };
-window.logout=function(){
-  // FIX #6: cancela listeners ao sair
-  if(_unsub1){_unsub1();_unsub1=null;}
-  if(_unsub2){_unsub2();_unsub2=null;}
-  CU=null;DC=null;FDC=null;
-  document.getElementById('lu').value='';document.getElementById('lp').value='';
-  tarefas=[];usuarios=[];userMap.clear();iniciado=false;
-  show('sc-login');
-  // Reinicia listeners para próximo login
-  setTimeout(startListeners,300);
+window.logout=async function(){
+  pararListeners();
+  try{await signOut(auth);}catch(e){console.error(e);}
+  // A limpeza dos dados e o retorno à tela de login são feitos por onAuthStateChanged.
 };
 
 // ── ADMIN INIT ────────────────────────────────────────────────────────────────
@@ -1887,21 +1975,40 @@ function renderUsersList(){
   }).join('');
 }
 window.addUsuario=async function(){
-  const nm=document.getElementById('nu-nm').value.trim(),em=document.getElementById('nu-em').value.trim(),role=document.getElementById('nu-role').value,pass=document.getElementById('nu-pass').value.trim()||'123456';
-  if(!nm||!em){document.getElementById('nu-er').classList.remove('hidden');return;}
-  document.getElementById('nu-er').classList.add('hidden');
+  const nm=document.getElementById('nu-nm').value.trim(),em=document.getElementById('nu-em').value.trim().toLowerCase(),role=document.getElementById('nu-role').value,pass=document.getElementById('nu-pass').value.trim()||'123456';
+  const er=document.getElementById('nu-er');
+  if(!nm||!em){er.textContent='Preencha nome e e-mail.';er.classList.remove('hidden');return;}
+  if(pass.length<6){er.textContent='A senha inicial deve ter pelo menos 6 caracteres.';er.classList.remove('hidden');return;}
+  er.classList.add('hidden');
   const equipe=document.getElementById('nu-equipe').value;
   const area=equipe==='outros'?document.getElementById('nu-area').value.trim():'';
   const chefiaEmail=equipe==='outros'?document.getElementById('nu-chefia').value.trim():'';
   const forcarTrocaSenha=document.getElementById('nu-forcar').checked;
+  const btn=document.getElementById('btn-add-user');
+  if(btn){btn.disabled=true;}
+  let secApp=null;
   try{
-    const passHash=await hashSenha(pass);
-    await addDoc(collection(db,'usuarios'),{name:nm,email:em,role,pass:passHash,equipe,area,chefiaEmail,forcarTrocaSenha});
+    // Cria o login no Firebase Authentication usando um "app secundário",
+    // assim a sessão do administrador NÃO é trocada para o novo usuário.
+    secApp=initializeApp(cfg,'criarUsuario_'+Date.now());
+    const secAuth=getAuth(secApp);
+    const cred=await createUserWithEmailAndPassword(secAuth,em,pass);
+    const novoUid=cred.user.uid;
+    await signOut(secAuth);
+    // Grava o perfil no Firestore usando o UID como ID do documento (usuarios/{uid})
+    await setDoc(doc(db,'usuarios',novoUid),{name:nm,email:em,role,equipe,area,chefiaEmail,forcarTrocaSenha});
+    // Registra o nome na "lista de nomes" para permitir login pelo nome
+    await setDoc(doc(db,'diretorio',novoUid),{name:nm,email:em});
     ['nu-nm','nu-em','nu-area','nu-chefia'].forEach(id=>document.getElementById(id).value='');document.getElementById('nu-pass').value='123456';
     document.getElementById('nu-forcar').checked=false;
     document.getElementById('nu-equipe').value='contab';toggleEquipeField('nu');
     document.getElementById('nu-ok').classList.remove('hidden');setTimeout(()=>document.getElementById('nu-ok').classList.add('hidden'),3000);renderUsersList();
-  }catch(e){alert('Erro: '+e.message);}
+  }catch(e){
+    er.textContent=msgErroFirebase(e.code);er.classList.remove('hidden');
+  }finally{
+    if(secApp){try{await deleteApp(secApp);}catch(_){}}
+    if(btn){btn.disabled=false;}
+  }
 };
 window.openEditUser=function(id){
   const u=userMap.get(id);if(!u)return;
@@ -1912,51 +2019,79 @@ window.openEditUser=function(id){
   document.getElementById('eu-chefia').value=u.chefiaEmail||'';
   toggleEquipeField('eu');
   document.getElementById('eu-forcar').checked=!!u.forcarTrocaSenha;
-  document.getElementById('eu-pass').value='';
   ['eu-er','eu-ok'].forEach(i=>document.getElementById(i).classList.add('hidden'));
   document.getElementById('modal-edit-user').classList.remove('hidden');
 };
 window.closeEditUser=()=>document.getElementById('modal-edit-user').classList.add('hidden');
 window.saveEditUser=async function(){
-  const id=document.getElementById('eu-id').value,nm=document.getElementById('eu-nm').value.trim(),em=document.getElementById('eu-em').value.trim(),role=document.getElementById('eu-role').value,pass=document.getElementById('eu-pass').value.trim();
-  if(!nm||!em){document.getElementById('eu-er').classList.remove('hidden');return;}
+  const id=document.getElementById('eu-id').value,nm=document.getElementById('eu-nm').value.trim(),role=document.getElementById('eu-role').value;
+  if(!nm){document.getElementById('eu-er').textContent='Preencha o nome.';document.getElementById('eu-er').classList.remove('hidden');return;}
+  document.getElementById('eu-er').classList.add('hidden');
   const equipe=document.getElementById('eu-equipe').value;
   const area=equipe==='outros'?document.getElementById('eu-area').value.trim():'';
   const chefiaEmail=equipe==='outros'?document.getElementById('eu-chefia').value.trim():'';
-  const data={name:nm,email:em,role,equipe,area,chefiaEmail,forcarTrocaSenha:document.getElementById('eu-forcar').checked};
-  if(pass){data.pass=await hashSenha(pass);}
+  // Observação: o e-mail é o login (fica no Firebase Authentication) e não é alterado por aqui.
+  const data={name:nm,role,equipe,area,chefiaEmail,forcarTrocaSenha:document.getElementById('eu-forcar').checked};
   try{
     await updateDoc(doc(db,'usuarios',id),data);
+    // Mantém o nome na "lista de nomes" sincronizado (caso o nome tenha mudado)
+    try{await setDoc(doc(db,'diretorio',id),{name:nm},{merge:true});}catch(_){}
     document.getElementById('eu-ok').classList.remove('hidden');
     setTimeout(()=>{document.getElementById('eu-ok').classList.add('hidden');closeEditUser();renderUsersList();},2000);
-  }catch(e){alert('Erro: '+e.message);}
+  }catch(e){document.getElementById('eu-er').textContent=msgErroFirebase(e.code);document.getElementById('eu-er').classList.remove('hidden');}
+};
+// Admin redefine a senha de outra pessoa: envia link de redefinição para o e-mail dela.
+window.resetarSenhaUsuario=async function(){
+  const email=(document.getElementById('eu-em').value||'').trim().toLowerCase();
+  if(!email){toast('❌ Usuário sem e-mail cadastrado.');return;}
+  if(!await confirmDialog('Enviar um e-mail de redefinição de senha para '+email+'?'))return;
+  try{await sendPasswordResetEmail(auth,email);toast('✉ E-mail de redefinição enviado para '+email+'.');}
+  catch(e){toast('❌ '+msgErroFirebase(e.code));}
 };
 window.deleteUser=async function(){
   const id=document.getElementById('eu-id').value;
-  if(!await confirmDialog('Remover este usuário permanentemente?'))return;
-  try{await deleteDoc(doc(db,'usuarios',id));closeEditUser();renderUsersList();toast('Usuário removido');}catch(e){alert('Erro: '+e.message);}
+  if(!await confirmDialog('Remover o perfil deste usuário? Ele perde o acesso ao sistema imediatamente. (O login no Firebase continua existindo e pode ser apagado pelo painel, se desejar.)'))return;
+  try{await deleteDoc(doc(db,'usuarios',id));try{await deleteDoc(doc(db,'diretorio',id));}catch(_){}closeEditUser();renderUsersList();toast('Usuário removido');}catch(e){toast('❌ '+msgErroFirebase(e.code));}
 };
 
-// ── INIT USUÁRIOS PADRÃO ──────────────────────────────────────────────────────
-(async()=>{
-  const snap=await getDocs(collection(db,'usuarios'));
-  if(snap.empty){
-    const h=await hashSenha('123456');
-    const padrao=[
-      {name:'Guilherme',email:'fiscal3@orthocrin.com.br',role:'admin',pass:h,equipe:'contab',area:'',chefiaEmail:''},
-      {name:'Vanusa',email:'vanusa@orthocrin.com.br',role:'admin',pass:h,equipe:'contab',area:'',chefiaEmail:''},
-      {name:'Maurílio',email:'fiscal@orthocrin.com.br',role:'func',pass:h,equipe:'contab',area:'',chefiaEmail:''},
-      {name:'Samares',email:'fiscal2@orthocrin.com.br',role:'func',pass:h,equipe:'contab',area:'',chefiaEmail:''},
-      {name:'Camila',email:'fiscal1@orthocrin.com.br',role:'func',pass:h,equipe:'contab',area:'',chefiaEmail:''},
-      {name:'Luciano',email:'recebimento@orthocrin.com.br',role:'func',pass:h,equipe:'contab',area:'',chefiaEmail:''},
-      {name:'Thiago Lara',email:'pcp@orthocrin.com.br',role:'func',pass:h,equipe:'outros',area:'PCP',chefiaEmail:''},
-      {name:'Maria Heloisa',email:'financeiro@orthocrin.com.br',role:'func',pass:h,equipe:'outros',area:'Financeiro',chefiaEmail:''},
-      {name:'Katia',email:'rh@orthocrin.com.br',role:'func',pass:h,equipe:'outros',area:'RH',chefiaEmail:''},
-      {name:'Warley',email:'digital@orthocrin.com.br',role:'func',pass:h,equipe:'outros',area:'Digital',chefiaEmail:''},
-    ];
-    for(const u of padrao)await addDoc(collection(db,'usuarios'),u);
+// ── PORTEIRO DE ACESSO (Firebase Authentication) ──────────────────────────────
+// Roda ao abrir a página e sempre que o login muda. É quem decide entre
+// mostrar a tela de login ou já abrir o sistema (buscando o perfil no Firestore).
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){
+    // Ninguém logado: limpa tudo e mostra o login (sem baixar dado nenhum).
+    pararListeners();
+    CU=null;DC=null;FDC=null;
+    tarefas=[];usuarios=[];userMap.clear();
+    iniciado=false;jaEntrou=false;cargaTarefasOk=false;cargaUsuariosOk=false;
+    document.getElementById('lu').value='';document.getElementById('lp').value='';
+    show('sc-login');
+    return;
   }
-})();
+  // Logou no Firebase. Buscamos o perfil dele no Firestore (usuarios/{uid}).
+  try{
+    const snap=await getDoc(doc(db,'usuarios',user.uid));
+    if(!snap.exists()){
+      // Tem login, mas não há perfil cadastrado: bloqueia por segurança.
+      await signOut(auth);
+      const le=document.getElementById('le');
+      le.textContent='Seu acesso existe, mas não há um perfil cadastrado. Avise o administrador.';
+      le.classList.remove('hidden');
+      return;
+    }
+    CU={id:user.uid,uid:user.uid,email:user.email,...snap.data()};
+    // Mantém a "lista de nomes" (diretorio) atualizada para o login por nome funcionar.
+    try{await setDoc(doc(db,'diretorio',user.uid),{name:CU.name,email:CU.email},{merge:true});}catch(_){}
+    if(CU.forcarTrocaSenha){abrirTrocaSenha(true);return;} // troca obrigatória antes de entrar
+    entrarNoApp();
+  }catch(e){
+    console.error('Erro ao carregar perfil:',e);
+    await signOut(auth);
+    const le=document.getElementById('le');
+    le.textContent='Erro ao carregar seu perfil. Tente novamente.';
+    le.classList.remove('hidden');
+  }
+});
 </script>
 </body>
 </html>
