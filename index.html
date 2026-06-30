@@ -58,6 +58,8 @@ textarea{resize:vertical;min-height:56px}
 .suc{font-size:13px;color:var(--green);margin-top:8px}
 .hint{font-size:12px;color:var(--text3);margin-top:12px}
 .app{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
+/* Só as abas com tabela grande (Tarefas da equipe e Minhas tarefas) usam mais largura, centralizadas na tela. As demais telas ficam no tamanho normal (1100px). */
+#at-t,#at-m{--tw:min(1320px, calc(100vw - 2rem));width:var(--tw);margin-left:calc(50% - var(--tw) / 2)}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
 .tl{display:flex;align-items:center;gap:12px}
 .av{width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;letter-spacing:.02em}
@@ -95,7 +97,7 @@ textarea{resize:vertical;min-height:56px}
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
 /* CABEÇALHOS ORDENÁVEIS */
-th{text-align:left;font-size:11px;font-weight:600;color:var(--text2);padding:7px 8px;border-bottom:2px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+th{text-align:left;font-size:10px;font-weight:600;color:var(--text2);padding:7px 6px;border-bottom:2px solid var(--border);white-space:normal;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:.02em;line-height:1.2;vertical-align:bottom}
 th.sortable{cursor:pointer;user-select:none}
 th.sortable:hover{color:var(--brand)}
 th .sort-icon{margin-left:3px;opacity:.4;font-size:10px}
@@ -345,19 +347,19 @@ tr.rc{background:var(--conc-bg)}
         </div>
         <div class="tw"><table id="tbl-at">
           <thead><tr>
-            <th class="sortable" data-col="nome" style="width:15%">Tarefa <span class="sort-icon"></span></th>
-            <th class="sortable" data-col="resp" style="width:8%">Responsável <span class="sort-icon"></span></th>
-            <th style="width:7%">Recorrência</th>
-            <th class="sortable" data-col="mesReferencia" style="width:6%">Mês ref. <span class="sort-icon"></span></th>
-            <th class="sortable" data-col="prazo" style="width:7%">Prazo <span class="sort-icon"></span></th>
-            <th class="sortable" data-col="dias" style="width:5%">Dias <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="nome" style="width:16%">Tarefa <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="resp" style="width:7%" title="Responsável">Resp. <span class="sort-icon"></span></th>
+            <th style="width:7%" title="Recorrência">Recorr.</th>
+            <th class="sortable" data-col="mesReferencia" style="width:7%">Mês ref. <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="prazo" style="width:8%">Prazo <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="dias" style="width:6%">Dias <span class="sort-icon"></span></th>
             <th class="sortable" data-col="status" style="width:9%">Status <span class="sort-icon"></span></th>
-            <th style="width:7%">Conclusão</th>
-            <th style="width:4%">Alerta</th>
-            <th style="width:10%">Observação</th>
+            <th style="width:7%" title="Conclusão">Concl.</th>
+            <th style="width:5%">Alerta</th>
+            <th style="width:12%" title="Observação">Obs.</th>
             <th style="width:4%" title="Status da notificação">✉</th>
             <th style="width:4%" title="Notificar novamente">🔔</th>
-            <th style="width:9%"></th>
+            <th style="width:5%"></th>
           </tr></thead>
           <tbody id="adm-tb"></tbody>
         </table></div>
@@ -396,7 +398,7 @@ tr.rc{background:var(--conc-bg)}
         </div>
         <div class="tw"><table>
           <thead><tr>
-            <th style="width:17%">Tarefa</th><th style="width:8%">Recorrência</th>
+            <th style="width:17%">Tarefa</th><th style="width:8%" title="Recorrência">Recorr.</th>
             <th style="width:7%">Mês ref.</th><th style="width:9%">Prazo</th>
             <th style="width:6%">Dias</th><th style="width:12%">Status</th>
             <th style="width:33%">Observação / Justificativa</th>
@@ -631,7 +633,7 @@ tr.rc{background:var(--conc-bg)}
         </div>
         <div class="tw"><table>
           <thead><tr>
-            <th style="width:18%">Tarefa</th><th style="width:9%">Recorrência</th>
+            <th style="width:18%">Tarefa</th><th style="width:9%" title="Recorrência">Recorr.</th>
             <th style="width:7%">Mês ref.</th><th style="width:9%">Prazo</th>
             <th style="width:6%">Dias</th><th style="width:11%">Status</th>
             <th style="width:37%">Observação / Justificativa</th>
@@ -1502,14 +1504,14 @@ function rAM(){
 const emailIconHtml=(id,tarefa)=>{
   const st=emailStatus[id]||'nao_enviado';
   if(st==='enviado')
-    return'<span title="Notificação enviada" style="color:#16a34a;font-size:15px;font-weight:700">✔</span>';
+    return'<span title="Notificação enviada" style="color:#16a34a;font-size:13px;font-weight:700">✔</span>';
   if(st==='erro')
-    return'<span title="Falha no envio" style="color:#dc2626;font-size:15px;font-weight:700">✗</span>';
+    return'<span title="Falha no envio" style="color:#dc2626;font-size:13px;font-weight:700">✗</span>';
   // Concluída sem ter sido notificada → mostra "—"
   if(tarefa?.status==='concluida')
-    return'<span title="Concluída sem necessidade de notificação" style="color:#9c9a94;font-size:15px;font-weight:500">—</span>';
+    return'<span title="Concluída sem necessidade de notificação" style="color:#9c9a94;font-size:11px;font-weight:500">—</span>';
   // Pendente/andamento ainda fora do período de alerta → traço cinza claro
-  return'<span title="Fora do período de alerta" style="color:#d0cec6;font-size:15px">—</span>';
+  return'<span title="Fora do período de alerta" style="color:#d0cec6;font-size:11px">—</span>';
 };
 // emailBadge removida (não utilizada)
 
@@ -1569,8 +1571,8 @@ window.rAT=function(pg){
       <td style="font-size:11px;color:var(--text2)" title="${(t.obs||'').replace(/"/g,'&quot;')}">${t.obs||'—'}</td>
       <td style="text-align:center">${emailIconHtml(t.id,t)}</td>
       <td style="text-align:center">${(t.status==='pendente'||t.status==='andamento')&&(d<0||d<=a)
-        ?`<button class="btn btn-sm" title="Notificar novamente" style="font-size:14px;padding:3px 7px" onclick="renotificar('${t.id}')">🔔</button>`
-        :'<span title="Notificação não disponível neste momento" style="font-size:14px;opacity:0.25;filter:grayscale(1);cursor:not-allowed;display:inline-block">🔔</span>'
+        ?`<button class="btn btn-sm" title="Notificar novamente" style="font-size:12px;padding:2px 6px" onclick="renotificar('${t.id}')">🔔</button>`
+        :'<span title="Notificação não disponível neste momento" style="font-size:12px;opacity:0.25;filter:grayscale(1);cursor:not-allowed;display:inline-block">🔔</span>'
       }</td>
       <td style="white-space:nowrap;text-align:center">
         <button class="btn btn-sm btn-d" onclick="rmT('${t.id}','${escJs(t.nome)}')">🗑</button>
